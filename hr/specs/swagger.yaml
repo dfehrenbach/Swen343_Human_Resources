@@ -1,0 +1,347 @@
+################################################################################
+#                                                                              #
+#                                 Human Resources                              #
+#                                                                              #
+################################################################################
+swagger: '2.0'
+
+info:
+  version: "0.0.2"
+  title: Human Resources API
+
+produces:
+  - application/json
+consumes:
+  - application/json
+
+################################################################################
+#                                                                              #
+#                                 ToDo/Questions                               #
+#                                                                              #
+################################################################################
+#
+# 1. Look into including additional parameters/filters
+# 2. Add security and authentication (checkout instagram's api exmaple)
+#
+################################################################################
+#                                                                              #
+#                                 Paths                                        #
+#                                                                              #
+################################################################################
+paths:
+#                                                                              #
+#                                 /employees                                   #
+#                                                                              #
+  /employees:
+    get:
+      operationId: hr.controllers.employees.get
+      description:
+        Gets a list of of all of the employees or a single employee currently in the system
+      parameters:
+        - $ref: "#/parameters/employee_id"
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              employee_array:
+                type: array
+                items:
+                  $ref: "#/definitions/Employee"
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: "#/definitions/Error"
+    post:
+      operationId: hr.controllers.employees.post
+      description:
+        Adds a single employee into the system
+      parameters:
+        - name: employee
+          in: body
+          schema:
+            $ref: "#/definitions/EmployeePost"
+          required: true
+          description:
+            This is an Employee object that can only post information that can be modified.
+            This is similar to patching, but requires that the employee to not currently exist in the system yet.
+      responses:
+        204:
+          description: Employee created!
+        400:
+          description: Employee could not be created.
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: "#/definitions/Error"
+    patch:
+      operationId: hr.controllers.employees.patch
+      description:
+        Changes the information of a single employee
+      parameters:
+        - name: employee
+          in: body
+          schema:
+            $ref: "#/definitions/EmployeePatch"
+          required: true
+          description:
+            This is a partial or full Employee object that describes what information needs to be changed
+            for a particular employee. This is similar to posting but does not require the full object.
+      responses:
+        200:
+          description: Employee information found and changed
+        default:
+          description: Employee either not found or
+
+    delete:
+      operationId: hr.controllers.employees.delete
+      description:
+        Deletes a single employee
+      parameters:
+        - name: employee_id
+          in: query
+          type: integer
+          required: true
+          description: The employee id by which to look up the appropriate Employee object to delete.
+      responses:
+        200:
+          description: Employee deleted
+        default:
+          description: Employee not deleted
+
+#                                                                              #
+#                                 /salary/employee                             #
+#                                                                              #
+  /salary/employee:
+    get:
+      operationId: hr.controllers.salary.employee_get
+      description:
+        Gets the weekly and yearly salary of all or a single employee when given the id
+      parameters:
+        - $ref: "#/parameters/employee_id"
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              employee_array:
+                type: array
+                items:
+                  $ref: "#/definitions/EmployeeSalary"
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: "#/definitions/Error"
+#                                                                              #
+#                                 /salary/team                                 #
+#                                                                              #
+  /salary/team:
+    get:
+      operationId: hr.controllers.salary.team_get
+      description:
+        Gets the weekly and yearly salary of every team
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              team_array:
+                type: array
+                items:
+                  $ref: "#/definitions/TeamSalary"
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: "#/definitions/Error"
+#                                                                              #
+#                                 /salary/all                                  #
+#                                                                              #
+  /salary/all:
+    get:
+      operationId: hr.controllers.salary.all_get
+      description:
+        Gets the weekly and yearly salary for the all employees currently employed combined
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/AllSalary"
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: "#/definitions/Error"
+
+################################################################################
+#                                                                              #
+#                                 Definitions                                  #
+#                                                                              #
+################################################################################
+
+definitions:
+#                                                                              #
+#                                 Employee                                     #
+#                                                                              #
+  Employee:
+    type: object
+    properties:
+      is_active:
+        type: boolean
+      employee_id:
+        type: integer
+      name:
+        type: string
+      birth_date:
+        type: string
+        format: date_time
+      address:
+        type: string
+      department:
+        type: string
+      role:
+        type: string
+      team_start_date:
+        type: string
+        format: date_time
+      company_start_date:
+        type: string
+        format: date_time
+      salary:
+        type: integer
+
+#                                                                              #
+#                                 EmployeePost                                 #
+#                                                                              #
+  EmployeePost:
+    required:
+      - is_active
+      - name
+      - birth_date
+      - address
+      - department
+      - role
+      - team_start_date
+      - company_start_date
+    type: object
+    properties:
+      is_active:
+        type: boolean
+      name:
+        type: string
+      birth_date:
+        type: string
+        format: date_time
+      address:
+        type: string
+      department:
+        type: string
+      role:
+        type: string
+      team_start_date:
+        type: string
+        format: date_time
+      company_start_date:
+        type: string
+        format: date_time
+
+#                                                                              #
+#                                 EmployeePatch                                #
+#                                                                              #
+  EmployeePatch:
+    required:
+      - employee_id
+    type: object
+    properties:
+      is_active:
+        type: boolean
+      employee_id:
+        type: integer
+      name:
+        type: string
+      birth_date:
+        type: string
+        format: date_time
+      address:
+        type: string
+      department:
+        type: string
+      role:
+        type: string
+      team_start_date:
+        type: string
+        format: date_time
+      company_start_date:
+        type: string
+        format: date_time
+      salary:
+        type: integer
+
+#                                                                              #
+#                                 EmployeeSalary                               #
+#                                                                              #
+  EmployeeSalary:
+    type: object
+    properties:
+      is_active:
+        type: boolean
+      employee_id:
+        type: integer
+      name:
+        type: string
+      weekly_salary:
+        type: integer
+      yearly_salary:
+        type: integer
+
+#                                                                              #
+#                                 TeamSalary                                   #
+#                                                                              #
+  TeamSalary:
+    type: object
+    properties:
+      name:
+        type: string
+      weekly_salary:
+        type: integer
+      yearly_salary:
+        type: integer
+
+#                                                                              #
+#                                 AllSalary                                    #
+#                                                                              #
+  AllSalary:
+    type: object
+    properties:
+      weekly_salary:
+        type: integer
+      yearly_salary:
+        type: integer
+
+
+#                                                                              #
+#                                 Error                                        #
+#                                                                              #
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
+
+################################################################################
+#                                                                              #
+#                                 Parameters                                   #
+#                                                                              #
+################################################################################
+parameters:
+  employee_id:
+    name: employee_id
+    in: query
+    type: string
+    required: false
