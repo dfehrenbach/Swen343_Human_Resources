@@ -6,7 +6,7 @@
 swagger: '2.0'
 
 info:
-  version: "0.0.2"
+  version: "0.1.0"
   title: Human Resources API
 
 produces:
@@ -32,7 +32,7 @@ paths:
 #                                                                              #
 #                                 /employees                                   #
 #                                                                              #
-  /employees:
+  /employee:
     get:
       operationId: hr.controllers.employees.get
       description:
@@ -110,16 +110,18 @@ paths:
         default:
           description: Employee not deleted
 
-#                                                                              #
-#                                 /salary/employee                             #
-#                                                                              #
-  /salary/employee:
+
+  /employee/{employee_id}:
     get:
-      operationId: hr.controllers.salary.employee_get
+      operationId: hr.controllers.employee.get
       description:
-        Gets the weekly and yearly salary of all or a single employee when given the id
+        A single employee currently in the system
       parameters:
-        - $ref: "#/parameters/employee_id"
+        - name: employee_id
+          in: path
+          type: integer
+          required: true
+          description: The employee id by which to look up the appropriate Employee object to delete.
       responses:
         200:
           description: Success
@@ -129,46 +131,7 @@ paths:
               employee_array:
                 type: array
                 items:
-                  $ref: "#/definitions/EmployeeSalary"
-        default:
-          description: Unexpected Error
-          schema:
-            $ref: "#/definitions/Error"
-#                                                                              #
-#                                 /salary/team                                 #
-#                                                                              #
-  /salary/team:
-    get:
-      operationId: hr.controllers.salary.team_get
-      description:
-        Gets the weekly and yearly salary of every team
-      responses:
-        200:
-          description: Success
-          schema:
-            type: object
-            properties:
-              team_array:
-                type: array
-                items:
-                  $ref: "#/definitions/TeamSalary"
-        default:
-          description: Unexpected Error
-          schema:
-            $ref: "#/definitions/Error"
-#                                                                              #
-#                                 /salary/all                                  #
-#                                                                              #
-  /salary/all:
-    get:
-      operationId: hr.controllers.salary.all_get
-      description:
-        Gets the weekly and yearly salary for the all employees currently employed combined
-      responses:
-        200:
-          description: Success
-          schema:
-            $ref: "#/definitions/AllSalary"
+                  $ref: "#/definitions/Employee"
         default:
           description: Unexpected Error
           schema:
@@ -279,48 +242,6 @@ definitions:
         type: integer
 
 #                                                                              #
-#                                 EmployeeSalary                               #
-#                                                                              #
-  EmployeeSalary:
-    type: object
-    properties:
-      is_active:
-        type: boolean
-      employee_id:
-        type: integer
-      name:
-        type: string
-      weekly_salary:
-        type: integer
-      yearly_salary:
-        type: integer
-
-#                                                                              #
-#                                 TeamSalary                                   #
-#                                                                              #
-  TeamSalary:
-    type: object
-    properties:
-      name:
-        type: string
-      weekly_salary:
-        type: integer
-      yearly_salary:
-        type: integer
-
-#                                                                              #
-#                                 AllSalary                                    #
-#                                                                              #
-  AllSalary:
-    type: object
-    properties:
-      weekly_salary:
-        type: integer
-      yearly_salary:
-        type: integer
-
-
-#                                                                              #
 #                                 Error                                        #
 #                                                                              #
   Error:
@@ -343,5 +264,9 @@ parameters:
   employee_id:
     name: employee_id
     in: query
-    type: string
+    type: array
+    items:
+      type: integer
     required: false
+    description: id of a particular employee or set of employees
+
