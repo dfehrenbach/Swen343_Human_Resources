@@ -111,11 +111,11 @@ paths:
           description: Employee not deleted
 
 
-  /employee/<employee_id>:
+  /employee/{employee_id}:
     get:
       operationId: hr.controllers.employee.get
       description:
-        Gets a list of of all of the employees or a single employee currently in the system
+        A single employee currently in the system
       parameters:
         - name: employee_id
           in: path
@@ -263,5 +263,10 @@ definitions:
 parameters:
   employee_id:
     name: employee_id
-    type: integer
-    format: int32
+    in: query
+    type: array
+    items:
+      type: integer
+    required: false
+    description: id of a particular employee or set of employees
+
