@@ -21,7 +21,7 @@ consumes:
 ################################################################################
 #
 # 1. Look into including additional parameters/filters
-# 2. Add security and authentication (checkout instagram's api exmaple)
+# 2. Add security and authentication (checkout Instagram's api example)
 #
 ################################################################################
 #                                                                              #
