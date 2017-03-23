@@ -81,8 +81,8 @@ class Title(Base):
 class Department(Base):
     __tablename__ = 'department'
     id = Column(Integer, primary_key=True)
-    start_date = Column(DateTime)
     is_active = Column(Boolean)
+    start_date = Column(DateTime)
     name = Column(String(25))
 
     # Allows for reference to the employee object without search
@@ -102,24 +102,45 @@ if __name__ == "__main__":
     import datetime
 
     session = Session()
-    wendy_employee = Employee(is_active=True, first_name='Wendy', last_name='Williams', birth_date=datetime.date(1995, 4, 25))
+    wendy_employee = Employee(is_active=True, first_name='Wendy', last_name='Williams',
+                              birth_date=datetime.date(1995, 4, 25))
     session.add(wendy_employee)
     session.commit()
 
-    mary_employee = Employee(is_active=False, first_name='Mary', last_name='Contrary', birth_date=datetime.date(1992, 2, 12))
+    mary_employee = Employee(is_active=False, first_name='Mary', last_name='Contrary',
+                             birth_date=datetime.date(1992, 2, 12))
     session.add(mary_employee)
     session.commit()
 
     session.add_all([
-        User(username='wwilliams', password='xxg527', employee_id= wendy_employee ),
-        User(username='mcontrary', password='asdf1234', employee_id= mary_employee )
+        User(username='wwilliams', password='xxg527', employee_id=wendy_employee),
+        User(username='mcontrary', password='asdf1234', employee_id=mary_employee)
     ])
     session.commit()
 
     session.add_all([
-        Address(is_active=True, street_address="42 Wallaby Way", city="Rochester", state="New York", zip="14623", start_date= datetime.date(2016,3,23), employee=wendy_employee),
-        Address(is_active=False, street_address="152 Wallingford Rd", city="Milford", state="New Hampshire", zip="03055", start_date= datetime.date(2006,11,10), employee=wendy_employee),
-        Address(is_active=True, street_address="4 Forest Hills Dr", city="Nashua", state="New Hampshire", zip="03060", start_date= datetime.date(2014,8,23), employee=mary_employee),
-        Address(is_active=False, street_address="42 Wallaby Way", city="Rochester", state="New York", zip="14623", start_date= datetime.date(1996,5,10), employee=mary_employee)
+        Address(is_active=True, street_address="42 Wallaby Way", city="Rochester", state="New York", zip="14623",
+                start_date=datetime.date(2016, 3, 23), employee=wendy_employee),
+        Address(is_active=False, street_address="152 Wallingford Rd", city="Milford", state="New Hampshire",
+                zip="03055", start_date=datetime.date(2006, 11, 10), employee=wendy_employee),
+
+        Address(is_active=True, street_address="4 Forest Hills Dr", city="Nashua", state="New Hampshire", zip="03060",
+                start_date=datetime.date(2014, 8, 23), employee=mary_employee),
+        Address(is_active=False, street_address="42 Wallaby Way", city="Rochester", state="New York", zip="14623",
+                start_date=datetime.date(1996, 5, 10), employee=mary_employee)
+    ])
+    session.commit()
+
+    session.add_all([
+        Title(is_active=True, name='HR Admin', start_date=datetime.date(2006, 11, 10), employee=wendy_employee),
+        Title(is_active=True, name='HR Employee', start_date=datetime.date(1996, 5, 10), employee=mary_employee)
+    ])
+    session.commit()
+
+    session.add_all([
+        Department(is_active=True, start_date=datetime.date(2006, 11, 10), name='Human Resources',
+                   employee=wendy_employee),
+        Department(is_active=True, start_date=datetime.date(1996, 5, 10), name='Human Resources',
+                   employee=mary_employee)
     ])
     session.commit()
