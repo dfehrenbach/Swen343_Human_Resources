@@ -102,10 +102,10 @@ if __name__ == "__main__":
     import datetime
 
     session = Session()
-    session.add_all([
-        Employee(is_active=True, first_name='Wendy', last_name='Williams', birth_date=datetime.date(1995, 4, 25)),
-        # User(username='wwilliams', password='xxg527', ),
+    wendy_employee = Employee(is_active=True, first_name='Wendy', last_name='Williams', birth_date=datetime.date(1995, 4, 25))
+    session.add(wendy_employee)
+    session.commit()
 
-        Employee(is_active=False, first_name='Mary', last_name='Contrary', birth_date=datetime.date(1992, 2, 12))
-    ])
+    mary_employee = Employee(is_active=False, first_name='Mary', last_name='Contrary', birth_date=datetime.date(1992, 2, 12))
+    session.add(mary_employee)
     session.commit()
