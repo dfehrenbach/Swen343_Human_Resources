@@ -109,3 +109,17 @@ if __name__ == "__main__":
     mary_employee = Employee(is_active=False, first_name='Mary', last_name='Contrary', birth_date=datetime.date(1992, 2, 12))
     session.add(mary_employee)
     session.commit()
+
+    session.add_all([
+        User(username='wwilliams', password='xxg527', employee_id= wendy_employee ),
+        User(username='mcontrary', password='asdf1234', employee_id= mary_employee )
+    ])
+    session.commit()
+
+    session.add_all([
+        Address(is_active=True, street_address="42 Wallaby Way", city="Rochester", state="New York", zip="14623", start_date= datetime.date(2016,3,23), employee=wendy_employee),
+        Address(is_active=False, street_address="152 Wallingford Rd", city="Milford", state="New Hampshire", zip="03055", start_date= datetime.date(2006,11,10), employee=wendy_employee),
+        Address(is_active=True, street_address="4 Forest Hills Dr", city="Nashua", state="New Hampshire", zip="03060", start_date= datetime.date(2014,8,23), employee=mary_employee),
+        Address(is_active=False, street_address="42 Wallaby Way", city="Rochester", state="New York", zip="14623", start_date= datetime.date(1996,5,10), employee=mary_employee)
+    ])
+    session.commit()
