@@ -24,6 +24,7 @@ class Employee(Base):
     addresses = relationship("Address", back_populates="employee")
     titles = relationship("Title", back_populates="employee")
     departments = relationship("Department", back_populates="employee")
+    salary = relationship("Salary", back_populates="employee")
 
     def __repr__(self):
         return "<Employee(id='%s', last='%s', first='%s', DOB='%s', isActive='%s')>" % (
