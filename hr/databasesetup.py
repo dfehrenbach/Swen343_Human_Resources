@@ -2,11 +2,14 @@ from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 
-engine = create_engine('sqlite:///hr.sqlite3', echo=True)
-engine.connect()
+def setUp():
+    global engine
+    engine = create_engine('sqlite:///hr.sqlite3', echo=True)
+    engine.connect()
+    global Base
+    Base = declarative_base()
 
-Base = declarative_base()
-
+setUp()  # 'Base' and 'engine' need to be delcared gloablly, but inorder to test, the method needs to be accessable.
 
 class Employee(Base):
     __tablename__ = 'employee'
@@ -26,6 +29,18 @@ class Employee(Base):
         return "<Employee(id='%s', last='%s', first='%s', DOB='%s', isActive='%s')>" % (
             self.id, self.last_name, self.first_name, self.birth_date, self.is_active)
 
+class Salary(Base):
+    __tablename__ = 'salary'
+    id = Column(Integer, primary_key=True)
+    is_active = Column(Boolean)
+    amount = Column(Integer) # Will be an Integer of Cents. So for a salary of $100, the amount will be 10000
+
+    # This allows for reference to this employee's details without extra searching
+    employee_id = Column(Integer, ForeignKey(Employee.id))
+    employee = relationship("Employee", back_populates="salary")
+
+    def __repr__(self):
+        return "<Salary(id='%s', is_active='%s', amount='%s')>" % (self.id, self.is_active, self.amount)
 
 class User(Base):
     __tablename__ = 'user'
@@ -98,7 +113,7 @@ Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
 
-if __name__ == "__main__":
+def main():
     import datetime
 
     session = Session()
@@ -144,3 +159,6 @@ if __name__ == "__main__":
                    employee=mary_employee)
     ])
     session.commit()
+
+if __name__ == "__main__":
+    main()
