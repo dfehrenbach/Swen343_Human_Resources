@@ -154,7 +154,9 @@ definitions:
         type: boolean
       employee_id:
         type: integer
-      name:
+      fname:
+        type: string
+      lname:
         type: string
       birth_date:
         type: string
@@ -172,7 +174,7 @@ definitions:
         type: string
         format: date_time
       salary:
-        type: integer
+        type: string
 
 #                                                                              #
 #                                 EmployeePost                                 #
@@ -180,7 +182,8 @@ definitions:
   EmployeePost:
     required:
       - is_active
-      - name
+      - fname
+      - lname
       - birth_date
       - address
       - department
@@ -191,7 +194,9 @@ definitions:
     properties:
       is_active:
         type: boolean
-      name:
+      fname:
+        type: string
+      lname:
         type: string
       birth_date:
         type: string
@@ -221,7 +226,9 @@ definitions:
         type: boolean
       employee_id:
         type: integer
-      name:
+      fname:
+        type: string
+      lname:
         type: string
       birth_date:
         type: string
@@ -239,7 +246,7 @@ definitions:
         type: string
         format: date_time
       salary:
-        type: integer
+        type: string
 
 #                                                                              #
 #                                 Error                                        #
