@@ -8,6 +8,7 @@
 
 <div ng-app="MyApp" ng-controller="MyCtrl">
 
+    <!--GET forms-->
     <h1>GET</h1>
     <p>Get All Employees:
         <button ng-click="getAllEmployees()">Go</button>
@@ -15,66 +16,74 @@
 
     <p>{{allEmployees}}</p>
     <br/>
+
     <form>
-
-
-        <p>Get Employee with ID <input ng-model="getEmployeeId" type="text" required></input>
+        <p>Get Employee with ID <input ng-model="getEmployeeId" type="number" required/>
             <button ng-click="getEmployee(getEmployeeId)">Go</button>
         </p>
     </form>
     <p>{{singleEmployee}}</p>
     <br/><br/>
+
+    <!--POST forms-->
     <h1>POST</h1>
     <form name="postForm">
         <p>Active: <input ng-model="postIsActive" type="checkbox"></p>
         <p>Name: <input ng-model="postName" type="text" required></p>
-        <p>DOB: <input ng-model="postDOB" type="text" required></p>
+        <p>DOB: <input ng-model="postDOB" type="date" required></p>
         <p>Address: <input ng-model="postAddress" type="text" required></p>
 
-        <p>Department: <select ng-model="postDepartment" required>
-            <option value="HR">HR
-            <option value="Accounting">Accounting
-            <option value="Customer Service">Customer Service
-            <option value="Inventory">Inventory
-            <option value="Sales">Sales
-            <option value="Manufacturing">Manufacturing
-        </select></p>
+        <p>Department:
+            <select ng-model="postDepartment" required>
+                <option value="HR">HR
+                <option value="Accounting">Accounting
+                <option value="Customer Service">Customer Service
+                <option value="Inventory">Inventory
+                <option value="Sales">Sales
+                <option value="Manufacturing">Manufacturing
+            </select>
+        </p>
         <p>Role: <input ng-model="postRole" type="text" required></p>
-        <p>Team Start Date: <input ng-model="postTeamStartDate" type="text" required></p>
-        <p>Company Start Date: <input ng-model="postCompanyStartDate" type="text" required></p>
+        <p>Team Start Date: <input ng-model="postTeamStartDate" type="date" required></p>
+        <p>Company Start Date: <input ng-model="postCompanyStartDate" type="date" required></p>
         <button ng-click="postEmployee(postForm.$valid)">Create Employee</button>
     </form>
 
     <p>{{postedEmployee}}</p>
     <br><br>
+
+    <!--PATCH Form-->
     <h1>PATCH</h1>
     <form name="patchForm">
-        <p>ID:<input ng-model="patchEmployeeId" type="text" required></input></p>
-
+        <p>ID:<input ng-model="patchEmployeeId" type="number" required/></p>
         <p>Active: <input ng-model="patchIsActive" type="checkbox"></p>
         <p>Name: <input ng-model="patchName" type="text"></p>
-        <p>DOB: <input ng-model="patchDOB" type="text"></p>
+        <p>DOB: <input ng-model="patchDOB" type="date"></p>
         <p>Address: <input ng-model="patchAddress" type="text"></p>
 
-        <p>Department: <select ng-model="patchDepartment">
-            <option value="HR">HR
-            <option value="Accounting">Accounting
-            <option value="Customer Service">Customer Service
-            <option value="Inventory">Inventory
-            <option value="Sales">Sales
-            <option value="Manufacturing">Manufacturing
-        </select></p>
+        <p>Department:
+            <select ng-model="patchDepartment">
+                <option value="HR">HR
+                <option value="Accounting">Accounting
+                <option value="Customer Service">Customer Service
+                <option value="Inventory">Inventory
+                <option value="Sales">Sales
+                <option value="Manufacturing">Manufacturing
+            </select>
+        </p>
         <p>Role: <input ng-model="patchRole" type="text"></p>
-        <p>Team Start Date: <input ng-model="patchTeamStartDate" type="text"></p>
-        <p>Company Start Date: <input ng-model="patchCompanyStartDate" type="text"></p>
+        <p>Team Start Date: <input ng-model="patchTeamStartDate" type="date"></p>
+        <p>Company Start Date: <input ng-model="patchCompanyStartDate" type="date"></p>
         <button ng-click="patchEmployee()">Update Employee</button>
     </form>
 
     <p>{{patchedEmployee}}</p>
     <br><br>
+
+    <!--DELETE Form-->
     <h1>DELETE</h1>
     <form>
-        <p>ID: <input ng-model="deleteEmployeeId" type="text" required></input>
+        <p>ID: <input ng-model="deleteEmployeeId" type="number" required/>
             <button ng-click="deleteEmployee(deleteEmployeeId)">Delete Employee</button>
         </p>
     </form>
@@ -169,8 +178,6 @@
             }
             $scope.deleteEmployee = function (eId) {
                 if (eId) {
-
-
                     $http.delete("employee?employee_id=" + eId)
                         .then(function (response) {
                             $scope.deletedEmployee = response.data;
