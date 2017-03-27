@@ -42,7 +42,7 @@ class EmployeeApiModel(object):
             'role': 'str',
             'team_start_date': 'str',
             'company_start_date': 'str',
-            'salary': 'int'
+            'salary': 'str'
         }
 
         self.attribute_map = {
@@ -152,7 +152,7 @@ class EmployeeApiModel(object):
         :param lname: The lname of this EmployeeApiModel.
         :type: str
         """
-
+        
         self._lname = lname
 
     @property
@@ -287,7 +287,7 @@ class EmployeeApiModel(object):
         Gets the salary of this EmployeeApiModel.
 
         :return: The salary of this EmployeeApiModel.
-        :rtype: int
+        :rtype: str
         """
         return self._salary
 
@@ -297,7 +297,7 @@ class EmployeeApiModel(object):
         Sets the salary of this EmployeeApiModel.
 
         :param salary: The salary of this EmployeeApiModel.
-        :type: int
+        :type: str
         """
 
         self._salary = salary
