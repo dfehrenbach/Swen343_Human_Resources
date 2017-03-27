@@ -1,10 +1,14 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
+import os
 
 def setUp():
+    fileName = "hr.sqlite3"
+    if (os.path.exists(fileName)):
+        os.remove(fileName)
     global engine
-    engine = create_engine('sqlite:///hr.sqlite3', echo=True)
+    engine = create_engine('sqlite:///'+fileName, echo=True)
     engine.connect()
     global Base
     Base = declarative_base()
@@ -156,6 +160,14 @@ def main():
                    employee=wendy_employee),
         Department(is_active=True, start_date=datetime.date(1996, 5, 10), name='Human Resources',
                    employee=mary_employee)
+    ])
+    session.commit()
+
+    session.add_all([
+        Salary(is_active=True,amount=60000,employee=wendy_employee),
+        Salary(is_active=False,amount=50000,employee=wendy_employee),
+        Salary(is_active=True,amount=70000,employee=mary_employee),
+        Salary(is_active=False,amount=60000,employee=mary_employee)
     ])
     session.commit()
 
