@@ -175,7 +175,7 @@
                     .then(function (response) {
                         $scope.patchedEmployee = response.data;
                     });
-            }
+            };
             $scope.deleteEmployee = function (eId) {
                 if (eId) {
                     $http.delete("employee?employee_id=" + eId)
