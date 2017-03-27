@@ -14,7 +14,7 @@
         <button ng-click="getAllEmployees()">Go</button>
     </p>
 
-    <p>{{allEmployees}}</p>
+    <pre>{{allEmployees}}</pre>
     <br/>
 
     <form>
@@ -22,7 +22,7 @@
             <button ng-click="getEmployee(getEmployeeId)">Go</button>
         </p>
     </form>
-    <p>{{singleEmployee}}</p>
+    <pre>{{singleEmployee}}</pre>
     <br/><br/>
 
     <!--POST forms-->
@@ -49,7 +49,7 @@
         <button ng-click="postEmployee(postForm.$valid)">Create Employee</button>
     </form>
 
-    <p>{{postedEmployee}}</p>
+    <pre>{{postedEmployee}}</pre>
     <br><br>
 
     <!--PATCH Form-->
@@ -77,7 +77,7 @@
         <button ng-click="patchEmployee()">Update Employee</button>
     </form>
 
-    <p>{{patchedEmployee}}</p>
+    <pre>{{patchedEmployee}}</pre>
     <br><br>
 
     <!--DELETE Form-->
@@ -88,7 +88,7 @@
         </p>
     </form>
 
-    <p>{{deletedEmployee}}</p>
+    <pre>{{deletedEmployee}}</pre>
     <br/><br/>
 
 </div>
@@ -107,7 +107,7 @@
 
                 $http.get("employee")
                     .then(function (response) {
-                        $scope.allEmployees = response.data;
+                        $scope.allEmployees = JSON.stringify( response.data,null,3);
                     });
             }
 
@@ -115,7 +115,7 @@
                 if (eId) {
                     $http.get("employee?employee_id=" + eId)
                         .then(function (response) {
-                            $scope.singleEmployee = response.data;
+                            $scope.singleEmployee = JSON.stringify(response.data,null,3);
                         }, function (response) {
                             alert(response.data.detail)
                         });
@@ -140,7 +140,7 @@
                         }
                     })
                         .then(function (response) {
-                            $scope.postedEmployee = response.data;
+                            $scope.postedEmployee = JSON.stringify(response.data,null,3);
                         });
                 }
             }
@@ -173,14 +173,14 @@
                     data: data
                 })
                     .then(function (response) {
-                        $scope.patchedEmployee = response.data;
+                        $scope.patchedEmployee =JSON.stringify(response.data,null,3);
                     });
             }
             $scope.deleteEmployee = function (eId) {
                 if (eId) {
                     $http.delete("employee?employee_id=" + eId)
                         .then(function (response) {
-                            $scope.deletedEmployee = response.data;
+                            $scope.deletedEmployee = JSON.stringify(response.data,null,3);
                         }, function (response) {
                             alert(response.data.detail)
                         });
