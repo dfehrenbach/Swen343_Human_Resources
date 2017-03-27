@@ -174,7 +174,7 @@ definitions:
         type: string
         format: date_time
       salary:
-        type: string
+        type: integer
 
 #                                                                              #
 #                                 EmployeePost                                 #
@@ -246,7 +246,7 @@ definitions:
         type: string
         format: date_time
       salary:
-        type: string
+        type: integer
 
 #                                                                              #
 #                                 Error                                        #
