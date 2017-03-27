@@ -128,10 +128,8 @@ def main():
     session.add(mary_employee)
     session.commit()
 
-    session.add_all([
-        User(username='wwilliams', password='xxg527', employee_id=wendy_employee),
-        User(username='mcontrary', password='asdf1234', employee_id=mary_employee)
-    ])
+    session.add(User(username='wwilliams', password='xxg527', employee=wendy_employee))
+    session.add(User(username='mcontrary', password='asdf1234', employee=mary_employee))
     session.commit()
 
     session.add_all([
