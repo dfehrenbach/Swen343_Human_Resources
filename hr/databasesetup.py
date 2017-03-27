@@ -3,17 +3,20 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import os
 
+
 def setUp():
-    fileName = "hr.sqlite3"
-    if (os.path.exists(fileName)):
-        os.remove(fileName)
+    file_name = "hr.sqlite3"
+    if os.path.exists(file_name):
+        os.remove(file_name)
     global engine
-    engine = create_engine('sqlite:///'+fileName, echo=True)
+    engine = create_engine('sqlite:///' + file_name, echo=True)
     engine.connect()
     global Base
     Base = declarative_base()
 
-setUp()  # 'Base' and 'engine' need to be delcared gloablly, but inorder to test, the method needs to be accessable.
+
+setUp()  # 'Base' and 'engine' need to be declared globally, but in order to test, the method needs to be accessible.
+
 
 class Employee(Base):
     __tablename__ = 'employee'
@@ -34,11 +37,12 @@ class Employee(Base):
         return "<Employee(id='%s', last='%s', first='%s', DOB='%s', isActive='%s')>" % (
             self.id, self.last_name, self.first_name, self.birth_date, self.is_active)
 
+
 class Salary(Base):
     __tablename__ = 'salary'
     id = Column(Integer, primary_key=True)
     is_active = Column(Boolean)
-    amount = Column(Integer) # Will be an Integer of Cents. So for a salary of $100, the amount will be 10000
+    amount = Column(Integer)  # Will be an Integer of Cents. So for a salary of $100, the amount will be 10000
 
     # This allows for reference to this employee's details without extra searching
     employee_id = Column(Integer, ForeignKey(Employee.id))
@@ -46,6 +50,7 @@ class Salary(Base):
 
     def __repr__(self):
         return "<Salary(id='%s', is_active='%s', amount='%s')>" % (self.id, self.is_active, self.amount)
+
 
 class User(Base):
     __tablename__ = 'user'
@@ -118,6 +123,7 @@ Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
 
+
 def main():
     import datetime
 
@@ -164,12 +170,13 @@ def main():
     session.commit()
 
     session.add_all([
-        Salary(is_active=True,amount=60000,employee=wendy_employee),
-        Salary(is_active=False,amount=50000,employee=wendy_employee),
-        Salary(is_active=True,amount=70000,employee=mary_employee),
-        Salary(is_active=False,amount=60000,employee=mary_employee)
+        Salary(is_active=True, amount=60000, employee=wendy_employee),
+        Salary(is_active=False, amount=50000, employee=wendy_employee),
+        Salary(is_active=True, amount=70000, employee=mary_employee),
+        Salary(is_active=False, amount=60000, employee=mary_employee)
     ])
     session.commit()
+
 
 if __name__ == "__main__":
     main()

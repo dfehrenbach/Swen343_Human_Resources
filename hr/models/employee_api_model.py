@@ -152,7 +152,7 @@ class EmployeeApiModel(object):
         :param lname: The lname of this EmployeeApiModel.
         :type: str
         """
-        
+
         self._lname = lname
 
     @property
