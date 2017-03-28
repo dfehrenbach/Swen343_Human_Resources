@@ -1,0 +1,28 @@
+{
+  "employee_array": [
+    {
+      "address": "123 Main Street",
+      "birth_date": "01/01/1959",
+      "company_start_date": "01/01/2015",
+      "department": "Accounting",
+      "employee_id": 1,
+      "is_active": true,
+      "name": "Dank Rutz",
+      "role": "Benevolent Overlord",
+      "salary": 1000,
+      "team_start_date": "03/27/2017"
+    },
+    {
+      "address": "1 Lomb Memorial Drive",
+      "birth_date": "04/01/1985",
+      "company_start_date": "01/01/2015",
+      "department": "Sales",
+      "employee_id": 2,
+      "is_active": true,
+      "name": "John Stamos",
+      "role": "CFO",
+      "salary": 7000000,
+      "team_start_date": "02/15/2017"
+    }
+  ]
+}

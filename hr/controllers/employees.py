@@ -2,7 +2,11 @@
 
 The following functions are called from here: GET, POST, PATCH, and DELETE.
 """
-def get(employee_id=None):
+import json
+import os
+
+
+def get(employee_id=None, static_flag=True):
     """ This is the GET function that will return one or more employee objects within the system.
     :param employee_id:
     :return: a set of Employee Objects
@@ -19,7 +23,14 @@ def get(employee_id=None):
         3b. Add the EmployeeApi object into the EmployeeResponse object
     4. Return the EmployeeResponse object
     """
-    return {'Magic': 'Im magic for get', 'employee_id': employee_id}
+    if static_flag = True:
+        scriptdir = '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[:-2])
+        sp_file = os.path.join(scriptdir, 'static/dummy.txt')
+        obj = json.load(open(sp_file))
+    
+        if employee_id != None and employee_id[0] < 3:
+            return obj["employee_array"][employee_id[0]-1]
+        return obj["employee_array"]
 
 
 def post(employee):
