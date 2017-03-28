@@ -34,7 +34,7 @@ paths:
 #                                                                              #
   /employee:
     get:
-      operationId: hr.controllers.employees.get
+      operationId: controllers.employees.get
       description:
         Gets a list of of all of the employees or a single employee currently in the system
       parameters:
@@ -54,7 +54,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
     post:
-      operationId: hr.controllers.employees.post
+      operationId: controllers.employees.post
       description:
         Adds a single employee into the system
       parameters:
@@ -76,7 +76,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
     patch:
-      operationId: hr.controllers.employees.patch
+      operationId: controllers.employees.patch
       description:
         Changes the information of a single employee
       parameters:
@@ -95,7 +95,7 @@ paths:
           description: Employee either not found or
 
     delete:
-      operationId: hr.controllers.employees.delete
+      operationId: controllers.employees.delete
       description:
         Deletes a single employee
       parameters:
@@ -113,7 +113,7 @@ paths:
 
   /employee/{employee_id}:
     get:
-      operationId: hr.controllers.employee.get
+      operationId: controllers.employee.get
       description:
         A single employee currently in the system
       parameters:
