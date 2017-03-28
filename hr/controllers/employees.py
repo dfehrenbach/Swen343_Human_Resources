@@ -4,14 +4,15 @@ The following functions are called from here: GET, POST, PATCH, and DELETE.
 """
 import json
 import os
-from databasesetup import create_session, Employee
-from models.employee_api_model import EmployeeApiModel
-import models.employee_response
+from hr.databasesetup import create_session, Employee
+from hr.models.employee_api_model import EmployeeApiModel
+from hr.models.employee_response import EmployeeResponse
 
 
-def get(employee_id=None, static_flag=True):
+def get(employee_id=None, static_flag=False):
     """ This is the GET function that will return one or more employee objects within the system.
     :param employee_id:
+    :param static_flag:
     :return: a set of Employee Objects
 
     IMPLEMENTATION:
@@ -27,7 +28,7 @@ def get(employee_id=None, static_flag=True):
         3b. Add the EmployeeApi object into the EmployeeResponse object
     4. Return the EmployeeResponse object
     """
-    if static_flag = True:
+    if static_flag:
         scriptdir = '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[:-2])
         sp_file = os.path.join(scriptdir, 'static/dummy.txt')
         obj = json.load(open(sp_file))
@@ -43,7 +44,7 @@ def get(employee_id=None, static_flag=True):
     department_data_object = None
     salary_data_object = None
 
-    final_result = []
+    collection = []
 
     if employee_id is None:
         all_employee_object = session.query(Employee).all()
@@ -66,7 +67,7 @@ def get(employee_id=None, static_flag=True):
                     salary_data_object = salary_object
             # print salary_data_object
 
-            result = EmployeeApiModel(is_active=employee_data_object.is_active,
+            employee = EmployeeApiModel(is_active=employee_data_object.is_active,
                                       employee_id=employee_data_object.id,
                                       fname=employee_data_object.first_name,
                                       lname=employee_data_object.last_name,
@@ -77,7 +78,7 @@ def get(employee_id=None, static_flag=True):
                                       team_start_date=department_data_object.start_date,
                                       company_start_date=department_data_object.start_date,
                                       salary=salary_data_object.amount)
-            final_result.insert(-1, result.to_str())
+            collection.append(employee)
 
     else:
         for e_id in employee_id:
@@ -100,7 +101,7 @@ def get(employee_id=None, static_flag=True):
                     salary_data_object = salary_object
             # print salary_data_object
 
-            result = EmployeeApiModel(is_active=employee_data_object.is_active,
+            employee = EmployeeApiModel(is_active=employee_data_object.is_active,
                                       employee_id=employee_data_object.id,
                                       fname=employee_data_object.first_name,
                                       lname=employee_data_object.last_name,
@@ -111,9 +112,9 @@ def get(employee_id=None, static_flag=True):
                                       team_start_date=department_data_object.start_date,
                                       company_start_date=department_data_object.start_date,
                                       salary=salary_data_object.amount)
-            final_result.insert(-1, result.to_str())
+            collection.append(employee)
 
-    return final_result
+    return EmployeeResponse(collection).to_dict()
 
 
 def post(employee):
