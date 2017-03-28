@@ -4,7 +4,11 @@ The following functions are called from here: GET, POST, PATCH, and DELETE.
 """
 import json
 import os
-from databasesetup import create_session, Employee, serialize
+from datetime import datetime
+from random import randrange
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import exists, and_
+from databasesetup import create_session, Employee, User, Salary, Address, Title, Department
 from models.employee_api_model import EmployeeApiModel
 from models.employee_response import EmployeeResponse
 
@@ -46,7 +50,11 @@ def get(employee_id=None, static_flag=False):
     collection = []
 
     if employee_id is None:
-        all_employee_object = session.query(Employee).all()
+        try:
+            all_employee_object = session.query(Employee).all()
+        except SQLAlchemyError:
+            session.rollback()
+            return {'error_message': 'Error while retrieving all employees'}, 500
 
         for employee_data_object in all_employee_object:
             for address_object in employee_data_object.addresses:
@@ -81,7 +89,12 @@ def get(employee_id=None, static_flag=False):
 
     else:
         for e_id in employee_id:
-            employee_data_object = session.query(Employee).get(e_id)
+            try:
+                employee_data_object = session.query(Employee).get(e_id)
+            except SQLAlchemyError:
+                session.rollback()
+                return {'error_message': 'Error while retrieving employee %s' % employee_id}, 500
+
             for address_object in employee_data_object.addresses:
                 if address_object.is_active:
                     addresses_data_object = address_object
@@ -99,6 +112,7 @@ def get(employee_id=None, static_flag=False):
                     salary_data_object = salary_object
                     break
 
+            # Might want to include company_start_date as a column in the database
             employee = EmployeeApiModel(is_active=employee_data_object.is_active,
                                         employee_id=employee_data_object.id,
                                         fname=employee_data_object.first_name,
@@ -112,6 +126,7 @@ def get(employee_id=None, static_flag=False):
                                         salary=salary_data_object.to_str())
             collection.append(employee)
 
+    session.close()
     return EmployeeResponse(collection).to_dict()
 
 
@@ -120,7 +135,71 @@ def post(employee):
     :param employee:
     :return:
     """
-    return {'Magic': 'Yes, actually magic #POST', 'employee': employee}
+    session = create_session()
+
+    # ADD EMPLOYEE
+    try:
+        # Include the following format into the description. Important to do some validation checking here!
+        birthday = datetime.strptime(employee['birth_date'], '%m/%d/%Y').date()  # e.g. 12/17/1993
+        new_employee = Employee(is_active=True, first_name=employee['fname'], last_name=employee['lname'],
+                                birth_date=birthday)
+        session.add(new_employee)
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while importing employee base'}, 500
+
+    # ADD USER
+    try:
+        session.add(User(username='default', password='default', employee=new_employee))
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while importing employee user security information'}, 500
+
+    # ADD ADDRESS
+    try:
+        address = employee['address'].split(',')
+        state_zip = address[2].split(' ')
+        state_zip = ' '.join(state_zip[:2]), ' '.join(state_zip[2:])
+        street_address = address[0]
+        city = address[1]
+        state = state_zip[0]
+        address_zip = state_zip[1]
+        now = datetime.now().month, '/', datetime.now().day, '/', datetime.now().year, '/'
+        address_date = datetime.strptime(employee['team_start_date'], '%m/%d/%Y').date()
+        session.add(Address(is_active=True, street_address=street_address, city=city, state=state, zip=address_zip,
+                            start_date=address_date,
+                            employee=new_employee))
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while importing employee address'}, 500
+
+    # ADD DEPARTMENT
+    try:
+        team_start_date = datetime.strptime(employee['team_start_date'], '%m/%d/%Y').date()  # e.g. 3/28/2017
+        session.add(Department(is_active=True, start_date=team_start_date, name=employee['department'],
+                               employee=new_employee))
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while importing employee department'}, 500
+
+    # ADD TITLE
+    # Note: This should be the same as the team_start_date for POST'ing a new employee
+    try:
+        session.add(Title(is_active=True, name=employee['role'], start_date=team_start_date, employee=new_employee))
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while importing employee title'}, 500
+
+    # ADD SALARY
+    try:
+        session.add(Salary(is_active=True, amount=randrange(50000, 100000, 1000), employee=new_employee))
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while importing employee salary'}, 500
+
+    session.commit()
+
+    return {'Magic': 'Yes, actually magic #POST', 'employee': employee}, 200
 
 
 def patch(employee):
@@ -128,7 +207,10 @@ def patch(employee):
     :param employee:
     :return:
     """
-    return {'Magic': 'Magic, for patching things?', 'employee': employee}
+    session = create_session()
+
+    return {'Magic': 'Magic, for patching things? Bipity Bop! You are now a frog!'
+                     '(Not really, but the following employee has been changed!)', 'employee': employee}, 200
 
 
 def delete(employee_id):
@@ -136,4 +218,15 @@ def delete(employee_id):
     :param employee_id:
     :return:
     """
-    return {'Magic': 'Magically making things vanish since 2017', 'employee_id': employee_id}
+    session = create_session()
+
+    try:
+        session.query(Employee).filter_by(id=employee_id).delete()
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while deleting employee %s' % employee_id}, 500
+
+    session.commit()
+    session.close()
+
+    return {'Magic': 'Magically making things vanish since 2017', 'employee_id': employee_id}, 200
