@@ -4,7 +4,7 @@ The following functions are called from here: GET, POST, PATCH, and DELETE.
 """
 import json
 import os
-from hr.databasesetup import create_session, Employee
+from hr.databasesetup import create_session, Employee, serialize
 from hr.models.employee_api_model import EmployeeApiModel
 from hr.models.employee_response import EmployeeResponse
 
@@ -32,13 +32,12 @@ def get(employee_id=None, static_flag=False):
         scriptdir = '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[:-2])
         sp_file = os.path.join(scriptdir, 'static/dummy.txt')
         obj = json.load(open(sp_file))
-    
+
         if employee_id != None and employee_id[0] < 3:
-            return obj["employee_array"][employee_id[0]-1]
+            return obj["employee_array"][employee_id[0] - 1]
         return obj["employee_array"]
-        
+
     session = create_session()
-    employee_data_object = None
     addresses_data_object = None
     title_data_object = None
     department_data_object = None
@@ -48,70 +47,69 @@ def get(employee_id=None, static_flag=False):
 
     if employee_id is None:
         all_employee_object = session.query(Employee).all()
+
         for employee_data_object in all_employee_object:
-            # print employee_data_object
             for address_object in employee_data_object.addresses:
                 if address_object.is_active:
                     addresses_data_object = address_object
-            # print addresses_data_object
+                    break
             for title_object in employee_data_object.titles:
                 if title_object.is_active:
                     title_data_object = title_object
-            # print title_data_object
+                    break
             for department_object in employee_data_object.departments:
                 if department_object.is_active:
                     department_data_object = department_object
-            # print department_data_object
+                    break
             for salary_object in employee_data_object.salary:
                 if salary_object.is_active:
                     salary_data_object = salary_object
-            # print salary_data_object
+                    break
 
             employee = EmployeeApiModel(is_active=employee_data_object.is_active,
-                                      employee_id=employee_data_object.id,
-                                      fname=employee_data_object.first_name,
-                                      lname=employee_data_object.last_name,
-                                      birth_date=employee_data_object.birth_date,
-                                      address=addresses_data_object,
-                                      department=department_data_object,
-                                      role=title_data_object.name,
-                                      team_start_date=department_data_object.start_date,
-                                      company_start_date=department_data_object.start_date,
-                                      salary=salary_data_object.amount)
+                                        employee_id=employee_data_object.id,
+                                        fname=employee_data_object.first_name,
+                                        lname=employee_data_object.last_name,
+                                        birth_date=employee_data_object.birth_date,
+                                        address=serialize(addresses_data_object),
+                                        department=serialize(department_data_object),
+                                        role=title_data_object.name,
+                                        team_start_date=department_data_object.start_date,
+                                        company_start_date=department_data_object.start_date,
+                                        salary=salary_data_object.amount)
             collection.append(employee)
 
     else:
         for e_id in employee_id:
             employee_data_object = session.query(Employee).get(e_id)
-            # print employee_data_object
             for address_object in employee_data_object.addresses:
                 if address_object.is_active:
                     addresses_data_object = address_object
-            # print addresses_data_object
+                    break
             for title_object in employee_data_object.titles:
                 if title_object.is_active:
                     title_data_object = title_object
-            # print title_data_object
+                    break
             for department_object in employee_data_object.departments:
                 if department_object.is_active:
                     department_data_object = department_object
-            # print department_data_object
+                    break
             for salary_object in employee_data_object.salary:
                 if salary_object.is_active:
                     salary_data_object = salary_object
-            # print salary_data_object
+                    break
 
             employee = EmployeeApiModel(is_active=employee_data_object.is_active,
-                                      employee_id=employee_data_object.id,
-                                      fname=employee_data_object.first_name,
-                                      lname=employee_data_object.last_name,
-                                      birth_date=employee_data_object.birth_date,
-                                      address=addresses_data_object,
-                                      department=department_data_object,
-                                      role=title_data_object.name,
-                                      team_start_date=department_data_object.start_date,
-                                      company_start_date=department_data_object.start_date,
-                                      salary=salary_data_object.amount)
+                                        employee_id=employee_data_object.id,
+                                        fname=employee_data_object.first_name,
+                                        lname=employee_data_object.last_name,
+                                        birth_date=employee_data_object.birth_date,
+                                        address=serialize(addresses_data_object),
+                                        department=serialize(department_data_object),
+                                        role=title_data_object.name,
+                                        team_start_date=department_data_object.start_date,
+                                        company_start_date=department_data_object.start_date,
+                                        salary=salary_data_object.amount)
             collection.append(employee)
 
     return EmployeeResponse(collection).to_dict()

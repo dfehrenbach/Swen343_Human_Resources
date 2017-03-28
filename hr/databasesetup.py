@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker, relationship, class_mapper
 import os
 
 file_name = "hr.sqlite3"
@@ -170,6 +170,14 @@ def main():
         Salary(is_active=False, amount=60000, employee=mary_employee)
     ])
     session.commit()
+
+
+def serialize(model):
+    """Transforms a model into a dictionary which can be dumped to JSON."""
+    # first we get the names of all the columns on your model
+    columns = [c.key for c in class_mapper(model.__class__).columns]
+    # then we return their values in a dict
+    return dict((c, getattr(model, c)) for c in columns)
 
 
 if __name__ == "__main__":

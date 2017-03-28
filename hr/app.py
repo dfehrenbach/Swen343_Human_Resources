@@ -1,4 +1,4 @@
-'''Run of the HR application '''
+"""Run of the HR application """
 import connexion
 from flask import send_file
 
