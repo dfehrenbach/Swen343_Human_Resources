@@ -4,6 +4,7 @@ The following functions are called from here: GET, POST, PATCH, and DELETE.
 """
 import json
 import os
+from sqlalchemy.exc import SQLAlchemyError
 from databasesetup import create_session, Employee, serialize
 from models.employee_api_model import EmployeeApiModel
 from models.employee_response import EmployeeResponse
@@ -46,7 +47,11 @@ def get(employee_id=None, static_flag=False):
     collection = []
 
     if employee_id is None:
-        all_employee_object = session.query(Employee).all()
+        try:
+            all_employee_object = session.query(Employee).all()
+        except SQLAlchemyError:
+            session.rollback()
+            return {'error_message': 'Error while retrieving all employees'}, 500
 
         for employee_data_object in all_employee_object:
             for address_object in employee_data_object.addresses:
@@ -81,7 +86,12 @@ def get(employee_id=None, static_flag=False):
 
     else:
         for e_id in employee_id:
-            employee_data_object = session.query(Employee).get(e_id)
+            try:
+                employee_data_object = session.query(Employee).get(e_id)
+            except SQLAlchemyError:
+                session.rollback()
+                return {'error_message': 'Error while retrieving employee %s' % employee_id}, 500
+
             for address_object in employee_data_object.addresses:
                 if address_object.is_active:
                     addresses_data_object = address_object
@@ -112,6 +122,7 @@ def get(employee_id=None, static_flag=False):
                                         salary=salary_data_object.to_str())
             collection.append(employee)
 
+    session.close()
     return EmployeeResponse(collection).to_dict()
 
 
