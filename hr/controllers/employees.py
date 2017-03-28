@@ -71,12 +71,12 @@ def get(employee_id=None, static_flag=False):
                                         fname=employee_data_object.first_name,
                                         lname=employee_data_object.last_name,
                                         birth_date=employee_data_object.birth_date,
-                                        address=serialize(addresses_data_object),
-                                        department=serialize(department_data_object),
-                                        role=title_data_object.name,
+                                        address=addresses_data_object.to_str(),
+                                        department=department_data_object.to_str(),
+                                        role=title_data_object.to_str(),
                                         team_start_date=department_data_object.start_date,
                                         company_start_date=department_data_object.start_date,
-                                        salary=salary_data_object.amount)
+                                        salary=salary_data_object.to_str())
             collection.append(employee)
 
     else:
@@ -104,12 +104,12 @@ def get(employee_id=None, static_flag=False):
                                         fname=employee_data_object.first_name,
                                         lname=employee_data_object.last_name,
                                         birth_date=employee_data_object.birth_date,
-                                        address=serialize(addresses_data_object),
-                                        department=serialize(department_data_object),
-                                        role=title_data_object.name,
+                                        address=addresses_data_object.to_str(),
+                                        department=department_data_object.to_str(),
+                                        role=title_data_object.to_str(),
                                         team_start_date=department_data_object.start_date,
                                         company_start_date=department_data_object.start_date,
-                                        salary=salary_data_object.amount)
+                                        salary=salary_data_object.to_str())
             collection.append(employee)
 
     return EmployeeResponse(collection).to_dict()

@@ -44,6 +44,9 @@ class Salary(Base):
     def __repr__(self):
         return "<Salary(id='%s', is_active='%s', amount='%s')>" % (self.id, self.is_active, self.amount)
 
+    def to_str(self):
+        return "%s" % self.amount
+
 
 class User(Base):
     __tablename__ = 'user'
@@ -79,6 +82,9 @@ class Address(Base):
                "zip='%s', start_date='%s')>" % (self.id, self.is_active, self.employee_id, self.street_address,
                                                 self.city, self.state, self.zip, self.start_date)
 
+    def to_str(self):
+        return "%s, %s, %s %s" % (self.street_address, self.city, self.state, self.zip)
+
 
 class Title(Base):
     __tablename__ = 'title'
@@ -95,6 +101,8 @@ class Title(Base):
         return "<Title(id='%s', employee_id='%s', is_active='%s', name='%s', " \
                "start_date='%s')>" % (self.id, self.employee_id, self.is_active, self.name, self.start_date)
 
+    def to_str(self):
+        return "%s" % self.name
 
 class Department(Base):
     __tablename__ = 'department'
@@ -111,6 +119,8 @@ class Department(Base):
         return "<Department(id='%s', employee_id='%s', start_date='%s', is_active='%s', " \
                "name='%s')>" % (self.id, self.employee_id, self.start_date, self.is_active, self.name)
 
+    def to_str(self):
+        return "%s" % self.name
 
 def create_session():
     return sessionmaker(bind=engine)()
