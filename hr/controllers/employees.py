@@ -32,9 +32,9 @@ def get(employee_id=None, static_flag=False):
         scriptdir = '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[:-2])
         sp_file = os.path.join(scriptdir, 'static/dummy.txt')
         obj = json.load(open(sp_file))
-
-        if employee_id != None and employee_id[0] < 3:
-            return obj["employee_array"][employee_id[0] - 1]
+    
+        if employee_id is not None and employee_id[0] < 3:
+            return obj["employee_array"][employee_id[0]-1]
         return obj["employee_array"]
 
     session = create_session()
