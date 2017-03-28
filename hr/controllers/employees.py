@@ -147,4 +147,15 @@ def delete(employee_id):
     :param employee_id:
     :return:
     """
+    session = create_session()
+
+    try:
+        session.query(Employee).filter_by(id=employee_id).delete()
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while deleting employee %s' % employee_id}, 500
+
+    session.commit()
+    session.close()
+
     return {'Magic': 'Magically making things vanish since 2017', 'employee_id': employee_id}
