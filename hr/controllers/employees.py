@@ -2,12 +2,14 @@
 
 The following functions are called from here: GET, POST, PATCH, and DELETE.
 """
+import json
+import os
 from databasesetup import create_session, Employee
 from models.employee_api_model import EmployeeApiModel
 import models.employee_response
 
 
-def get(employee_id=None):
+def get(employee_id=None, static_flag=True):
     """ This is the GET function that will return one or more employee objects within the system.
     :param employee_id:
     :return: a set of Employee Objects
@@ -25,6 +27,15 @@ def get(employee_id=None):
         3b. Add the EmployeeApi object into the EmployeeResponse object
     4. Return the EmployeeResponse object
     """
+    if static_flag = True:
+        scriptdir = '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[:-2])
+        sp_file = os.path.join(scriptdir, 'static/dummy.txt')
+        obj = json.load(open(sp_file))
+    
+        if employee_id != None and employee_id[0] < 3:
+            return obj["employee_array"][employee_id[0]-1]
+        return obj["employee_array"]
+        
     session = create_session()
     employee_data_object = None
     addresses_data_object = None
