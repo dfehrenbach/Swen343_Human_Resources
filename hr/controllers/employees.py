@@ -4,9 +4,9 @@ The following functions are called from here: GET, POST, PATCH, and DELETE.
 """
 import json
 import os
-from hr.databasesetup import create_session, Employee
-from hr.models.employee_api_model import EmployeeApiModel
-from hr.models.employee_response import EmployeeResponse
+from databasesetup import create_session, Employee
+from models.employee_api_model import EmployeeApiModel
+from models.employee_response import EmployeeResponse
 
 
 def get(employee_id=None, static_flag=False):
