@@ -1,5 +1,7 @@
-'''Run of the HR application '''
+"""Run of the HR application """
 import connexion
+from flask import send_file
+
 # from flask_cors import CORS
 
 # Create connexion app and add the HR API
@@ -25,8 +27,13 @@ CORS(
 # Expose application var for WSGI support
 application = app.app
 
+
+@app.route('/')
+def index():
+    return send_file('html/index.html')
+
+
 if __name__ == '__main__':
     app.run(
-        port=8080,
-        debug=True
+        port=8080
     )
