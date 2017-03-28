@@ -104,6 +104,7 @@ class Title(Base):
     def to_str(self):
         return "%s" % self.name
 
+
 class Department(Base):
     __tablename__ = 'department'
     id = Column(Integer, primary_key=True)
@@ -121,6 +122,7 @@ class Department(Base):
 
     def to_str(self):
         return "%s" % self.name
+
 
 def create_session():
     return sessionmaker(bind=engine)()
