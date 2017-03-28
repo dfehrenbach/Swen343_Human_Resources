@@ -121,7 +121,7 @@
                         });
                 }
 
-            }
+            };
 
             $scope.postEmployee = function (isValid) {
                 if (isValid) {
@@ -143,7 +143,7 @@
                             $scope.postedEmployee = response.data;
                         });
                 }
-            }
+            };
             $scope.patchEmployee = function () {
                 var data = {"employee_id": +$scope.patchEmployeeId};
                 if ($scope.patchName) {

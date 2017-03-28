@@ -3,19 +3,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import os
 
-
-def setUp():
-    file_name = "hr.sqlite3"
-    if os.path.exists(file_name):
-        os.remove(file_name)
-    global engine
-    engine = create_engine('sqlite:///' + file_name, echo=True)
-    engine.connect()
-    global Base
-    Base = declarative_base()
-
-
-setUp()  # 'Base' and 'engine' need to be declared globally, but in order to test, the method needs to be accessible.
+file_name = "hr.sqlite3"
+global engine
+engine = create_engine('sqlite:///' + file_name, echo=True)
+engine.connect()
+global Base
+Base = declarative_base()
 
 
 class Employee(Base):
@@ -119,15 +112,16 @@ class Department(Base):
                "name='%s')>" % (self.id, self.employee_id, self.start_date, self.is_active, self.name)
 
 
-Base.metadata.create_all(engine)
-
-Session = sessionmaker(bind=engine)
+def create_session():
+    return sessionmaker(bind=engine)()
 
 
 def main():
+    Base.metadata.create_all(engine)
+
     import datetime
 
-    session = Session()
+    session = create_session()
     wendy_employee = Employee(is_active=True, first_name='Wendy', last_name='Williams',
                               birth_date=datetime.date(1995, 4, 25))
     session.add(wendy_employee)
@@ -179,4 +173,8 @@ def main():
 
 
 if __name__ == "__main__":
+    file_name = "hr.sqlite3"
+    if os.path.exists(file_name):
+        os.remove(file_name)
+
     main()
