@@ -46,14 +46,13 @@ def get(employee_id):
     # Might want to include company_start_date as a column in the database
     employee = EmployeeApiModel(is_active=employee_data_object.is_active,
                                 employee_id=employee_data_object.id,
-                                fname=employee_data_object.first_name,
-                                lname=employee_data_object.last_name,
+                                name=employee_data_object.first_name + ' ' + employee_data_object.last_name,
                                 birth_date=employee_data_object.birth_date,
                                 address=addresses_data_object.to_str(),
                                 department=department_data_object.to_str(),
                                 role=title_data_object.to_str(),
                                 team_start_date=department_data_object.start_date,
-                                company_start_date=department_data_object.start_date,
+                                start_date=employee_data_object.start_date,
                                 salary=salary_data_object.to_str())
 
     session.close()

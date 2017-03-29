@@ -21,7 +21,7 @@ class EmployeeApiModel(object):
     Do not edit the class manually.
     """
 
-    def __init__(self, is_active=None, employee_id=None, fname=None, lname=None, birth_date=None, address=None,
+    def __init__(self, is_active=None, employee_id=None, name=None, birth_date=None, address=None,
                  department=None, role=None, team_start_date=None, start_date=None, salary=None):
         """
         EmployeeApiModel - a model defined in Swagger
@@ -34,8 +34,7 @@ class EmployeeApiModel(object):
         self.swagger_types = {
             'is_active': 'bool',
             'employee_id': 'int',
-            'fname': 'str',
-            'lname': 'str',
+            'name': 'str',
             'birth_date': 'str',
             'address': 'str',
             'department': 'str',
@@ -48,8 +47,7 @@ class EmployeeApiModel(object):
         self.attribute_map = {
             'is_active': 'is_active',
             'employee_id': 'employee_id',
-            'fname': 'fname',
-            'lname': 'lname',
+            'name': 'name',
             'birth_date': 'birth_date',
             'address': 'address',
             'department': 'department',
@@ -61,8 +59,7 @@ class EmployeeApiModel(object):
 
         self._is_active = is_active
         self._employee_id = employee_id
-        self._fname = fname
-        self._lname = lname
+        self._name = name
         self._birth_date = birth_date
         self._address = address
         self._department = department
@@ -114,46 +111,25 @@ class EmployeeApiModel(object):
         self._employee_id = employee_id
 
     @property
-    def fname(self):
+    def name(self):
         """
-        Gets the fname of this EmployeeApiModel.
+        Gets the name of this EmployeeApiModel.
 
-        :return: The fname of this EmployeeApiModel.
+        :return: The name of this EmployeeApiModel.
         :rtype: str
         """
-        return self._fname
+        return self._name
 
-    @fname.setter
-    def fname(self, fname):
+    @name.setter
+    def name(self, name):
         """
-        Sets the fname of this EmployeeApiModel.
+        Sets the name of this EmployeeApiModel.
 
-        :param fname: The fname of this EmployeeApiModel.
+        :param name: The name of this EmployeeApiModel.
         :type: str
         """
 
-        self._fname = fname
-
-    @property
-    def lname(self):
-        """
-        Gets the lname of this EmployeeApiModel.
-
-        :return: The lname of this EmployeeApiModel.
-        :rtype: str
-        """
-        return self._lname
-
-    @lname.setter
-    def lname(self, lname):
-        """
-        Sets the lname of this EmployeeApiModel.
-
-        :param lname: The lname of this EmployeeApiModel.
-        :type: str
-        """
-
-        self._lname = lname
+        self._name = name
 
     @property
     def birth_date(self):

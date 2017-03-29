@@ -64,8 +64,7 @@ def get(employee_id=None, static_flag=False):
 
             employee = EmployeeApiModel(is_active=employee_data_object.is_active,
                                         employee_id=employee_data_object.id,
-                                        fname=employee_data_object.first_name,
-                                        lname=employee_data_object.last_name,
+                                        name=employee_data_object.first_name + ' ' + employee_data_object.last_name,
                                         birth_date=employee_data_object.birth_date,
                                         address=addresses_data_object.to_str(),
                                         department=department_data_object.to_str(),
@@ -102,8 +101,7 @@ def get(employee_id=None, static_flag=False):
 
             employee = EmployeeApiModel(is_active=employee_data_object.is_active,
                                         employee_id=employee_data_object.id,
-                                        fname=employee_data_object.first_name,
-                                        lname=employee_data_object.last_name,
+                                        name=employee_data_object.first_name + ' ' + employee_data_object.last_name,
                                         birth_date=employee_data_object.birth_date,
                                         address=addresses_data_object.to_str(),
                                         department=department_data_object.to_str(),
