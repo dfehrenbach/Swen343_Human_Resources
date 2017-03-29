@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, class_mapper
 import os
@@ -17,18 +17,19 @@ class Employee(Base):
     is_active = Column(Boolean)
     last_name = Column(String(25))
     first_name = Column(String(25))
-    birth_date = Column(DateTime)
+    birth_date = Column(Date)
+    start_date = Column(Date)
 
     # This allows for reference to this employee's details without extra searching
-    user = relationship("User", uselist=False, back_populates="employee")
-    addresses = relationship("Address", back_populates="employee")
-    titles = relationship("Title", back_populates="employee")
-    departments = relationship("Department", back_populates="employee")
-    salary = relationship("Salary", back_populates="employee")
+    user = relationship("User", uselist=False, back_populates="employee", cascade="all, delete-orphan")
+    addresses = relationship("Address", back_populates="employee", cascade="all, delete-orphan")
+    titles = relationship("Title", back_populates="employee", cascade="all, delete-orphan")
+    departments = relationship("Department", back_populates="employee", cascade="all, delete-orphan")
+    salary = relationship("Salary", back_populates="employee", cascade="all, delete-orphan")
 
     def __repr__(self):
-        return "<Employee(id='%s', last='%s', first='%s', DOB='%s', isActive='%s')>" % (
-            self.id, self.last_name, self.first_name, self.birth_date, self.is_active)
+        return "<Employee(id='%s', last='%s', first='%s', DOB='%s', company_start_date='%s', isActive='%s')>" % (
+            self.id, self.last_name, self.first_name, self.birth_date, self.start_date, self.is_active)
 
 
 class Salary(Base):
@@ -71,7 +72,7 @@ class Address(Base):
     city = Column(String(25))
     state = Column(String(25))
     zip = Column(String(5))
-    start_date = Column(DateTime)
+    start_date = Column(Date)
 
     # Allows for reference to the employee object without search
     employee_id = Column(Integer, ForeignKey(Employee.id))
@@ -91,7 +92,7 @@ class Title(Base):
     id = Column(Integer, primary_key=True)
     is_active = Column(Boolean)
     name = Column(String(25))
-    start_date = Column(DateTime)
+    start_date = Column(Date)
 
     # Allows for reference to the employee object without search
     employee_id = Column(Integer, ForeignKey(Employee.id))
@@ -109,7 +110,7 @@ class Department(Base):
     __tablename__ = 'department'
     id = Column(Integer, primary_key=True)
     is_active = Column(Boolean)
-    start_date = Column(DateTime)
+    start_date = Column(Date)
     name = Column(String(25))
 
     # Allows for reference to the employee object without search
@@ -135,12 +136,12 @@ def main():
 
     session = create_session()
     wendy_employee = Employee(is_active=True, first_name='Wendy', last_name='Williams',
-                              birth_date=datetime.date(1995, 4, 25))
+                              birth_date=datetime.date(1995, 4, 25), start_date=datetime.date(2017, 3, 28))
     session.add(wendy_employee)
     session.commit()
 
     mary_employee = Employee(is_active=False, first_name='Mary', last_name='Contrary',
-                             birth_date=datetime.date(1992, 2, 12))
+                             birth_date=datetime.date(1992, 2, 12), start_date=datetime.date(2017, 3, 28))
     session.add(mary_employee)
     session.commit()
 

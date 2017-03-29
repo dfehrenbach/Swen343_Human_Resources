@@ -21,8 +21,8 @@ class EmployeeApiModel(object):
     Do not edit the class manually.
     """
 
-    def __init__(self, is_active=None, employee_id=None, fname=None, lname=None, birth_date=None, address=None,
-                 department=None, role=None, team_start_date=None, company_start_date=None, salary=None):
+    def __init__(self, is_active=None, employee_id=None, name=None, birth_date=None, address=None,
+                 department=None, role=None, team_start_date=None, start_date=None, salary=None):
         """
         EmployeeApiModel - a model defined in Swagger
 
@@ -34,41 +34,38 @@ class EmployeeApiModel(object):
         self.swagger_types = {
             'is_active': 'bool',
             'employee_id': 'int',
-            'fname': 'str',
-            'lname': 'str',
+            'name': 'str',
             'birth_date': 'str',
             'address': 'str',
             'department': 'str',
             'role': 'str',
             'team_start_date': 'str',
-            'company_start_date': 'str',
+            'start_date': 'str',
             'salary': 'str'
         }
 
         self.attribute_map = {
             'is_active': 'is_active',
             'employee_id': 'employee_id',
-            'fname': 'fname',
-            'lname': 'lname',
+            'name': 'name',
             'birth_date': 'birth_date',
             'address': 'address',
             'department': 'department',
             'role': 'role',
             'team_start_date': 'team_start_date',
-            'company_start_date': 'company_start_date',
+            'start_date': 'start_date',
             'salary': 'salary'
         }
 
         self._is_active = is_active
         self._employee_id = employee_id
-        self._fname = fname
-        self._lname = lname
+        self._name = name
         self._birth_date = birth_date
         self._address = address
         self._department = department
         self._role = role
         self._team_start_date = team_start_date
-        self._company_start_date = company_start_date
+        self._start_date = start_date
         self._salary = salary
 
     @property
@@ -114,46 +111,25 @@ class EmployeeApiModel(object):
         self._employee_id = employee_id
 
     @property
-    def fname(self):
+    def name(self):
         """
-        Gets the fname of this EmployeeApiModel.
+        Gets the name of this EmployeeApiModel.
 
-        :return: The fname of this EmployeeApiModel.
+        :return: The name of this EmployeeApiModel.
         :rtype: str
         """
-        return self._fname
+        return self._name
 
-    @fname.setter
-    def fname(self, fname):
+    @name.setter
+    def name(self, name):
         """
-        Sets the fname of this EmployeeApiModel.
+        Sets the name of this EmployeeApiModel.
 
-        :param fname: The fname of this EmployeeApiModel.
+        :param name: The name of this EmployeeApiModel.
         :type: str
         """
 
-        self._fname = fname
-
-    @property
-    def lname(self):
-        """
-        Gets the lname of this EmployeeApiModel.
-
-        :return: The lname of this EmployeeApiModel.
-        :rtype: str
-        """
-        return self._lname
-
-    @lname.setter
-    def lname(self, lname):
-        """
-        Sets the lname of this EmployeeApiModel.
-
-        :param lname: The lname of this EmployeeApiModel.
-        :type: str
-        """
-
-        self._lname = lname
+        self._name = name
 
     @property
     def birth_date(self):
@@ -261,25 +237,25 @@ class EmployeeApiModel(object):
         self._team_start_date = team_start_date
 
     @property
-    def company_start_date(self):
+    def start_date(self):
         """
-        Gets the company_start_date of this EmployeeApiModel.
+        Gets the start_date of this EmployeeApiModel.
 
-        :return: The company_start_date of this EmployeeApiModel.
+        :return: The start_date of this EmployeeApiModel.
         :rtype: str
         """
-        return self._company_start_date
+        return self._start_date
 
-    @company_start_date.setter
-    def company_start_date(self, company_start_date):
+    @start_date.setter
+    def start_date(self, start_date):
         """
-        Sets the company_start_date of this EmployeeApiModel.
+        Sets the start_date of this EmployeeApiModel.
 
-        :param company_start_date: The company_start_date of this EmployeeApiModel.
+        :param start_date: The start_date of this EmployeeApiModel.
         :type: str
         """
 
-        self._company_start_date = company_start_date
+        self._start_date = start_date
 
     @property
     def salary(self):
