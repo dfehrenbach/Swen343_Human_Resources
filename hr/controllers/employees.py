@@ -39,77 +39,87 @@ def get(employee_id=None, static_flag=False):
 
     if employee_id is None:
         try:
+            if not session.query(Employee).first():
+                session.rollback()
+                return {'error message': 'No employees exist in the system'}, 500
+
             all_employee_object = session.query(Employee).all()
+
+            for employee_data_object in all_employee_object:
+                for address_object in employee_data_object.addresses:
+                    if address_object.is_active:
+                        addresses_data_object = address_object
+                        break
+                for title_object in employee_data_object.titles:
+                    if title_object.is_active:
+                        title_data_object = title_object
+                        break
+                for department_object in employee_data_object.departments:
+                    if department_object.is_active:
+                        department_data_object = department_object
+                        break
+                for salary_object in employee_data_object.salary:
+                    if salary_object.is_active:
+                        salary_data_object = salary_object
+                        break
+
+                employee = EmployeeApiModel(is_active=employee_data_object.is_active,
+                                            employee_id=employee_data_object.id,
+                                            name=employee_data_object.first_name + ' ' + employee_data_object.last_name,
+                                            birth_date=employee_data_object.birth_date,
+                                            address=addresses_data_object.to_str(),
+                                            department=department_data_object.to_str(),
+                                            role=title_data_object.to_str(),
+                                            team_start_date=department_data_object.start_date,
+                                            start_date=employee_data_object.start_date,
+                                            salary=salary_data_object.to_str())
+                collection.append(employee)
+
         except SQLAlchemyError:
             session.rollback()
             return {'error_message': 'Error while retrieving all employees'}, 500
 
-        for employee_data_object in all_employee_object:
-            for address_object in employee_data_object.addresses:
-                if address_object.is_active:
-                    addresses_data_object = address_object
-                    break
-            for title_object in employee_data_object.titles:
-                if title_object.is_active:
-                    title_data_object = title_object
-                    break
-            for department_object in employee_data_object.departments:
-                if department_object.is_active:
-                    department_data_object = department_object
-                    break
-            for salary_object in employee_data_object.salary:
-                if salary_object.is_active:
-                    salary_data_object = salary_object
-                    break
-
-            employee = EmployeeApiModel(is_active=employee_data_object.is_active,
-                                        employee_id=employee_data_object.id,
-                                        name=employee_data_object.first_name + ' ' + employee_data_object.last_name,
-                                        birth_date=employee_data_object.birth_date,
-                                        address=addresses_data_object.to_str(),
-                                        department=department_data_object.to_str(),
-                                        role=title_data_object.to_str(),
-                                        team_start_date=department_data_object.start_date,
-                                        start_date=employee_data_object.start_date,
-                                        salary=salary_data_object.to_str())
-            collection.append(employee)
-
     else:
         for e_id in employee_id:
             try:
+                if not session.query(exists().where(Employee.id == e_id)).scalar():
+                    session.rollback()
+                    return {'error message': 'An employee with the id of %s does not exist' % e_id}, 500
+
                 employee_data_object = session.query(Employee).get(e_id)
+
+                for address_object in employee_data_object.addresses:
+                    if address_object.is_active:
+                        addresses_data_object = address_object
+                        break
+                for title_object in employee_data_object.titles:
+                    if title_object.is_active:
+                        title_data_object = title_object
+                        break
+                for department_object in employee_data_object.departments:
+                    if department_object.is_active:
+                        department_data_object = department_object
+                        break
+                for salary_object in employee_data_object.salary:
+                    if salary_object.is_active:
+                        salary_data_object = salary_object
+                        break
+
+                employee = EmployeeApiModel(is_active=employee_data_object.is_active,
+                                            employee_id=employee_data_object.id,
+                                            name=employee_data_object.first_name + ' ' + employee_data_object.last_name,
+                                            birth_date=employee_data_object.birth_date,
+                                            address=addresses_data_object.to_str(),
+                                            department=department_data_object.to_str(),
+                                            role=title_data_object.to_str(),
+                                            team_start_date=department_data_object.start_date,
+                                            start_date=employee_data_object.start_date,
+                                            salary=salary_data_object.to_str())
+                collection.append(employee)
+
             except SQLAlchemyError:
                 session.rollback()
                 return {'error_message': 'Error while retrieving employee %s' % employee_id}, 500
-
-            for address_object in employee_data_object.addresses:
-                if address_object.is_active:
-                    addresses_data_object = address_object
-                    break
-            for title_object in employee_data_object.titles:
-                if title_object.is_active:
-                    title_data_object = title_object
-                    break
-            for department_object in employee_data_object.departments:
-                if department_object.is_active:
-                    department_data_object = department_object
-                    break
-            for salary_object in employee_data_object.salary:
-                if salary_object.is_active:
-                    salary_data_object = salary_object
-                    break
-
-            employee = EmployeeApiModel(is_active=employee_data_object.is_active,
-                                        employee_id=employee_data_object.id,
-                                        name=employee_data_object.first_name + ' ' + employee_data_object.last_name,
-                                        birth_date=employee_data_object.birth_date,
-                                        address=addresses_data_object.to_str(),
-                                        department=department_data_object.to_str(),
-                                        role=title_data_object.to_str(),
-                                        team_start_date=department_data_object.start_date,
-                                        start_date=employee_data_object.start_date,
-                                        salary=salary_data_object.to_str())
-            collection.append(employee)
 
     # CLOSE
     session.close()
