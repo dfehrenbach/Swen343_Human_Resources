@@ -164,12 +164,13 @@ def post(employee):
         return {'error_message': 'Error while importing employee user security information'}, 500
 
     # ADD ADDRESS
-    # Use regex to check that the format is "00 StreetAddress St., City, State 11111"
+    # Use regex to check that the format is "0200 StreetAddress St., City, State 11111"
     # Regex will help split these into groups too (rather than the silly split and joins I have)
     try:
-        regex = r'^([\d]+[\s[a-zA-Z/.\u00C0-\u017F]+),([\s[a-zA-Z\u00C0-\u017F]+),([\s[a-zA-Z\u00C0-\u017F]+)\s([\d]+)$'
+        regex = r'^([\d]+[\s[a-zA-Z/.\u00C0-\u017F]+),' \
+                r'([\s[a-zA-Z\u00C0-\u017F]+),' \
+                r'([\s[a-zA-Z\u00C0-\u017F]+)\s([\d]+)$'
         regex_object = re.compile(regex)
-
         if not regex_object.match(employee['address']):
             return {'error_message': 'Address is formatted incorrectly. Instead, it needs to be formatted like so: '
                                      '(replace everything in <> with the appropriate value)', 
@@ -182,6 +183,7 @@ def post(employee):
         city = re.search(regex, employee['address']).group(2)
         state = re.search(regex, employee['address']).group(3)
         address_zip = re.search(regex, employee['address']).group(4)
+
         address_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
         session.add(Address(is_active=True, street_address=street_address, city=city, state=state, zip=address_zip,
                             start_date=address_date, employee=new_employee))
