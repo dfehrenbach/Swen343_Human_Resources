@@ -235,14 +235,18 @@ definitions:
         type: string
       role:
         type: string
-      team_start_date:
+      department_start_date:
         type: string
         format: date
-      company_start_date:
+      start_date:
         type: string
         format: date
       salary:
         type: integer
+      username:
+        type: string
+      password:
+        type: string
 
 #                                                                              #
 #                                 Error                                        #
