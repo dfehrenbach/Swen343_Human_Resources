@@ -4,6 +4,7 @@ The following functions are called from here: GET, POST, PATCH, and DELETE.
 """
 import json
 import os
+import re
 from datetime import datetime
 from random import randrange
 from sqlalchemy.exc import SQLAlchemyError
@@ -158,13 +159,11 @@ def post(employee):
     # Use regex to check that the format is "00 StreetAddress St., City, State 11111"
     # Regex will help split these into groups too (rather than the silly split and joins I have)
     try:
-        address = employee['address'].split(',')
-        state_zip = address[2].split(' ')
-        state_zip = ' '.join(state_zip[:2]), ' '.join(state_zip[2:])
-        street_address = address[0]
-        city = address[1]
-        state = state_zip[0]
-        address_zip = state_zip[1]
+        regex = r'^([\d]+[\s[a-zA-Z/.\u00C0-\u017F]+),([\s[a-zA-Z\u00C0-\u017F]+),([\s[a-zA-Z\u00C0-\u017F]+)\s([\d]+)$'
+        street_address = re.search(regex, employee['address']).group(1)
+        city = re.search(regex, employee['address']).group(2)
+        state = re.search(regex, employee['address']).group(3)
+        address_zip = re.search(regex, employee['address']).group(4)
         address_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
         session.add(Address(is_active=True, street_address=street_address, city=city, state=state, zip=address_zip,
                             start_date=address_date, employee=new_employee))

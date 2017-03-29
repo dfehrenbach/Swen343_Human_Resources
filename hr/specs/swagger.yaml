@@ -163,6 +163,8 @@ definitions:
         format: date_time
       address:
         type: string
+        pattern: '^[\d]+[\s[a-zA-Z/.\u00C0-\u017F]+,[\s[a-zA-Z\u00C0-\u017F]+,[\s[a-zA-Z\u00C0-\u017F]+\s[\d]+$'
+        description: Accepts standard full addresses e.g. 1111 blank st., New York, New York 11217
       department:
         type: string
       role:
@@ -202,6 +204,8 @@ definitions:
         format: date
       address:
         type: string
+        pattern: '^[\d]+[\s[a-zA-Z/.\u00C0-\u017F]+,[\s[a-zA-Z\u00C0-\u017F]+,[\s[a-zA-Z\u00C0-\u017F]+\s[\d]+$'
+        description: Accepts standard full addresses e.g. 1111 blank st., New York, New York 11217
       department:
         type: string
       role:
@@ -231,6 +235,8 @@ definitions:
         format: date
       address:
         type: string
+        pattern: '^[\d]+[\s[a-zA-Z/.\u00C0-\u017F]+,[\s[a-zA-Z\u00C0-\u017F]+,[\s[a-zA-Z\u00C0-\u017F]+\s[\d]+$'
+        description: Accepts standard full addresses e.g. 1111 blank st., New York, New York 11217
       department:
         type: string
       role:
