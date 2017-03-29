@@ -230,8 +230,140 @@ def patch(employee):
     """
     session = create_session()
 
+    try:
+        # Check if Employee exists
+        if not session.query(exists().where(Employee.id == employee['employee_id'])).scalar():
+            return {'error_message': 'This employee does not exist in the system yet. '
+                                     'Please use POST to add them as a new employee.'}, 500
+
+        employee_object = session.query(Employee).get(employee['employee_id'])
+
+        # MODIFY EMPLOYEE
+        if 'is_active' in employee:
+            employee_object.is_active = employee['is_active']
+        if 'fname' in employee:
+            employee_object.first_name = employee['fname']
+        if 'lname' in employee:
+            employee_object.last_name = employee['lname']
+        if 'birth_date' in employee:
+            employee_object.birth_date = datetime.strptime(employee['birth_date'], '%Y-%m-%d').date()
+        if 'start_date' in employee:
+            employee_object.start_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while modifying employee base'}, 500
+
+    # MODIFY USER
+    try:
+        if 'username' in employee:
+            employee_object.user.username = employee['username']
+        if 'password' in employee:
+            employee_object.user.password = employee['password']
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while modifying employee user security information'}, 500
+
+    # MODIFY ADDRESS
+    try:
+        if 'address' in employee:
+            regex = r'^([\d]+[\s[a-zA-Z/.\u00C0-\u017F]+),' \
+                    r'([\s[a-zA-Z\u00C0-\u017F]+),' \
+                    r'([\s[a-zA-Z\u00C0-\u017F]+)\s([\d]+)$'
+            regex_object = re.compile(regex)
+            if not regex_object.match(employee['address']):
+                return {'error_message': 'Address is formatted incorrectly. Instead, it needs to be formatted like so: '
+                                         '(replace everything in <> with the appropriate value)',
+                        'address': {'format': '<Street Number> <Street Name> <Street Modifier if necessary>, '
+                                              '<City>, <State> <Zipcode>',
+                                    'example': '12345 Example St., Example City, State 12345',
+                                    'provided': employee['address']}}, 500
+
+            street_address = re.search(regex, employee['address']).group(1)
+            city = re.search(regex, employee['address']).group(2)
+            state = re.search(regex, employee['address']).group(3)
+            address_zip = re.search(regex, employee['address']).group(4)
+
+            for address in employee_object.addresses:
+                if address.is_active:
+                    address_object = address
+            address_object.is_active = False
+            session.add(Address(is_active=True, street_address=street_address, city=city, state=state, zip=address_zip,
+                                employee=employee_object))
+
+        if 'address_start_date' in employee:
+            for address in employee_object.addresses:
+                if address.is_active:
+                    address_object = address
+            address_object.start_date = datetime.strptime(employee['address_start_date'], '%Y-%m-%d').date()
+
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while modifying employee address'}, 500
+
+    # MODIFY SALARY
+    try:
+        if 'salary' in employee:
+            for salary in employee_object.salary:
+                if salary.is_active:
+                    salary_object = salary
+            salary_object.is_active = False
+            session.add(Salary(is_active=True, amount=employee['salary'], employee=employee_object))
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while modifying employee salary'}, 500
+
+    # MODIFY TITLE
+    try:
+        if 'role' in employee:
+            for title in employee_object.titles:
+                if title.is_active:
+                    title_object = title
+            title_object.is_active = False
+            now_date = datetime.strptime(str(datetime.now().year) + '-' +
+                                         str(datetime.now().month) + '-' +
+                                         str(datetime.now().day), '%Y-%m-%d').date()
+            session.add(Title(is_active=True, name=employee['role'], start_date=now_date, employee=employee_object))
+
+        if 'role_start_date' in employee:
+            for title in employee_object.titles:
+                if title.is_active:
+                    title_object = title
+            title_object.start_date = datetime.strptime(employee['role_start_date'], '%Y-%m-%d').date()
+
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while modifying employee role & title'}, 500
+
+    # MODIFY DEPARTMENT
+    try:
+        if 'department' in employee:
+            for department in employee_object.departments:
+                if department.is_active:
+                    department_object = department
+            department_object.is_active = False
+            now_date = datetime.strptime(str(datetime.now().year) + '-' +
+                                         str(datetime.now().month) + '-' +
+                                         str(datetime.now().day), '%Y-%m-%d').date()
+            session.add(Department(is_active=True, name=employee['department'], start_date=now_date,
+                                   employee=employee_object))
+
+        if 'department_start_date' in employee:
+            for department in employee_object.departments:
+                if department.is_active:
+                    department_object = department
+            department_object.start_date = datetime.strptime(employee['department_start_date'], '%Y-%m-%d').date()
+
+    except SQLAlchemyError:
+        session.rollback()
+        return {'error_message': 'Error while modifying employee department & team'}, 500
+
+    # COMMIT & CLOSE
+    session.commit()
+    session.close()
+
+
     return {'Magic': 'Magic, for patching things? Bipity Bop! You are now a frog!'
-                     '(Not really, but the following employee has been changed!)', 'employee': employee}, 200
+                     '(Not really, but the following employee has been changed!)', 'new_employee': employee}, 200
 
 
 def delete(employee_id):
