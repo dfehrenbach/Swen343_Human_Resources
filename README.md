@@ -12,22 +12,23 @@ To initialize the project create a file `setup.sh` and run it using `bash setup.
 apt-get update
 apt-get -y upgrade
 apt-get -y install git
- 
+
 mkdir working_dir
 cd working_dir
 wget https://bootstrap.pypa.io/get-pip.py
- 
+
 python get-pip.py
 pip install virtualenv
- 
+
 git clone https://github.com/dfehrenbach/Swen343_Human_Resources.git
 cd Swen343_Human_Resources
- 
+
 virtualenv Env
 source Env/bin/activate
 export PYTHONPATH="${PYTHONPATH}:/root/working_dir/Swen343_Human_Resources/hr"
 pip install -r requirements.pip
- 
+
+python hr/databasesetup.py
 python hr/app.py
 ```
 
@@ -48,4 +49,4 @@ apt-get -y remove git
 ```
 
 ## Sample Data
-Included in the application is a set of sample data that includes two employees
+Included in the application is a set of sample data that includes two employees and all of the relevant information for them.

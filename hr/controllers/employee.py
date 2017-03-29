@@ -17,12 +17,11 @@ def get(employee_id):
     session = create_session()
 
     try:
-        employee_data_object = session.query(Employee).get(employee_id)
+        employee_object = session.query(Employee).get(employee_id)
     except SQLAlchemyError:
         session.rollback()
         return {'error_message': 'Error while retrieving employee %s' % employee_id}, 500
 
-    employee_object = session.query(Employee).get(employee_id)
     children = get_all_children_objects(employee_object)
     employee = EmployeeApiModel(is_active=employee_object.is_active,
                                 employee_id=employee_object.id,

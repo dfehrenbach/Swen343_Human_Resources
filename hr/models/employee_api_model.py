@@ -12,7 +12,6 @@
 
 from pprint import pformat
 from six import iteritems
-import re
 
 
 class EmployeeApiModel(object):

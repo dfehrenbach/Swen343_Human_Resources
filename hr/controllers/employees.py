@@ -218,14 +218,26 @@ def patch(employee):
         if 'address' or 'address_start_date' in employee:
             address_object = get_active_address(employee_object)
 
-            if 'address' in employee:
+            if 'address_start_date' in employee and 'address' not in employee:
+                address_object.start_date = datetime.strptime(employee['address_start_date'], '%Y-%m-%d').date()
+
+            elif 'address' in employee and 'address_start_date' not in employee:
                 address = validate_address(employee['address'])
                 address_object.is_active = False
+                now_date = datetime.strptime(str(datetime.now().year) + '-' +
+                                             str(datetime.now().month) + '-' +
+                                             str(datetime.now().day), '%Y-%m-%d').date()
                 session.add(Address(is_active=True, street_address=address['street_address'], city=address['city'],
-                                    state=address['state'], zip=address['zip'], employee=employee_object))
+                                    state=address['state'], zip=address['zip'], employee=employee_object,
+                                    start_date=now_date))
 
-            if 'address_start_date' in employee:
-                address_object.start_date = datetime.strptime(employee['address_start_date'], '%Y-%m-%d').date()
+            elif 'address' in employee and 'address_start_date' in employee:
+                address = validate_address(employee['address'])
+                address_object.is_active = False
+                start_date = datetime.strptime(employee['address_start_date'], '%Y-%m-%d').date()
+                session.add(Address(is_active=True, street_address=address['street_address'], city=address['city'],
+                                    state=address['state'], zip=address['zip'], employee=employee_object,
+                                    start_date=start_date))
 
     except SQLAlchemyError:
         session.rollback()
@@ -246,15 +258,22 @@ def patch(employee):
         if 'role' or 'role_start_date' in employee:
             title_object = get_active_title(employee_object)
 
-            if 'role' in employee:
+            if 'role_start_date' in employee and 'role' not in employee:
+                title_object.start_date = datetime.strptime(employee['role_start_date'], '%Y-%m-%d').date()
+
+            elif 'role' in employee and 'role_start_date' not in employee:
                 title_object.is_active = False
                 now_date = datetime.strptime(str(datetime.now().year) + '-' +
                                              str(datetime.now().month) + '-' +
                                              str(datetime.now().day), '%Y-%m-%d').date()
-                session.add(Title(is_active=True, name=employee['role'], start_date=now_date, employee=employee_object))
+                session.add(Title(is_active=True, name=employee['role'], start_date=now_date,
+                                  employee=employee_object))
 
-            if 'role_start_date' in employee:
-                title_object.start_date = datetime.strptime(employee['role_start_date'], '%Y-%m-%d').date()
+            elif 'role' in employee and 'role_start_date' in employee:
+                title_object.is_active = False
+                start_date = datetime.strptime(employee['role_start_date'], '%Y-%m-%d').date()
+                session.add(Title(is_active=True, name=employee['role'], start_date=start_date,
+                                  employee=employee_object))
 
     except SQLAlchemyError:
         session.rollback()
@@ -265,7 +284,10 @@ def patch(employee):
         if 'department' or 'department_start_date' in employee:
             department_object = get_active_department(employee_object)
 
-            if 'department' in employee:
+            if 'department_start_date' in employee and 'department' not in employee:
+                department_object.start_date = datetime.strptime(employee['department_start_date'], '%Y-%m-%d').date()
+
+            elif 'department' in employee and 'department_start_date' not in employee:
                 department_object.is_active = False
                 now_date = datetime.strptime(str(datetime.now().year) + '-' +
                                              str(datetime.now().month) + '-' +
@@ -273,8 +295,11 @@ def patch(employee):
                 session.add(Department(is_active=True, name=employee['department'], start_date=now_date,
                                        employee=employee_object))
 
-            if 'department_start_date' in employee:
-                department_object.start_date = datetime.strptime(employee['department_start_date'], '%Y-%m-%d').date()
+            elif 'department' in employee and 'department_start_date' in employee:
+                department_object.is_active = False
+                start_date = datetime.strptime(employee['department_start_date'], '%Y-%m-%d').date()
+                session.add(Department(is_active=True, name=employee['department'], start_date=start_date,
+                                       employee=employee_object))
 
     except SQLAlchemyError:
         session.rollback()

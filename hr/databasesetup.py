@@ -4,10 +4,8 @@ from sqlalchemy.orm import sessionmaker, relationship, class_mapper
 import os
 
 file_name = "hr.sqlite3"
-global engine
 engine = create_engine('sqlite:///' + file_name, echo=True)
 engine.connect()
-global Base
 Base = declarative_base()
 
 
