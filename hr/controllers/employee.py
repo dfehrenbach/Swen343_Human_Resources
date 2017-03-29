@@ -6,6 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from databasesetup import create_session, Employee
 from models.employee_api_model import EmployeeApiModel
 from models.employee_response import EmployeeResponse
+from helpers.db_object_helper import get_all_children_objects
 
 
 def get(employee_id):
@@ -21,39 +22,18 @@ def get(employee_id):
         session.rollback()
         return {'error_message': 'Error while retrieving employee %s' % employee_id}, 500
 
-    addresses_data_object = None
-    title_data_object = None
-    department_data_object = None
-    salary_data_object = None
-
-    for address_object in employee_data_object.addresses:
-        if address_object.is_active:
-            addresses_data_object = address_object
-            break
-    for title_object in employee_data_object.titles:
-        if title_object.is_active:
-            title_data_object = title_object
-            break
-    for department_object in employee_data_object.departments:
-        if department_object.is_active:
-            department_data_object = department_object
-            break
-    for salary_object in employee_data_object.salary:
-        if salary_object.is_active:
-            salary_data_object = salary_object
-            break
-
-    # Might want to include company_start_date as a column in the database
-    employee = EmployeeApiModel(is_active=employee_data_object.is_active,
-                                employee_id=employee_data_object.id,
-                                name=employee_data_object.first_name + ' ' + employee_data_object.last_name,
-                                birth_date=employee_data_object.birth_date,
-                                address=addresses_data_object.to_str(),
-                                department=department_data_object.to_str(),
-                                role=title_data_object.to_str(),
-                                team_start_date=department_data_object.start_date,
-                                start_date=employee_data_object.start_date,
-                                salary=salary_data_object.to_str())
+    employee_object = session.query(Employee).get(employee_id)
+    children = get_all_children_objects(employee_object)
+    employee = EmployeeApiModel(is_active=employee_object.is_active,
+                                employee_id=employee_object.id,
+                                name=employee_object.first_name + ' ' + employee_object.last_name,
+                                birth_date=employee_object.birth_date,
+                                address=children['address'].to_str(),
+                                department=children['department'].to_str(),
+                                role=children['title'].to_str(),
+                                team_start_date=children['department'].start_date,
+                                start_date=employee_object.start_date,
+                                salary=children['salary'].to_str())
 
     session.close()
     return EmployeeResponse(employee).to_dict()

@@ -4,12 +4,15 @@ The following functions are called from here: GET, POST, PATCH, and DELETE.
 """
 import json
 import os
-import re
 from datetime import datetime
 from random import randrange
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import exists, and_
 from databasesetup import create_session, Employee, User, Salary, Address, Title, Department
+from helpers.db_object_helper import \
+    get_all_children_objects, get_active_address, \
+    get_active_title, get_active_department, get_active_salary
+from helpers.regex_helper import validate_address
 from models.employee_api_model import EmployeeApiModel
 from models.employee_response import EmployeeResponse
 
@@ -30,12 +33,7 @@ def get(employee_id=None, static_flag=False):
         return obj["employee_array"]
 
     session = create_session()
-    addresses_data_object = None
-    title_data_object = None
-    department_data_object = None
-    salary_data_object = None
-
-    collection = []
+    employee_collection = []
 
     if employee_id is None:
         try:
@@ -43,37 +41,21 @@ def get(employee_id=None, static_flag=False):
                 session.rollback()
                 return {'error message': 'No employees exist in the system'}, 500
 
-            all_employee_object = session.query(Employee).all()
+            all_employee_objects = session.query(Employee).all()
 
-            for employee_data_object in all_employee_object:
-                for address_object in employee_data_object.addresses:
-                    if address_object.is_active:
-                        addresses_data_object = address_object
-                        break
-                for title_object in employee_data_object.titles:
-                    if title_object.is_active:
-                        title_data_object = title_object
-                        break
-                for department_object in employee_data_object.departments:
-                    if department_object.is_active:
-                        department_data_object = department_object
-                        break
-                for salary_object in employee_data_object.salary:
-                    if salary_object.is_active:
-                        salary_data_object = salary_object
-                        break
-
-                employee = EmployeeApiModel(is_active=employee_data_object.is_active,
-                                            employee_id=employee_data_object.id,
-                                            name=employee_data_object.first_name + ' ' + employee_data_object.last_name,
-                                            birth_date=employee_data_object.birth_date,
-                                            address=addresses_data_object.to_str(),
-                                            department=department_data_object.to_str(),
-                                            role=title_data_object.to_str(),
-                                            team_start_date=department_data_object.start_date,
-                                            start_date=employee_data_object.start_date,
-                                            salary=salary_data_object.to_str())
-                collection.append(employee)
+            for employee_object in all_employee_objects:
+                children = get_all_children_objects(employee_object)
+                employee = EmployeeApiModel(is_active=employee_object.is_active,
+                                            employee_id=employee_object.id,
+                                            name=employee_object.first_name + ' ' + employee_object.last_name,
+                                            birth_date=employee_object.birth_date,
+                                            address=children['address'].to_str(),
+                                            department=children['department'].to_str(),
+                                            role=children['title'].to_str(),
+                                            team_start_date=children['department'].start_date,
+                                            start_date=employee_object.start_date,
+                                            salary=children['salary'].to_str())
+                employee_collection.append(employee)
 
         except SQLAlchemyError:
             session.rollback()
@@ -86,36 +68,19 @@ def get(employee_id=None, static_flag=False):
                     session.rollback()
                     return {'error message': 'An employee with the id of %s does not exist' % e_id}, 500
 
-                employee_data_object = session.query(Employee).get(e_id)
-
-                for address_object in employee_data_object.addresses:
-                    if address_object.is_active:
-                        addresses_data_object = address_object
-                        break
-                for title_object in employee_data_object.titles:
-                    if title_object.is_active:
-                        title_data_object = title_object
-                        break
-                for department_object in employee_data_object.departments:
-                    if department_object.is_active:
-                        department_data_object = department_object
-                        break
-                for salary_object in employee_data_object.salary:
-                    if salary_object.is_active:
-                        salary_data_object = salary_object
-                        break
-
-                employee = EmployeeApiModel(is_active=employee_data_object.is_active,
-                                            employee_id=employee_data_object.id,
-                                            name=employee_data_object.first_name + ' ' + employee_data_object.last_name,
-                                            birth_date=employee_data_object.birth_date,
-                                            address=addresses_data_object.to_str(),
-                                            department=department_data_object.to_str(),
-                                            role=title_data_object.to_str(),
-                                            team_start_date=department_data_object.start_date,
-                                            start_date=employee_data_object.start_date,
-                                            salary=salary_data_object.to_str())
-                collection.append(employee)
+                employee_object = session.query(Employee).get(e_id)
+                children = get_all_children_objects(employee_object)
+                employee = EmployeeApiModel(is_active=employee_object.is_active,
+                                            employee_id=employee_object.id,
+                                            name=employee_object.first_name + ' ' + employee_object.last_name,
+                                            birth_date=employee_object.birth_date,
+                                            address=children['address'].to_str(),
+                                            department=children['department'].to_str(),
+                                            role=children['title'].to_str(),
+                                            team_start_date=children['department'].start_date,
+                                            start_date=employee_object.start_date,
+                                            salary=children['salary'].to_str())
+                employee_collection.append(employee)
 
             except SQLAlchemyError:
                 session.rollback()
@@ -124,7 +89,7 @@ def get(employee_id=None, static_flag=False):
     # CLOSE
     session.close()
 
-    return EmployeeResponse(collection).to_dict()
+    return EmployeeResponse(employee_collection).to_dict()
 
 
 def post(employee):
@@ -165,28 +130,11 @@ def post(employee):
 
     # ADD ADDRESS
     # Use regex to check that the format is "0200 StreetAddress St., City, State 11111"
-    # Regex will help split these into groups too (rather than the silly split and joins I have)
     try:
-        regex = r'^([\d]+[\s[a-zA-Z/.\u00C0-\u017F]+),' \
-                r'([\s[a-zA-Z\u00C0-\u017F]+),' \
-                r'([\s[a-zA-Z\u00C0-\u017F]+)\s([\d]+)$'
-        regex_object = re.compile(regex)
-        if not regex_object.match(employee['address']):
-            return {'error_message': 'Address is formatted incorrectly. Instead, it needs to be formatted like so: '
-                                     '(replace everything in <> with the appropriate value)', 
-                    'address': {'format': '<Street Number> <Street Name> <Street Modifier if necessary>, '
-                                          '<City>, <State> <Zipcode>',
-                                'example': '12345 Example St., Example City, State 12345',
-                                'provided': employee['address']}}, 500
-
-        street_address = re.search(regex, employee['address']).group(1)
-        city = re.search(regex, employee['address']).group(2)
-        state = re.search(regex, employee['address']).group(3)
-        address_zip = re.search(regex, employee['address']).group(4)
-
+        address = validate_address(employee['address'])
         address_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
-        session.add(Address(is_active=True, street_address=street_address, city=city, state=state, zip=address_zip,
-                            start_date=address_date, employee=new_employee))
+        session.add(Address(is_active=True, street_address=address['street_address'], city=address['city'],
+                            state=address['state'], zip=address['zip'], start_date=address_date, employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
         return {'error_message': 'Error while importing employee address'}, 500
@@ -249,6 +197,7 @@ def patch(employee):
             employee_object.birth_date = datetime.strptime(employee['birth_date'], '%Y-%m-%d').date()
         if 'start_date' in employee:
             employee_object.start_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()
+
     except SQLAlchemyError:
         session.rollback()
         return {'error_message': 'Error while modifying employee base'}, 500
@@ -259,42 +208,24 @@ def patch(employee):
             employee_object.user.username = employee['username']
         if 'password' in employee:
             employee_object.user.password = employee['password']
+
     except SQLAlchemyError:
         session.rollback()
         return {'error_message': 'Error while modifying employee user security information'}, 500
 
     # MODIFY ADDRESS
     try:
-        if 'address' in employee:
-            regex = r'^([\d]+[\s[a-zA-Z/.\u00C0-\u017F]+),' \
-                    r'([\s[a-zA-Z\u00C0-\u017F]+),' \
-                    r'([\s[a-zA-Z\u00C0-\u017F]+)\s([\d]+)$'
-            regex_object = re.compile(regex)
-            if not regex_object.match(employee['address']):
-                return {'error_message': 'Address is formatted incorrectly. Instead, it needs to be formatted like so: '
-                                         '(replace everything in <> with the appropriate value)',
-                        'address': {'format': '<Street Number> <Street Name> <Street Modifier if necessary>, '
-                                              '<City>, <State> <Zipcode>',
-                                    'example': '12345 Example St., Example City, State 12345',
-                                    'provided': employee['address']}}, 500
+        if 'address' or 'address_start_date' in employee:
+            address_object = get_active_address(employee_object)
 
-            street_address = re.search(regex, employee['address']).group(1)
-            city = re.search(regex, employee['address']).group(2)
-            state = re.search(regex, employee['address']).group(3)
-            address_zip = re.search(regex, employee['address']).group(4)
+            if 'address' in employee:
+                address = validate_address(employee['address'])
+                address_object.is_active = False
+                session.add(Address(is_active=True, street_address=address['street_address'], city=address['city'],
+                                    state=address['state'], zip=address['zip'], employee=employee_object))
 
-            for address in employee_object.addresses:
-                if address.is_active:
-                    address_object = address
-            address_object.is_active = False
-            session.add(Address(is_active=True, street_address=street_address, city=city, state=state, zip=address_zip,
-                                employee=employee_object))
-
-        if 'address_start_date' in employee:
-            for address in employee_object.addresses:
-                if address.is_active:
-                    address_object = address
-            address_object.start_date = datetime.strptime(employee['address_start_date'], '%Y-%m-%d').date()
+            if 'address_start_date' in employee:
+                address_object.start_date = datetime.strptime(employee['address_start_date'], '%Y-%m-%d').date()
 
     except SQLAlchemyError:
         session.rollback()
@@ -303,9 +234,7 @@ def patch(employee):
     # MODIFY SALARY
     try:
         if 'salary' in employee:
-            for salary in employee_object.salary:
-                if salary.is_active:
-                    salary_object = salary
+            salary_object = get_active_salary(employee_object)
             salary_object.is_active = False
             session.add(Salary(is_active=True, amount=employee['salary'], employee=employee_object))
     except SQLAlchemyError:
@@ -314,21 +243,18 @@ def patch(employee):
 
     # MODIFY TITLE
     try:
-        if 'role' in employee:
-            for title in employee_object.titles:
-                if title.is_active:
-                    title_object = title
-            title_object.is_active = False
-            now_date = datetime.strptime(str(datetime.now().year) + '-' +
-                                         str(datetime.now().month) + '-' +
-                                         str(datetime.now().day), '%Y-%m-%d').date()
-            session.add(Title(is_active=True, name=employee['role'], start_date=now_date, employee=employee_object))
+        if 'role' or 'role_start_date' in employee:
+            title_object = get_active_title(employee_object)
 
-        if 'role_start_date' in employee:
-            for title in employee_object.titles:
-                if title.is_active:
-                    title_object = title
-            title_object.start_date = datetime.strptime(employee['role_start_date'], '%Y-%m-%d').date()
+            if 'role' in employee:
+                title_object.is_active = False
+                now_date = datetime.strptime(str(datetime.now().year) + '-' +
+                                             str(datetime.now().month) + '-' +
+                                             str(datetime.now().day), '%Y-%m-%d').date()
+                session.add(Title(is_active=True, name=employee['role'], start_date=now_date, employee=employee_object))
+
+            if 'role_start_date' in employee:
+                title_object.start_date = datetime.strptime(employee['role_start_date'], '%Y-%m-%d').date()
 
     except SQLAlchemyError:
         session.rollback()
@@ -336,22 +262,19 @@ def patch(employee):
 
     # MODIFY DEPARTMENT
     try:
-        if 'department' in employee:
-            for department in employee_object.departments:
-                if department.is_active:
-                    department_object = department
-            department_object.is_active = False
-            now_date = datetime.strptime(str(datetime.now().year) + '-' +
-                                         str(datetime.now().month) + '-' +
-                                         str(datetime.now().day), '%Y-%m-%d').date()
-            session.add(Department(is_active=True, name=employee['department'], start_date=now_date,
-                                   employee=employee_object))
+        if 'department' or 'department_start_date' in employee:
+            department_object = get_active_department(employee_object)
 
-        if 'department_start_date' in employee:
-            for department in employee_object.departments:
-                if department.is_active:
-                    department_object = department
-            department_object.start_date = datetime.strptime(employee['department_start_date'], '%Y-%m-%d').date()
+            if 'department' in employee:
+                department_object.is_active = False
+                now_date = datetime.strptime(str(datetime.now().year) + '-' +
+                                             str(datetime.now().month) + '-' +
+                                             str(datetime.now().day), '%Y-%m-%d').date()
+                session.add(Department(is_active=True, name=employee['department'], start_date=now_date,
+                                       employee=employee_object))
+
+            if 'department_start_date' in employee:
+                department_object.start_date = datetime.strptime(employee['department_start_date'], '%Y-%m-%d').date()
 
     except SQLAlchemyError:
         session.rollback()
@@ -360,7 +283,6 @@ def patch(employee):
     # COMMIT & CLOSE
     session.commit()
     session.close()
-
 
     return {'Magic': 'Magic, for patching things? Bipity Bop! You are now a frog!'
                      '(Not really, but the following employee has been changed!)', 'new_employee': employee}, 200
