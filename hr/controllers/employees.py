@@ -18,19 +18,6 @@ def get(employee_id=None, static_flag=False):
     :param employee_id:
     :param static_flag:
     :return: a set of Employee Objects
-
-    IMPLEMENTATION:
-    1. Initialize the EmployeeResponse object
-    2. Make request to database for all employees.
-        2a. In the case that an employee_id is not None make the request to the database for all of 
-            the employees who have have matching id's (Remember employee_id can contain multiple
-            id's, not just 1)
-    3. For each employee (<for employee in employees>)
-        3a. create a new EmployeeApi object and fill in all of the appropriate information into it
-            3aa. For things like salary, address, etc. only include the most recent information
-                 into the EmployeeApi object
-        3b. Add the EmployeeApi object into the EmployeeResponse object
-    4. Return the EmployeeResponse object
     """
     if static_flag:
         scriptdir = '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[:-2])
