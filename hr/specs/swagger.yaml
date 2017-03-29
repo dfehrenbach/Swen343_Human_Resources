@@ -234,11 +234,17 @@ definitions:
       address:
         type: string
         description: Accepts standard full addresses e.g. 1111 blank st., New York, New York 11217
+      address_start_date:
+        type: string
+        format: date
       department:
         type: string
       role:
         type: string
       department_start_date:
+        type: string
+        format: date
+      role_start_date:
         type: string
         format: date
       start_date:
