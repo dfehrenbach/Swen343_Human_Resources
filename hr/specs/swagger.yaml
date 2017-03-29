@@ -6,7 +6,7 @@
 swagger: '2.0'
 
 info:
-  version: "0.1.0"
+  version: "0.2.0"
   title: Human Resources API
 
 produces:
@@ -170,7 +170,7 @@ definitions:
       team_start_date:
         type: string
         format: date_time
-      company_start_date:
+      start_date:
         type: string
         format: date_time
       salary:
@@ -188,8 +188,7 @@ definitions:
       - address
       - department
       - role
-      - team_start_date
-      - company_start_date
+      - start_date
     type: object
     properties:
       is_active:
@@ -200,19 +199,16 @@ definitions:
         type: string
       birth_date:
         type: string
-        format: date_time
+        format: date
       address:
         type: string
       department:
         type: string
       role:
         type: string
-      team_start_date:
+      start_date:
         type: string
-        format: date_time
-      company_start_date:
-        type: string
-        format: date_time
+        format: date
 
 #                                                                              #
 #                                 EmployeePatch                                #
@@ -232,7 +228,7 @@ definitions:
         type: string
       birth_date:
         type: string
-        format: date_time
+        format: date
       address:
         type: string
       department:
@@ -241,10 +237,10 @@ definitions:
         type: string
       team_start_date:
         type: string
-        format: date_time
+        format: date
       company_start_date:
         type: string
-        format: date_time
+        format: date
       salary:
         type: integer
 

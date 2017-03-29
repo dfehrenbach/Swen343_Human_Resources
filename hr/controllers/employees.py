@@ -83,7 +83,7 @@ def get(employee_id=None, static_flag=False):
                                         department=department_data_object.to_str(),
                                         role=title_data_object.to_str(),
                                         team_start_date=department_data_object.start_date,
-                                        company_start_date=department_data_object.start_date,
+                                        start_date=employee_data_object.start_date,
                                         salary=salary_data_object.to_str())
             collection.append(employee)
 
@@ -112,7 +112,6 @@ def get(employee_id=None, static_flag=False):
                     salary_data_object = salary_object
                     break
 
-            # Might want to include company_start_date as a column in the database
             employee = EmployeeApiModel(is_active=employee_data_object.is_active,
                                         employee_id=employee_data_object.id,
                                         fname=employee_data_object.first_name,
@@ -122,7 +121,7 @@ def get(employee_id=None, static_flag=False):
                                         department=department_data_object.to_str(),
                                         role=title_data_object.to_str(),
                                         team_start_date=department_data_object.start_date,
-                                        company_start_date=department_data_object.start_date,
+                                        start_date=employee_data_object.start_date,
                                         salary=salary_data_object.to_str())
             collection.append(employee)
 
@@ -140,9 +139,10 @@ def post(employee):
     # ADD EMPLOYEE
     try:
         # Include the following format into the description. Important to do some validation checking here!
-        birthday = datetime.strptime(employee['birth_date'], '%m/%d/%Y').date()  # e.g. 12/17/1993
-        new_employee = Employee(is_active=True, first_name=employee['fname'], last_name=employee['lname'],
-                                birth_date=birthday)
+        birthday = datetime.strptime(employee['birth_date'], '%Y-%m-%d').date()  # e.g. 1993-12-17
+        start_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
+        new_employee = Employee(is_active=employee['is_active'], first_name=employee['fname'],
+                                last_name=employee['lname'], birth_date=birthday, start_date=start_date)
         session.add(new_employee)
     except SQLAlchemyError:
         session.rollback()
@@ -164,8 +164,7 @@ def post(employee):
         city = address[1]
         state = state_zip[0]
         address_zip = state_zip[1]
-        now = datetime.now().month, '/', datetime.now().day, '/', datetime.now().year, '/'
-        address_date = datetime.strptime(employee['team_start_date'], '%m/%d/%Y').date()
+        address_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
         session.add(Address(is_active=True, street_address=street_address, city=city, state=state, zip=address_zip,
                             start_date=address_date,
                             employee=new_employee))
@@ -175,7 +174,7 @@ def post(employee):
 
     # ADD DEPARTMENT
     try:
-        team_start_date = datetime.strptime(employee['team_start_date'], '%m/%d/%Y').date()  # e.g. 3/28/2017
+        team_start_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
         session.add(Department(is_active=True, start_date=team_start_date, name=employee['department'],
                                employee=new_employee))
     except SQLAlchemyError:
