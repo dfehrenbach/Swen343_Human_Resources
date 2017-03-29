@@ -21,11 +21,11 @@ class Employee(Base):
     start_date = Column(Date)
 
     # This allows for reference to this employee's details without extra searching
-    user = relationship("User", uselist=False, back_populates="employee")
-    addresses = relationship("Address", back_populates="employee")
-    titles = relationship("Title", back_populates="employee")
-    departments = relationship("Department", back_populates="employee")
-    salary = relationship("Salary", back_populates="employee")
+    user = relationship("User", uselist=False, back_populates="employee", cascade="all, delete-orphan")
+    addresses = relationship("Address", back_populates="employee", cascade="all, delete-orphan")
+    titles = relationship("Title", back_populates="employee", cascade="all, delete-orphan")
+    departments = relationship("Department", back_populates="employee", cascade="all, delete-orphan")
+    salary = relationship("Salary", back_populates="employee", cascade="all, delete-orphan")
 
     def __repr__(self):
         return "<Employee(id='%s', last='%s', first='%s', DOB='%s', company_start_date='%s', isActive='%s')>" % (
