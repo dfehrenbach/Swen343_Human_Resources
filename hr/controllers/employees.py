@@ -138,7 +138,17 @@ def post(employee):
 
     # ADD EMPLOYEE
     try:
-        # Include the following format into the description. Important to do some validation checking here!
+        # Check if Employee Already exists
+        if session.query(exists().where(and_(
+                Employee.first_name == employee['fname'],
+                Employee.last_name == employee['lname'],
+                Employee.birth_date == datetime.strptime(employee['birth_date'], '%Y-%m-%d').date(),
+                Employee.start_date == datetime.strptime(employee['start_date'], '%Y-%m-%d').date()))).scalar():
+            session.rollback()
+            return {'error_message':
+                    'This employee already exists in the system. Please use PATCH to modify them or enter a new '
+                    'employee. A new employee has a unique first name, last name, birth date, and start date'}, 500
+
         birthday = datetime.strptime(employee['birth_date'], '%Y-%m-%d').date()  # e.g. 1993-12-17
         start_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
         new_employee = Employee(is_active=employee['is_active'], first_name=employee['fname'],
@@ -156,6 +166,8 @@ def post(employee):
         return {'error_message': 'Error while importing employee user security information'}, 500
 
     # ADD ADDRESS
+    # Use regex to check that the format is "00 StreetAddress St., City, State 11111"
+    # Regex will help split these into groups too (rather than the silly split and joins I have)
     try:
         address = employee['address'].split(',')
         state_zip = address[2].split(' ')
