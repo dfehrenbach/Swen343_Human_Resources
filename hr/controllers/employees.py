@@ -219,6 +219,10 @@ def delete(employee_id):
     session = create_session()
 
     try:
+        if not session.query(exists().where(Employee.id == employee_id)).scalar():
+            session.rollback()
+            return {'error message': 'An employee with the id of %s does not exist' % employee_id}, 500
+        employee = get(str(employee_id))
         session.query(Employee).filter_by(id=employee_id).delete()
     except SQLAlchemyError:
         session.rollback()
@@ -227,4 +231,4 @@ def delete(employee_id):
     session.commit()
     session.close()
 
-    return {'Magic': 'Magically making things vanish since 2017', 'employee_id': employee_id}, 200
+    return {'Magic': 'Magically making things vanish since 2017', 'deleted_employee': employee}, 200
