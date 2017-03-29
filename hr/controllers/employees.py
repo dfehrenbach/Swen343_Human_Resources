@@ -112,7 +112,9 @@ def get(employee_id=None, static_flag=False):
                                         salary=salary_data_object.to_str())
             collection.append(employee)
 
+    # CLOSE
     session.close()
+
     return EmployeeResponse(collection).to_dict()
 
 
@@ -165,16 +167,15 @@ def post(employee):
         address_zip = state_zip[1]
         address_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
         session.add(Address(is_active=True, street_address=street_address, city=city, state=state, zip=address_zip,
-                            start_date=address_date,
-                            employee=new_employee))
+                            start_date=address_date, employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
         return {'error_message': 'Error while importing employee address'}, 500
 
     # ADD DEPARTMENT
     try:
-        team_start_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
-        session.add(Department(is_active=True, start_date=team_start_date, name=employee['department'],
+        department_start_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
+        session.add(Department(is_active=True, start_date=department_start_date, name=employee['department'],
                                employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
@@ -183,7 +184,8 @@ def post(employee):
     # ADD TITLE
     # Note: This should be the same as the team_start_date for POST'ing a new employee
     try:
-        session.add(Title(is_active=True, name=employee['role'], start_date=team_start_date, employee=new_employee))
+        session.add(Title(is_active=True, name=employee['role'], start_date=department_start_date,
+                          employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
         return {'error_message': 'Error while importing employee title'}, 500
@@ -195,7 +197,9 @@ def post(employee):
         session.rollback()
         return {'error_message': 'Error while importing employee salary'}, 500
 
+    # COMMIT & CLOSE
     session.commit()
+    session.close()
 
     return {'Magic': 'Yes, actually magic #POST', 'employee': employee}, 200
 
@@ -228,6 +232,7 @@ def delete(employee_id):
         session.rollback()
         return {'error_message': 'Error while deleting employee %s' % employee_id}, 500
 
+    # COMMIT & CLOSE
     session.commit()
     session.close()
 
