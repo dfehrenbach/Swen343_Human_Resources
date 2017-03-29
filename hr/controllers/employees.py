@@ -160,6 +160,16 @@ def post(employee):
     # Regex will help split these into groups too (rather than the silly split and joins I have)
     try:
         regex = r'^([\d]+[\s[a-zA-Z/.\u00C0-\u017F]+),([\s[a-zA-Z\u00C0-\u017F]+),([\s[a-zA-Z\u00C0-\u017F]+)\s([\d]+)$'
+        regex_object = re.compile(regex)
+
+        if not regex_object.match(employee['address']):
+            return {'error_message': 'Address is formatted incorrectly. Instead, it needs to be formatted like so: '
+                                     '(replace everything in <> with the appropriate value)', 
+                    'address': {'format': '<Street Number> <Street Name> <Street Modifier if necessary>, '
+                                          '<City>, <State> <Zipcode>',
+                                'example': '12345 Example St., Example City, State 12345',
+                                'provided': employee['address']}}, 500
+
         street_address = re.search(regex, employee['address']).group(1)
         city = re.search(regex, employee['address']).group(2)
         state = re.search(regex, employee['address']).group(3)
