@@ -43,8 +43,8 @@ def get(employee_id):
                                 salary=children['salary'].to_str())
 
     session.close()
-    logger.warning("Get Empolyee: Retrieved employee number " + str(employee_id) +
-                " (Name: %s, Birth date: %s, Department: %s, role: %s)" %
+    logger.warning("Get Empolyee: Retrieved Employee ID " + str(employee_id) +
+                " (Name: %s, Birth date: %s, Department: %s, Role: %s)" %
                 (employee_object.first_name + ' ' + employee_object.last_name,
                  employee_object.birth_date,
                  children['department'].to_str(),

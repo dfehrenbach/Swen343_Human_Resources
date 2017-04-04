@@ -15,7 +15,10 @@ from helpers.db_object_helper import \
 from helpers.regex_helper import validate_address
 from models.employee_api_model import EmployeeApiModel
 from models.employee_response import EmployeeResponse
+import logging
 
+logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(message)s')
+logger = logging.getLogger(__name__)
 
 def get(employee_id=None, static_flag=False):
     """ This is the GET function that will return one or more employee objects within the system.
@@ -24,6 +27,7 @@ def get(employee_id=None, static_flag=False):
     :return: a set of Employee Objects
     """
     if static_flag:
+        logger.warning("Get Employees - Loading static file.")
         scriptdir = '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[:-2])
         sp_file = os.path.join(scriptdir, 'static/dummy.txt')
         obj = json.load(open(sp_file))
@@ -34,11 +38,13 @@ def get(employee_id=None, static_flag=False):
 
     session = create_session()
     employee_collection = []
+    info = "Get Employees - Found the following employees - "
 
     if employee_id is None:
         try:
             if not session.query(Employee).first():
                 session.rollback()
+                logger.warning("Get Employees - No employees exist in the system")
                 return {'error message': 'No employees exist in the system'}, 500
 
             all_employee_objects = session.query(Employee).all()
@@ -59,6 +65,7 @@ def get(employee_id=None, static_flag=False):
 
         except SQLAlchemyError:
             session.rollback()
+            logger.warning("Get Employees - Error while retrieving all employees")
             return {'error_message': 'Error while retrieving all employees'}, 500
 
     else:
@@ -66,6 +73,7 @@ def get(employee_id=None, static_flag=False):
             try:
                 if not session.query(exists().where(Employee.id == e_id)).scalar():
                     session.rollback()
+                    logger.warning("Get Employees - An employee with the id of %s does not exist" % e_id)
                     return {'error message': 'An employee with the id of %s does not exist' % e_id}, 500
 
                 employee_object = session.query(Employee).get(e_id)
@@ -81,14 +89,21 @@ def get(employee_id=None, static_flag=False):
                                             start_date=employee_object.start_date,
                                             salary=children['salary'].to_str())
                 employee_collection.append(employee)
+                info += "Employee ID: %s, Name: %s, Birth date: %s, Department: %s, Role: %s " % \
+                        (employee_object.id,
+                         employee_object.first_name + ' ' + employee_object.last_name,
+                         employee_object.birth_date,
+                         children['department'].to_str(),
+                         children['title'].to_str())
 
             except SQLAlchemyError:
                 session.rollback()
+                logger.warning("Get Employees - An employee with the id of %s does not exist" % e_id)
                 return {'error_message': 'Error while retrieving employee %s' % employee_id}, 500
 
     # CLOSE
     session.close()
-
+    logger.warning(info)
     return EmployeeResponse(employee_collection).to_dict()
 
 
@@ -108,6 +123,11 @@ def post(employee):
                 Employee.birth_date == datetime.strptime(employee['birth_date'], '%Y-%m-%d').date(),
                 Employee.start_date == datetime.strptime(employee['start_date'], '%Y-%m-%d').date()))).scalar():
             session.rollback()
+            logger.warning("The following employee was POSTed but already exists: "
+                           "Emplyee Name: %s, Birth Date: %s, Start Date: %s." %
+                           (employee['fname'] + ' ' + employee['lname'],
+                            employee['birth_date'],
+                            employee['start_date']))
             return {'error_message':
                     'This employee already exists in the system. Please use PATCH to modify them or enter a new '
                     'employee. A new employee has a unique first name, last name, birth date, and start date'}, 500
@@ -119,6 +139,7 @@ def post(employee):
         session.add(new_employee)
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while importing employee base")
         return {'error_message': 'Error while importing employee base'}, 500
 
     # ADD USER
@@ -126,6 +147,7 @@ def post(employee):
         session.add(User(username='default', password='default', employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while importing employee user security information")
         return {'error_message': 'Error while importing employee user security information'}, 500
 
     # ADD ADDRESS
@@ -137,6 +159,7 @@ def post(employee):
                             state=address['state'], zip=address['zip'], start_date=address_date, employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while importing employee address")
         return {'error_message': 'Error while importing employee address'}, 500
 
     # ADD DEPARTMENT
@@ -146,6 +169,7 @@ def post(employee):
                                employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while importing employee department")
         return {'error_message': 'Error while importing employee department'}, 500
 
     # ADD TITLE
@@ -155,6 +179,7 @@ def post(employee):
                           employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while importing employee title")
         return {'error_message': 'Error while importing employee title'}, 500
 
     # ADD SALARY
@@ -162,6 +187,7 @@ def post(employee):
         session.add(Salary(is_active=True, amount=randrange(50000, 100000, 1000), employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while importing employee salary")
         return {'error_message': 'Error while importing employee salary'}, 500
 
     # COMMIT & CLOSE
@@ -181,6 +207,8 @@ def patch(employee):
     try:
         # Check if Employee exists
         if not session.query(exists().where(Employee.id == employee['employee_id'])).scalar():
+            logger.warning("This employee does not exist in the system yet. "
+                           "Please use POST to add them as a new employee")
             return {'error_message': 'This employee does not exist in the system yet. '
                                      'Please use POST to add them as a new employee.'}, 500
 
@@ -200,6 +228,7 @@ def patch(employee):
 
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while modifying employee base")
         return {'error_message': 'Error while modifying employee base'}, 500
 
     # MODIFY USER
@@ -211,6 +240,7 @@ def patch(employee):
 
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while modifying employee user security information")
         return {'error_message': 'Error while modifying employee user security information'}, 500
 
     # MODIFY ADDRESS
@@ -241,6 +271,7 @@ def patch(employee):
 
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while modifying employee address")
         return {'error_message': 'Error while modifying employee address'}, 500
 
     # MODIFY SALARY
@@ -251,6 +282,7 @@ def patch(employee):
             session.add(Salary(is_active=True, amount=employee['salary'], employee=employee_object))
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while modifying employee salary")
         return {'error_message': 'Error while modifying employee salary'}, 500
 
     # MODIFY TITLE
@@ -277,6 +309,7 @@ def patch(employee):
 
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while modifying employee role & title")
         return {'error_message': 'Error while modifying employee role & title'}, 500
 
     # MODIFY DEPARTMENT
@@ -303,12 +336,15 @@ def patch(employee):
 
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while modifying employee department & team")
         return {'error_message': 'Error while modifying employee department & team'}, 500
 
     # COMMIT & CLOSE
     session.commit()
     session.close()
 
+    logger.warning('Magic, for patching things? Bipity Bop! You are now a frog!'
+                     '(Not really, but the following employee has been changed!)')
     return {'Magic': 'Magic, for patching things? Bipity Bop! You are now a frog!'
                      '(Not really, but the following employee has been changed!)', 'new_employee': employee}, 200
 
@@ -328,9 +364,11 @@ def delete(employee_id):
         session.query(Employee).filter_by(id=employee_id).delete()
     except SQLAlchemyError:
         session.rollback()
+        logger.warning("Error while deleting employee %s" % employee_id)
         return {'error_message': 'Error while deleting employee %s' % employee_id}, 500
 
     # COMMIT & CLOSE
     session.commit()
     session.close()
+    logger.warning("Magically making things vanish since 2017")
     return {'Magic': 'Magically making things vanish since 2017', 'deleted_employee': employee}, 200
