@@ -30,16 +30,16 @@ def index():
     return send_file('html/index.html')
 @app.route('/view')
 def view():
-    return render_template('viewemployees.html')
+    return send_file('templates/viewemployees.html')
 @app.route('/add')
 def add():
-    return render_template('addemployee.html')
+    return send_file('templates/addemployee.html')
 @app.route('/edit')
 def edit():
-    return render_template('editemployee.html')
+    return send_file('templates/editemployee.html')
 @app.route('/delete')
 def delete():
-    return render_template('deleteemployee.html')
+    return send_file('templates/deleteemployee.html')
 if __name__ == '__main__':
     app.run(
         port=8080
