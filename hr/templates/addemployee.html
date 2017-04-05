@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Add Employee</title>
+</head>
+<body>
+<div ng-app="MyApp" ng-controller="MyCtrl">
+    <h1>POST</h1>
+    <form name="postForm">
+        <p>Active: <input ng-model="postIsActive" type="checkbox"></p>
+        <p>Name: <input ng-model="postName" type="text" required></p>
+        <p>DOB: <input ng-model="postDOB" type="date" required></p>
+        <p>Address: <input ng-model="postAddress" type="text" required></p>
+
+        <p>Department:
+            <select ng-model="postDepartment" required>
+                <option value="HR">HR
+                <option value="Accounting">Accounting
+                <option value="Customer Service">Customer Service
+                <option value="Inventory">Inventory
+                <option value="Sales">Sales
+                <option value="Manufacturing">Manufacturing
+            </select>
+        </p>
+        <p>Role: <input ng-model="postRole" type="text" required></p>
+        <p>Team Start Date: <input ng-model="postTeamStartDate" type="date" required></p>
+        <p>Company Start Date: <input ng-model="postCompanyStartDate" type="date" required></p>
+        <button ng-click="postEmployee(postForm.$valid)">Create Employee</button>
+    </form>
+
+    <pre>{{postedEmployee}}</pre>
+    <br><br>
+</div>
+</body>
+<script>
+    angular.module('MyApp', [])
+        .controller('MyCtrl', ['$scope', '$http', function ($scope, $http) {
+            $scope.postedEmployee = " ";
+
+
+            $scope.postEmployee = function (isValid) {
+                if (isValid) {
+                    $http({
+                        url: 'employee',
+                        method: "POST",
+                        data: {
+                            "is_active": $scope.postIsActive,
+                            "name": $scope.postName,
+                            "birth_date": $scope.postDOB,
+                            "address": $scope.postAddress,
+                            "department": $scope.postDepartment,
+                            "role": $scope.postRole,
+                            "team_start_date": $scope.postTeamStartDate,
+                            "company_start_date": $scope.postCompanyStartDate
+                        }
+                    })
+                        .then(function (response) {
+                            $scope.postedEmployee = JSON.stringify(response.data,null,3);
+                        });
+                }
+            }
+
+        }]);
+    </script>
+</html>
