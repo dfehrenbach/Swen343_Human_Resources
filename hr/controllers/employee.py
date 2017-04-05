@@ -23,13 +23,14 @@ def get(employee_id):
         employee_object = session.query(Employee).get(employee_id)
     except SQLAlchemyError:
         session.rollback()
-        logger.error("Failed to retrieve employee number %s. Invalid statement." % str(employee_id))
+        logger.error("Employee.py Get - Failed to retrieve employee number %s. "
+                     "Invalid statement." % str(employee_id))
         return {'error_message': 'Error while retrieving employee %s' % employee_id}, 500
 
     try:
         children = get_all_children_objects(employee_object)
     except AttributeError:
-        logger.error("Get Employee: failed to retrieve employee number %s. Employee does not exist." % str(employee_id))
+        logger.error("Employee.py Get - failed to retrieve employee number %s. Employee does not exist." % str(employee_id))
         return {'error_message': 'Error while retrieving employee %s' % employee_id}, 500
     employee = EmployeeApiModel(is_active=employee_object.is_active,
                                 employee_id=employee_object.id,
@@ -43,7 +44,7 @@ def get(employee_id):
                                 salary=children['salary'].to_str())
 
     session.close()
-    logger.warning("Get Employee: Retrieved Employee ID %s"
+    logger.warning("Employee.py Get - Retrieved Employee ID %s"
                    " (Name: %s, Birth date: %s, Department: %s, Role: %s)" %
                    (str(employee_id)
                     ,employee_object.first_name + ' ' + employee_object.last_name,
