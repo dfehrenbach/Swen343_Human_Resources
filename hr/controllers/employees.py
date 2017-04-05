@@ -260,7 +260,7 @@ def patch(employee):
 
         employee_object = session.query(Employee).get(employee['employee_id'])
 
-        # TODO Should the old and new address, username, password, and salary be logged, or not due to the sensitive nature of this info?
+
         old_employee = 'Employee ID: %s, Name: %s, Birth Date: %s, Start Date: %s,' \
                        ' Active Status: %s' \
                        % (employee_object.id,
@@ -318,6 +318,7 @@ def patch(employee):
         return {'error_message': error_message}, 500
 
     # MODIFY ADDRESS
+    address = ''
     try:
         if 'address' or 'address_start_date' in employee:
             address_object = get_active_address(employee_object)
@@ -346,16 +347,19 @@ def patch(employee):
     except SQLAlchemyError:
         session.rollback()
         error_message = 'Error while modifying employee address'
-        logger.warning("Emplyees.py Patch - " 
-                       "Error while modifying the address for the following employee:" +
+        logger.warning("Employees.py Patch - " 
+                       "Error while modifying the address (%s) for the following employee:"
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                       (employee['fname'] + ' ' + employee['lname'],
+                       (address,
+                        employee['fname'] + ' ' + employee['lname'],
                         employee['birth_date'],
                         employee['start_date']))
         return {'error_message': error_message}, 500
 
     # MODIFY SALARY
+    salary_object = None
     try:
+        salary_object = None
         if 'salary' in employee:
             salary_object = get_active_salary(employee_object)
             salary_object.is_active = False
@@ -364,14 +368,17 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee salary'
         logger.warning("Employees.py Patch - "
-                       "Error while modifying the salary for the following employee:" +
+                       "Error while modifying the salary (new salary: %s) "
+                       "for the following employee: "
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                       (employee['fname'] + ' ' + employee['lname'],
+                       (salary_object,
+                        employee['fname'] + ' ' + employee['lname'],
                         employee['birth_date'],
                         employee['start_date']))
         return {'error_message': error_message}, 500
 
     # MODIFY TITLE
+    title_object = None
     try:
         if 'role' or 'role_start_date' in employee:
             title_object = get_active_title(employee_object)
@@ -397,15 +404,16 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee role & title'
         logger.warning("Emplyees.py Patch - "
-                       "Error while modifying the role and "
-                       "title for the following employee:" +
+                       "Error while modifying the title (%s) for the following employee: "
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                       (employee['fname'] + ' ' + employee['lname'],
+                       (title_object,
+                        employee['fname'] + ' ' + employee['lname'],
                         employee['birth_date'],
                         employee['start_date']))
         return {'error_message': error_message}, 500
 
     # MODIFY DEPARTMENT
+    department_object = None
     try:
         if 'department' or 'department_start_date' in employee:
             department_object = get_active_department(employee_object)
@@ -431,9 +439,10 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee department & team'
         logger.warning("Employees.py Patch - " 
-                       "Error while modifying the department for the following employee:" +
+                       "Error while modifying the department (%s) for the following employee:"
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                       (employee['fname'] + ' ' + employee['lname'],
+                       (department_object,
+                        employee['fname'] + ' ' + employee['lname'],
                         employee['birth_date'],
                         employee['start_date']))
         return {'error_message': error_message}, 500
@@ -470,12 +479,8 @@ def delete(employee_id):
     # COMMIT & CLOSE
     session.commit()
     session.close()
-    # TODO ASK DANNY ABOUT THE FOLLOWING:
-    """
-    'employee_object' is a list of employees. Is this guaranteed to be only 1 employee, or are we able to delete multiple employees in one API call?
-    """
     print(employee['employee_array'])
-    employee_object = employee['employee_array'][0]  # TODO Might need to replace hardcoded 0 with a forloop depending upon answer to the above.
+    employee_object = employee['employee_array'][0]
     logger.warning("Successfully deleted the following employee: "
                    "Employee ID: %s, Name %s, Birth Date %s, Department: %s"
                    % (employee_object['employee_id'],
