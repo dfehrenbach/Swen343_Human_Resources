@@ -65,8 +65,9 @@ def get(employee_id=None, static_flag=False):
 
         except SQLAlchemyError:
             session.rollback()
-            logger.warning("Get Employees - Error while retrieving all employees")
-            return {'error_message': 'Error while retrieving all employees'}, 500
+            error_message = 'Error while retrieving all employees'
+            logger.warning("Get Employees - " + error_message)
+            return {'error_message': error_message}, 500
 
     else:
         for e_id in employee_id:
@@ -98,8 +99,9 @@ def get(employee_id=None, static_flag=False):
 
             except SQLAlchemyError:
                 session.rollback()
-                logger.warning("Get Employees - An employee with the id of %s does not exist" % e_id)
-                return {'error_message': 'Error while retrieving employee %s' % employee_id}, 500
+                error_message = 'Error while retrieving employee %s' % employee_id
+                logger.warning("Get Employees - " + error_message)
+                return {'error_message': error_message}, 500
 
     # CLOSE
     session.close()
@@ -123,8 +125,10 @@ def post(employee):
                 Employee.birth_date == datetime.strptime(employee['birth_date'], '%Y-%m-%d').date(),
                 Employee.start_date == datetime.strptime(employee['start_date'], '%Y-%m-%d').date()))).scalar():
             session.rollback()
-            logger.warning("The following employee was POSTed but already exists: "
-                           "Emplyee Name: %s, Birth Date: %s, Start Date: %s." %
+            logger.warning("The following employee was attempted to add with POST but already exists. "
+                           "Please use PATCH to modify the employee's data or enter a new employee. "
+                           "A new employee has a unique first name, last name, birth date, and start date. "
+                           "Employee Name: %s, Birth Date: %s, Start Date: %s." %
                            (employee['fname'] + ' ' + employee['lname'],
                             employee['birth_date'],
                             employee['start_date']))
@@ -139,16 +143,18 @@ def post(employee):
         session.add(new_employee)
     except SQLAlchemyError:
         session.rollback()
-        logger.warning("Error while importing employee base")
-        return {'error_message': 'Error while importing employee base'}, 500
+        error_message = 'Error while importing employee base'
+        logger.warning(error_message)
+        return {'error_message': error_message}, 500
 
     # ADD USER
     try:
         session.add(User(username='default', password='default', employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
-        logger.warning("Error while importing employee user security information")
-        return {'error_message': 'Error while importing employee user security information'}, 500
+        error_message = 'Error while importing employee user security information'
+        logger.warning(error_message)
+        return {'error_message': error_message}, 500
 
     # ADD ADDRESS
     # Use regex to check that the format is "0200 StreetAddress St., City, State 11111"
@@ -159,8 +165,9 @@ def post(employee):
                             state=address['state'], zip=address['zip'], start_date=address_date, employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
-        logger.warning("Error while importing employee address")
-        return {'error_message': 'Error while importing employee address'}, 500
+        error_message = 'Error while importing employee address'
+        logger.warning(error_message)
+        return {'error_message': error_message}, 500
 
     # ADD DEPARTMENT
     try:
@@ -169,8 +176,9 @@ def post(employee):
                                employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
-        logger.warning("Error while importing employee department")
-        return {'error_message': 'Error while importing employee department'}, 500
+        error_message = 'Error while importing employee department'
+        logger.warning(error_message)
+        return {'error_message': error_message}, 500
 
     # ADD TITLE
     # Note: This should be the same as the team_start_date for POST'ing a new employee
@@ -179,16 +187,18 @@ def post(employee):
                           employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
-        logger.warning("Error while importing employee title")
-        return {'error_message': 'Error while importing employee title'}, 500
+        error_message = 'Error while importing employee title'
+        logger.warning(error_message)
+        return {'error_message': error_message}, 500
 
     # ADD SALARY
     try:
         session.add(Salary(is_active=True, amount=randrange(50000, 100000, 1000), employee=new_employee))
     except SQLAlchemyError:
         session.rollback()
-        logger.warning("Error while importing employee salary")
-        return {'error_message': 'Error while importing employee salary'}, 500
+        error_message = 'Error while importing employee salary'
+        logger.warning(error_message)
+        return {'error_message': error_message}, 500
 
     # COMMIT & CLOSE
     session.commit()
@@ -207,13 +217,28 @@ def patch(employee):
     try:
         # Check if Employee exists
         if not session.query(exists().where(Employee.id == employee['employee_id'])).scalar():
-            logger.warning("This employee does not exist in the system yet. "
-                           "Please use POST to add them as a new employee")
-            return {'error_message': 'This employee does not exist in the system yet. '
-                                     'Please use POST to add them as a new employee.'}, 500
+            error_message = 'This employee does not exist in the system yet. ' \
+                           'Please use POST to add them as a new employee'
+            logger.warning(error_message)
+            return {'error_message': error_message}, 500
 
         employee_object = session.query(Employee).get(employee['employee_id'])
 
+        # TODO Should the old and new address, username, password, and salary be logged, or not due to the sensitive nature of this info?
+        old_employee = 'Employee ID: %s, Name: %s, Birth Date: %s, Start Date: %s,' \
+                       ' Active Status: %s' \
+                       % (employee_object.id,
+                          employee_object.first_name + ' ' + employee_object.last_name,
+                          employee_object.birth_date,
+                          employee_object.start_date,
+                          employee_object.is_active)
+        new_employee = 'Employee ID: %s, Name: %s, Birth Date: %s, Start Date: %s,' \
+                       ' Active Status: %s' \
+                       % (employee['employee_id'],
+                          employee['fname'] + ' ' + employee['lname'],
+                          datetime.strptime(employee['birth_date'], '%Y-%m-%d').date(),
+                          datetime.strptime(employee['start_date'], '%Y-%m-%d').date(),
+                          employee['is_active'])
         # MODIFY EMPLOYEE
         if 'is_active' in employee:
             employee_object.is_active = employee['is_active']
@@ -228,8 +253,9 @@ def patch(employee):
 
     except SQLAlchemyError:
         session.rollback()
-        logger.warning("Error while modifying employee base")
-        return {'error_message': 'Error while modifying employee base'}, 500
+        error_message = 'Error while modifying employee base'
+        logger.warning(error_message)
+        return {'error_message': error_message}, 500
 
     # MODIFY USER
     try:
@@ -240,8 +266,9 @@ def patch(employee):
 
     except SQLAlchemyError:
         session.rollback()
-        logger.warning("Error while modifying employee user security information")
-        return {'error_message': 'Error while modifying employee user security information'}, 500
+        error_message = 'Error while modifying employee user security information'
+        logger.warning(error_message)
+        return {'error_message': error_message}, 500
 
     # MODIFY ADDRESS
     try:
@@ -271,8 +298,9 @@ def patch(employee):
 
     except SQLAlchemyError:
         session.rollback()
-        logger.warning("Error while modifying employee address")
-        return {'error_message': 'Error while modifying employee address'}, 500
+        error_message = 'Error while modifying employee address'
+        logger.warning(error_message)
+        return {'error_message': error_message}, 500
 
     # MODIFY SALARY
     try:
@@ -282,8 +310,9 @@ def patch(employee):
             session.add(Salary(is_active=True, amount=employee['salary'], employee=employee_object))
     except SQLAlchemyError:
         session.rollback()
-        logger.warning("Error while modifying employee salary")
-        return {'error_message': 'Error while modifying employee salary'}, 500
+        error_message = 'Error while modifying employee salary'
+        logger.warning(error_message)
+        return {'error_message': error_message}, 500
 
     # MODIFY TITLE
     try:
@@ -309,8 +338,9 @@ def patch(employee):
 
     except SQLAlchemyError:
         session.rollback()
-        logger.warning("Error while modifying employee role & title")
-        return {'error_message': 'Error while modifying employee role & title'}, 500
+        error_message = 'Error while modifying employee role & title'
+        logger.warning(error_message)
+        return {'error_message': error_message}, 500
 
     # MODIFY DEPARTMENT
     try:
@@ -336,15 +366,16 @@ def patch(employee):
 
     except SQLAlchemyError:
         session.rollback()
-        logger.warning("Error while modifying employee department & team")
-        return {'error_message': 'Error while modifying employee department & team'}, 500
+        error_message = 'Error while modifying employee department & team'
+        logger.warning(error_message)
+        return {'error_message': error_message}, 500
 
     # COMMIT & CLOSE
     session.commit()
     session.close()
 
-    logger.warning('Magic, for patching things? Bipity Bop! You are now a frog!'
-                     '(Not really, but the following employee has been changed!)')
+    logger.warning('Successfully modified an employee. Old information: '
+                   + old_employee + " New information: " + new_employee)
     return {'Magic': 'Magic, for patching things? Bipity Bop! You are now a frog!'
                      '(Not really, but the following employee has been changed!)', 'new_employee': employee}, 200
 
@@ -370,5 +401,16 @@ def delete(employee_id):
     # COMMIT & CLOSE
     session.commit()
     session.close()
-    logger.warning("Magically making things vanish since 2017")
+    # TODO ASK DANNY ABOUT THE FOLLOWING:
+    """
+    'employee_object' is a list of employees. Is this guaranteed to be only 1 employee, or are we able to delete multiple employees in one API call?
+    """
+    print(employee['employee_array'])
+    employee_object = employee['employee_array'][0]  # TODO Might need to replace hardcoded 0 with a forloop depending upon answer to the above.
+    logger.warning("Successfully deleted the following employee: "
+                   "Employee ID: %s, Name %s, Birth Date %s, Department: %s"
+                   % (employee_object['employee_id'],
+                      employee_object['name'],
+                      datetime.strptime(str(employee_object['birth_date']), '%Y-%m-%d').date(),
+                      employee_object['department']))
     return {'Magic': 'Magically making things vanish since 2017', 'deleted_employee': employee}, 200
