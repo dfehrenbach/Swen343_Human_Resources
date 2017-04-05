@@ -32,16 +32,16 @@ def index():
     return send_file('html/index.html')
 @app.route('/view')
 def view():
-    return send_file('templates/viewemployees.html')
+    return send_file('html/viewemployees.html')
 @app.route('/add')
 def add():
-    return send_file('templates/addemployee.html')
+    return send_file('html/addemployee.html')
 @app.route('/edit')
 def edit():
-    return send_file('templates/editemployee.html')
+    return send_file('html/editemployee.html')
 @app.route('/delete')
 def delete():
-    return send_file('templates/deleteemployee.html')
+    return send_file('html/deleteemployee.html')
 
 if __name__ == '__main__':
     app.run(
