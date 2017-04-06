@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Employee</title>
+</head>
+<body>
+<div ng-app="EditApp" ng-controller="EditCtrl">
+    <h1>PATCH</h1>
+    <form name="patchForm">
+        <p>ID:<input ng-model="patchEmployeeId" type="number" required/></p>
+        <p>Active: <input ng-model="patchIsActive" type="checkbox"></p>
+        <p>First Name: <input ng-model="patchFName" type="text"></p>
+        <p>Last Name: <input ng-model="patchLName" type="text"></p>
+        <p>DOB: <input ng-model="patchDOB" type="date"></p>
+        <p>Address: <input ng-model="patchAddress" type="text" required></p>
+        <p>City: <input ng-model="patchCity" type="text" required><p>State: <input ng-model="patchState" type="text" required>Zip: <input ng-model="patchZip" type="number" required></p>
+        <p>Address Start Date: <input ng-model="patchAddressStartDate" type="date"></p>
+        <p>Department:
+            <select ng-model="patchDepartment">
+                <option value="HR">HR
+                <option value="Accounting">Accounting
+                <option value="Customer Service">Customer Service
+                <option value="Inventory">Inventory
+                <option value="Sales">Sales
+                <option value="Manufacturing">Manufacturing
+            </select>
+        </p>
+        <p>Department Start Date: <input ng-model="patchDepartmentStartDate" type="date"></p>
+        <p>Role: <input ng-model="patchRole" type="text"></p>
+        <p>Role Start Date: <input ng-model="patchRoleStartDate" type="date"></p>
+        <p>Company Start Date: <input ng-model="patchStartDate" type="date"></p>
+        <button ng-click="patchEmployee()">Update Employee</button>
+    </form>
+
+    <pre>{{patchedEmployee}}</pre>
+    <br><br>
+</div>
+</body>
+<script>
+    angular.module('EditApp', [])
+        .controller('EditCtrl', ['$scope', '$http', '$filter', function ($scope, $http, $filter) {
+            $scope.patchedEmployee = " ";
+
+
+            $scope.patchEmployee = function () {
+                var data = {"employee_id": +$scope.patchEmployeeId};
+                if ($scope.patchFName) {
+                    data["fname"] = $scope.patchFName;
+                }
+                if ($scope.patchLName) {
+                    data["lname"] = $scope.patchLName;
+                }
+                if ($scope.patchDOB) {
+                    data["birth_date"] = $filter('date')($scope.patchDOB, "yyyy-MM-dd");
+                }
+                if ($scope.patchAddress) {
+                    data["address"] = $scope.patchAddress + ", " + $scope.patchCity + ", " + $scope.patchState + " " + $scope.patchZip;
+                }
+                if ($scope.patchDepartment) {
+                    data["department"] = $scope.patchDepartment;
+                }
+                if ($scope.patchRole) {
+                    data["role"] = $scope.patchRole;
+                }
+                if ($scope.patchDepartmentStartDate) {
+                    data["department_start_date"] = $filter('date')($scope.patchDepartmentStartDate, "yyyy-MM-dd");
+                }
+                if ($scope.patchRoleStartDate) {
+                    data["role_start_date"] = $filter('date')($scope.patchRoleStartDate, "yyyy-MM-dd");
+                }
+
+                if ($scope.patchStartDate) {
+                    data["start_date"] = $filter('date')($scope.patchStartDate, "yyyy-MM-dd");
+                }
+                $http({
+                    url: 'employee',
+                    method: "PATCH",
+                    data: data
+                })
+                    .then(function (response) {
+                        $scope.patchedEmployee =JSON.stringify(response.data,null,3);
+                    });
+            }
+
+        }]);
+    </script>
+</html>
