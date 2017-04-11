@@ -5,7 +5,6 @@ import os
 import logging
 import random
 import string
-import operator
 
 logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(message)s')
 logger = logging.getLogger(__name__)
@@ -154,13 +153,13 @@ def defaultInfo():
              ("Johnathan", "Sellers", "Manufacturing", "Developer"), ("Nicholas", "Swanson", "Sales", "Developer"), ("William", "Tarr", "Accounting", "Developer"), ("Jeremy", "Vargas", "HR", "Developer"),
              ("Bryon", "Wilkins", "Customer Support", "Developer"), ("Eric", "Yoon", "Customer Support", "Developer")]
 
-    usernames = generateRandomProperties(names.len)
-    passwords = generateRandomProperties(names.len)
+    usernames = generateRandomProperties(len(names))
+    passwords = generateRandomProperties(len(names))
     employee_count = 0
 
     for name in names:
         employee = Employee(is_active=True, first_name=name[0], last_name=name[1],
-                            birth_date=datetime.date(1992, 2, 12), start_date=datetime.date(2017, 3, 28))
+                            birth_date=datetime.date(1992, 2, 12), start_date=datetime.date(2017, 1, 23))
 
         """Add address, salary, title, departments here too"""
 
@@ -174,7 +173,7 @@ def defaultInfo():
 
         session.add(employee)
         session.add(User(username=usernames[employee_count], password=passwords[employee_count], employee=employee))
-        session.add(Address(is_active=True, street_address=employee_count + " Lomb Memorial Drive", city="Rochester",
+        session.add(Address(is_active=True, street_address=str(employee_count) + " Lomb Memorial Drive", city="Rochester",
                             state="New York", zip="14623", start_date=datetime.date(2017, 1, 23), employee=employee))
         session.add(Title(is_active=True, name=name[3], start_date=datetime.date(2017, 1, 23), employee=employee))
         session.add(Department(is_active=True, start_date=datetime.date(2017, 1, 23), name=name[2],
@@ -185,9 +184,11 @@ def defaultInfo():
         employee_count += 1
 
 def generateRandomProperties(size):
-    properties = set()
-    while properties.len < size:
-        properties.add(''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for i in range(8)))
+    properties = []
+    while len(properties) < size:
+        rand_prop = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for i in range(8))
+        if properties.count(rand_prop) < 1:
+            properties.append(rand_prop)
     return properties
 
 def serialize(model):
