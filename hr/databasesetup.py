@@ -145,14 +145,14 @@ def defaultInfo():
 
     session = create_session()
 
-    names = [("Joseph", "Campione"), ("Matthew", "Chickering"), ("Thomas", "DiMauro"), ("Daniel", "Fehrenbach"),
-             ("Daniel", "Fisher"), ("Samuel", "Friedman"), ("Joseph", "Gambino"), ("Alexander", "Garrity"),
-             ("Quentin", "Goyert"), ("Luke", "Harrold"), ("George", "Herde"), ("Paul", "Hulbert"),
-             ("Joseph", "Jankowiak"), ("Laura", "King"), ("Melissa", "Laskowski"), ("Cailin", "Li"),
-             ("Rafael", "Lopez"), ("Junwen", "Mai"), ("Corban", "Mailloux"), ("Shannon", "McIntosh"),
-             ("Joshua", "Miller"), ("Samuel", "Mosher"), ("Justin", "Nietzel"), ("Nathan", "Oesterle"),
-             ("Johnathan", "Sellers"), ("Nicholas", "Swanson"), ("William", "Tarr"), ("Jeremy", "Vargas"),
-             ("Bryon", "Wilkins"), ("Eric", "Yoon")]
+    names = [("Joseph", "Campione", "Sales", "Developer"), ("Matthew", "Chickering", "Manufacturing", "Developer"), ("Thomas", "DiMauro", "Inventory", "Developer"), ("Daniel", "Fehrenbach", "HR", "Developer"),
+             ("Daniel", "Fisher", "Customer Support", "Developer"), ("Samuel", "Friedman", "HR", "Developer"), ("Joseph", "Gambino", "Manufacturing", "Developer"), ("Alexander", "Garrity", "Accounting", "Developer"),
+             ("Quentin", "Goyert", "Manufacturing", "Developer"), ("Luke", "Harrold", "Inventory", "Developer"), ("George", "Herde", "Accounting", "Developer"), ("Paul", "Hulbert", "HR", "Developer"),
+             ("Joseph", "Jankowiak", "Sales", "Developer"), ("Laura", "King", "Inventory", "Developer"), ("Melissa", "Laskowski", "Customer Support", "Developer"), ("Cailin", "Li", "Sales", "Developer"),
+             ("Rafael", "Lopez", "Manufacturing", "Developer"), ("Junwen", "Mai", "Inventory", "Developer"), ("Corban", "Mailloux", "Customer Support", "Developer"), ("Shannon", "McIntosh", "Accounting", "Developer"),
+             ("Joshua", "Miller", "Accounting", "Developer"), ("Samuel", "Mosher", "Inventory", "Developer"), ("Justin", "Nietzel", "Sales", "Developer"), ("Nathan", "Oesterle", "HR", "Developer"),
+             ("Johnathan", "Sellers", "Manufacturing", "Developer"), ("Nicholas", "Swanson", "Sales", "Developer"), ("William", "Tarr", "Accounting", "Developer"), ("Jeremy", "Vargas", "HR", "Developer"),
+             ("Bryon", "Wilkins", "Customer Support", "Developer"), ("Eric", "Yoon", "Customer Support", "Developer")]
 
     usernames = generateRandomProperties(names.len)
     passwords = generateRandomProperties(names.len)
@@ -164,20 +164,20 @@ def defaultInfo():
 
         """Add address, salary, title, departments here too"""
 
-        if employee_count % 2 == 0:
-            title_name = "HR Employee"
-            salary = 50000
+        #if employee_count % 2 == 0:
+        #    title_name = "HR Employee"
+        #    salary = 50000
 
-        else:
-            title_name = "HR Admin"
-            salary = 60000
+        #else:
+        #    title_name = "HR Admin"
+        #    salary = 60000
 
         session.add(employee)
         session.add(User(username=usernames[employee_count], password=passwords[employee_count], employee=employee))
         session.add(Address(is_active=True, street_address=employee_count + " Lomb Memorial Drive", city="Rochester",
                             state="New York", zip="14623", start_date=datetime.date(2017, 1, 23), employee=employee))
-        session.add(Title(is_active=True, name=title_name, start_date=datetime.date(2017, 1, 23), employee=employee))
-        session.add(Department(is_active=True, start_date=datetime.date(2017, 1, 23), name="Human Resources",
+        session.add(Title(is_active=True, name=name[3], start_date=datetime.date(2017, 1, 23), employee=employee))
+        session.add(Department(is_active=True, start_date=datetime.date(2017, 1, 23), name=name[2],
                     employee=employee))
         session.add(Salary(is_active=True, amount=salary, employee=employee))
         session.commit()
