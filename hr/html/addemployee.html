@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Add Employee</title>
+</head>
+<body>
+<div ng-app="MyApp" ng-controller="MyCtrl">
+    <h1>POST</h1>
+    <form name="postForm">
+        <p>Active: <input ng-model="postIsActive" type="checkbox"></p>
+        <p>First Name: <input ng-model="postFName" type="text" required></p>
+        <p>Last Name: <input ng-model="postLName" type="text" required></p>
+        <p>DOB: <input ng-model="postDOB" type="date" required></p>
+        <p>Address: <input ng-model="postAddress" type="text" required></p>
+        <p>City: <input ng-model="postCity" type="text" required><p>State: <input ng-model="postState" type="text" required>Zip: <input ng-model="postZip" type="number" required></p>
+
+
+        <p>Department:
+            <select ng-model="postDepartment" required>
+                <option value="HR">HR
+                <option value="Accounting">Accounting
+                <option value="Customer Service">Customer Service
+                <option value="Inventory">Inventory
+                <option value="Sales">Sales
+                <option value="Manufacturing">Manufacturing
+            </select>
+        </p>
+        <p>Role: <input ng-model="postRole" type="text" required></p>
+        <p>Start Date: <input ng-model="postStartDate" type="date" required></p>
+        <button ng-click="postEmployee(postForm.$valid)">Create Employee</button>
+    </form>
+
+    <pre>{{postedEmployee}}</pre>
+    <br><br>
+</div>
+</body>
+<script>
+    angular.module('MyApp', [])
+        .controller('MyCtrl', ['$scope', '$http', '$filter', function ($scope, $http, $filter) {
+            $scope.postedEmployee = " ";
+
+
+            $scope.postEmployee = function (isValid) {
+                if (isValid) {
+                    $http({
+                        url: 'employee',
+                        method: "POST",
+                        data: {
+                            "is_active": $scope.postIsActive,
+                            "fname": $scope.postFName,
+                            "lname": $scope.postLName,
+                            "birth_date": $filter('date')($scope.postDOB, "yyyy-MM-dd"),
+                            "address": $scope.postAddress + ", " + $scope.postCity + ", " + $scope.postState + " " + $scope.postZip,
+                            "department": $scope.postDepartment,
+                            "role": $scope.postRole,
+                            "start_date":  $filter('date')($scope.postStartDate, "yyyy-MM-dd")
+                        }
+                    })
+                        .then(function (response) {
+                            $scope.postedEmployee = JSON.stringify(response.data,null,3);
+                        });
+                }
+            }
+
+        }]);
+    </script>
+</html>

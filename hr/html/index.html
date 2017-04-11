@@ -6,188 +6,23 @@
 </head>
 <body>
 
-<div ng-app="MyApp" ng-controller="MyCtrl">
+
 
     <!--GET forms-->
-    <h1>GET</h1>
-    <p>Get All Employees:
-        <button ng-click="getAllEmployees()">Go</button>
-    </p>
 
-    <pre>{{allEmployees}}</pre>
-    <br/>
-
-    <form>
-        <p>Get Employee with ID <input ng-model="getEmployeeId" type="number" required/>
-            <button ng-click="getEmployee(getEmployeeId)">Go</button>
-        </p>
-    </form>
-    <pre>{{singleEmployee}}</pre>
-    <br/><br/>
 
     <!--POST forms-->
-    <h1>POST</h1>
-    <form name="postForm">
-        <p>Active: <input ng-model="postIsActive" type="checkbox"></p>
-        <p>Name: <input ng-model="postName" type="text" required></p>
-        <p>DOB: <input ng-model="postDOB" type="date" required></p>
-        <p>Address: <input ng-model="postAddress" type="text" required></p>
 
-        <p>Department:
-            <select ng-model="postDepartment" required>
-                <option value="HR">HR
-                <option value="Accounting">Accounting
-                <option value="Customer Service">Customer Service
-                <option value="Inventory">Inventory
-                <option value="Sales">Sales
-                <option value="Manufacturing">Manufacturing
-            </select>
-        </p>
-        <p>Role: <input ng-model="postRole" type="text" required></p>
-        <p>Team Start Date: <input ng-model="postTeamStartDate" type="date" required></p>
-        <p>Company Start Date: <input ng-model="postCompanyStartDate" type="date" required></p>
-        <button ng-click="postEmployee(postForm.$valid)">Create Employee</button>
-    </form>
-
-    <pre>{{postedEmployee}}</pre>
-    <br><br>
 
     <!--PATCH Form-->
-    <h1>PATCH</h1>
-    <form name="patchForm">
-        <p>ID:<input ng-model="patchEmployeeId" type="number" required/></p>
-        <p>Active: <input ng-model="patchIsActive" type="checkbox"></p>
-        <p>Name: <input ng-model="patchName" type="text"></p>
-        <p>DOB: <input ng-model="patchDOB" type="date"></p>
-        <p>Address: <input ng-model="patchAddress" type="text"></p>
 
-        <p>Department:
-            <select ng-model="patchDepartment">
-                <option value="HR">HR
-                <option value="Accounting">Accounting
-                <option value="Customer Service">Customer Service
-                <option value="Inventory">Inventory
-                <option value="Sales">Sales
-                <option value="Manufacturing">Manufacturing
-            </select>
-        </p>
-        <p>Role: <input ng-model="patchRole" type="text"></p>
-        <p>Team Start Date: <input ng-model="patchTeamStartDate" type="date"></p>
-        <p>Company Start Date: <input ng-model="patchCompanyStartDate" type="date"></p>
-        <button ng-click="patchEmployee()">Update Employee</button>
-    </form>
-
-    <pre>{{patchedEmployee}}</pre>
-    <br><br>
 
     <!--DELETE Form-->
-    <h1>DELETE</h1>
-    <form>
-        <p>ID: <input ng-model="deleteEmployeeId" type="number" required/>
-            <button ng-click="deleteEmployee(deleteEmployeeId)">Delete Employee</button>
-        </p>
-    </form>
 
-    <pre>{{deletedEmployee}}</pre>
-    <br/><br/>
 
 </div>
 
-<script>
-    angular.module('MyApp', [])
-        .controller('MyCtrl', ['$scope', '$http', function ($scope, $http) {
-            $scope.allEmployees = " ";
-            $scope.postedEmployee = " ";
-            $scope.singleEmployee = " ";
-            $scope.deletedEmployee = " ";
-            $scope.patchedEmployee = " ";
 
-
-            $scope.getAllEmployees = function () {
-
-                $http.get("employee")
-                    .then(function (response) {
-                        $scope.allEmployees = JSON.stringify( response.data,null,3);
-                    });
-            }
-
-            $scope.getEmployee = function (eId) {
-                if (eId) {
-                    $http.get("employee?employee_id=" + eId)
-                        .then(function (response) {
-                            $scope.singleEmployee = JSON.stringify(response.data,null,3);
-                        }, function (response) {
-                            alert(response.data.detail)
-                        });
-                }
-
-            };
-
-            $scope.postEmployee = function (isValid) {
-                if (isValid) {
-                    $http({
-                        url: 'employee',
-                        method: "POST",
-                        data: {
-                            "is_active": $scope.postIsActive,
-                            "name": $scope.postName,
-                            "birth_date": $scope.postDOB,
-                            "address": $scope.postAddress,
-                            "department": $scope.postDepartment,
-                            "role": $scope.postRole,
-                            "team_start_date": $scope.postTeamStartDate,
-                            "company_start_date": $scope.postCompanyStartDate
-                        }
-                    })
-                        .then(function (response) {
-                            $scope.postedEmployee = JSON.stringify(response.data,null,3);
-                        });
-                }
-            };
-            $scope.patchEmployee = function () {
-                var data = {"employee_id": +$scope.patchEmployeeId};
-                if ($scope.patchName) {
-                    data["name"] = $scope.patchName;
-                }
-                if ($scope.patchDOB) {
-                    data["birth_date"] = $scope.patchDOB;
-                }
-                if ($scope.patchAddress) {
-                    data["address"] = $scope.patchAddress;
-                }
-                if ($scope.patchDepartment) {
-                    data["department"] = $scope.patchDepartment;
-                }
-                if ($scope.patchRole) {
-                    data["role"] = $scope.patchRole;
-                }
-                if ($scope.patchTeamStartDate) {
-                    data["team_start_date"] = $scope.patchTeamStartDate;
-                }
-                if ($scope.patchCompanyStartDate) {
-                    data["company_start_date"] = $scope.patchCompanyStartDate;
-                }
-                $http({
-                    url: 'employee',
-                    method: "PATCH",
-                    data: data
-                })
-                    .then(function (response) {
-                        $scope.patchedEmployee =JSON.stringify(response.data,null,3);
-                    });
-            };
-            $scope.deleteEmployee = function (eId) {
-                if (eId) {
-                    $http.delete("employee?employee_id=" + eId)
-                        .then(function (response) {
-                            $scope.deletedEmployee = JSON.stringify(response.data,null,3);
-                        }, function (response) {
-                            alert(response.data.detail)
-                        });
-                }
-            }
-        }]);
-</script>
 
 </body>
 </html>

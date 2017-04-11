@@ -1,6 +1,7 @@
 """Run of the HR application """
 import connexion
 from flask import send_file
+
 import logging
 
 # from flask_cors import CORS
@@ -36,7 +37,18 @@ application = app.app
 @app.route('/')
 def index():
     return send_file('html/index.html')
-
+@app.route('/view')
+def view():
+    return send_file('html/viewemployees.html')
+@app.route('/add')
+def add():
+    return send_file('html/addemployee.html')
+@app.route('/edit')
+def edit():
+    return send_file('html/editemployee.html')
+@app.route('/delete')
+def delete():
+    return send_file('html/deleteemployee.html')
 
 if __name__ == '__main__':
     logger.warning('App starting up.')
