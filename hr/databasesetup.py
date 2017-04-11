@@ -144,14 +144,22 @@ def defaultInfo():
 
     session = create_session()
 
-    names = [("Joseph", "Campione", "Sales", "Developer"), ("Matthew", "Chickering", "Manufacturing", "Developer"), ("Thomas", "DiMauro", "Inventory", "Developer"), ("Daniel", "Fehrenbach", "HR", "Developer"),
-             ("Daniel", "Fisher", "Customer Support", "Developer"), ("Samuel", "Friedman", "HR", "Developer"), ("Joseph", "Gambino", "Manufacturing", "Developer"), ("Alexander", "Garrity", "Accounting", "Developer"),
-             ("Quentin", "Goyert", "Manufacturing", "Developer"), ("Luke", "Harrold", "Inventory", "Developer"), ("George", "Herde", "Accounting", "Developer"), ("Paul", "Hulbert", "HR", "Developer"),
-             ("Joseph", "Jankowiak", "Sales", "Developer"), ("Laura", "King", "Inventory", "Developer"), ("Melissa", "Laskowski", "Customer Support", "Developer"), ("Cailin", "Li", "Sales", "Developer"),
-             ("Rafael", "Lopez", "Manufacturing", "Developer"), ("Junwen", "Mai", "Inventory", "Developer"), ("Corban", "Mailloux", "Customer Support", "Developer"), ("Shannon", "McIntosh", "Accounting", "Developer"),
-             ("Joshua", "Miller", "Accounting", "Developer"), ("Samuel", "Mosher", "Inventory", "Developer"), ("Justin", "Nietzel", "Sales", "Developer"), ("Nathan", "Oesterle", "HR", "Developer"),
-             ("Johnathan", "Sellers", "Manufacturing", "Developer"), ("Nicholas", "Swanson", "Sales", "Developer"), ("William", "Tarr", "Accounting", "Developer"), ("Jeremy", "Vargas", "HR", "Developer"),
-             ("Bryon", "Wilkins", "Customer Support", "Developer"), ("Eric", "Yoon", "Customer Support", "Developer")]
+    names = [("Joseph", "Campione", "Sales", "Developer"), ("Matthew", "Chickering", "Manufacturing", "Developer"),
+             ("Thomas", "DiMauro", "Inventory", "Developer"), ("Daniel", "Fehrenbach", "HR", "Developer"),
+             ("Daniel", "Fisher", "Customer Support", "Developer"), ("Samuel", "Friedman", "HR", "Developer"),
+             ("Joseph", "Gambino", "Manufacturing", "Developer"), ("Alexander", "Garrity", "Accounting", "Developer"),
+             ("Quentin", "Goyert", "Manufacturing", "Developer"), ("Luke", "Harrold", "Inventory", "Developer"),
+             ("George", "Herde", "Accounting", "Developer"), ("Paul", "Hulbert", "HR", "Developer"),
+             ("Joseph", "Jankowiak", "Sales", "Developer"), ("Laura", "King", "Inventory", "Developer"),
+             ("Melissa", "Laskowski", "Customer Support", "Developer"), ("Cailin", "Li", "Sales", "Developer"),
+             ("Rafael", "Lopez", "Manufacturing", "Developer"), ("Junwen", "Mai", "Inventory", "Developer"),
+             ("Corban", "Mailloux", "Customer Support", "Developer"), ("Shannon", "McIntosh", "Accounting", "Developer"),
+             ("Joshua", "Miller", "Accounting", "Developer"), ("Samuel", "Mosher", "Inventory", "Developer"),
+             ("Justin", "Nietzel", "Sales", "Developer"), ("Nathan", "Oesterle", "HR", "Developer"),
+             ("Johnathan", "Sellers", "Manufacturing", "Developer"), ("Nicholas", "Swanson", "Sales", "Developer"),
+             ("William", "Tarr", "Accounting", "Developer"), ("Jeremy", "Vargas", "HR", "Developer"),
+             ("Bryon", "Wilkins", "Customer Support", "Developer"), ("Eric", "Yoon", "Customer Support", "Developer"),
+             ("Daniel", "Krutz", "Board", "Board"), ("Silva", "Natti", "Board", "Board")]
 
     usernames = generateRandomProperties(len(names))
     passwords = generateRandomProperties(len(names))
@@ -161,15 +169,9 @@ def defaultInfo():
         employee = Employee(is_active=True, first_name=name[0], last_name=name[1],
                             birth_date=datetime.date(1992, 2, 12), start_date=datetime.date(2017, 1, 23))
 
-        """Add address, salary, title, departments here too"""
-
-        #if employee_count % 2 == 0:
-        #    title_name = "HR Employee"
-        #    salary = 50000
-
-        #else:
-        #    title_name = "HR Admin"
-        #    salary = 60000
+        salary = 0
+        if name[2] != "Board":
+            salary = random.SystemRandom().randint(50000, 100000)
 
         session.add(employee)
         session.add(User(username=usernames[employee_count], password=passwords[employee_count], employee=employee))
