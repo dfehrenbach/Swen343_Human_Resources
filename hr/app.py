@@ -35,8 +35,6 @@ application = app.app
 
 
 @app.route('/')
-def index():
-    return send_file('html/index.html')
 @app.route('/view')
 def view():
     return send_file('html/viewemployees.html')
