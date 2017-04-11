@@ -3,6 +3,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, class_mapper
 import os
 import logging
+import random
+import string
+import operator
 
 logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(message)s')
 logger = logging.getLogger(__name__)
@@ -141,55 +144,51 @@ def defaultInfo():
     import datetime
 
     session = create_session()
-    wendy_employee = Employee(is_active=True, first_name='Wendy', last_name='Williams',
-                              birth_date=datetime.date(1995, 4, 25), start_date=datetime.date(2017, 3, 28))
-    session.add(wendy_employee)
-    session.commit()
 
-    mary_employee = Employee(is_active=False, first_name='Mary', last_name='Contrary',
-                             birth_date=datetime.date(1992, 2, 12), start_date=datetime.date(2017, 3, 28))
-    session.add(mary_employee)
-    session.commit()
+    names = [("Joseph", "Campione"), ("Matthew", "Chickering"), ("Thomas", "DiMauro"), ("Daniel", "Fehrenbach"),
+             ("Daniel", "Fisher"), ("Samuel", "Friedman"), ("Joseph", "Gambino"), ("Alexander", "Garrity"),
+             ("Quentin", "Goyert"), ("Luke", "Harrold"), ("George", "Herde"), ("Paul", "Hulbert"),
+             ("Joseph", "Jankowiak"), ("Laura", "King"), ("Melissa", "Laskowski"), ("Cailin", "Li"),
+             ("Rafael", "Lopez"), ("Junwen", "Mai"), ("Corban", "Mailloux"), ("Shannon", "McIntosh"),
+             ("Joshua", "Miller"), ("Samuel", "Mosher"), ("Justin", "Nietzel"), ("Nathan", "Oesterle"),
+             ("Johnathan", "Sellers"), ("Nicholas", "Swanson"), ("William", "Tarr"), ("Jeremy", "Vargas"),
+             ("Bryon", "Wilkins"), ("Eric", "Yoon")]
 
-    session.add(User(username='wwilliams', password='xxg527', employee=wendy_employee))
-    session.add(User(username='mcontrary', password='asdf1234', employee=mary_employee))
-    session.commit()
+    usernames = generateRandomProperties(names.len)
+    passwords = generateRandomProperties(names.len)
+    employee_count = 0
 
-    session.add_all([
-        Address(is_active=True, street_address="42 Wallaby Way", city="Rochester", state="New York", zip="14623",
-                start_date=datetime.date(2016, 3, 23), employee=wendy_employee),
-        Address(is_active=False, street_address="152 Wallingford Rd", city="Milford", state="New Hampshire",
-                zip="03055", start_date=datetime.date(2006, 11, 10), employee=wendy_employee),
+    for name in names:
+        employee = Employee(is_active=True, first_name=name[0], last_name=name[1],
+                            birth_date=datetime.date(1992, 2, 12), start_date=datetime.date(2017, 3, 28))
 
-        Address(is_active=True, street_address="4 Forest Hills Dr", city="Nashua", state="New Hampshire", zip="03060",
-                start_date=datetime.date(2014, 8, 23), employee=mary_employee),
-        Address(is_active=False, street_address="42 Wallaby Way", city="Rochester", state="New York", zip="14623",
-                start_date=datetime.date(1996, 5, 10), employee=mary_employee)
-    ])
-    session.commit()
+        """Add address, salary, title, departments here too"""
 
-    session.add_all([
-        Title(is_active=True, name='HR Admin', start_date=datetime.date(2006, 11, 10), employee=wendy_employee),
-        Title(is_active=True, name='HR Employee', start_date=datetime.date(1996, 5, 10), employee=mary_employee)
-    ])
-    session.commit()
+        if employee_count % 2 == 0:
+            title_name = "HR Employee"
+            salary = 50000
 
-    session.add_all([
-        Department(is_active=True, start_date=datetime.date(2006, 11, 10), name='Human Resources',
-                   employee=wendy_employee),
-        Department(is_active=True, start_date=datetime.date(1996, 5, 10), name='Human Resources',
-                   employee=mary_employee)
-    ])
-    session.commit()
+        else:
+            title_name = "HR Admin"
+            salary = 60000
 
-    session.add_all([
-        Salary(is_active=True, amount=60000, employee=wendy_employee),
-        Salary(is_active=False, amount=50000, employee=wendy_employee),
-        Salary(is_active=True, amount=70000, employee=mary_employee),
-        Salary(is_active=False, amount=60000, employee=mary_employee)
-    ])
-    session.commit()
+        session.add(employee)
+        session.add(User(username=usernames[employee_count], password=passwords[employee_count], employee=employee))
+        session.add(Address(is_active=True, street_address=employee_count + " Lomb Memorial Drive", city="Rochester",
+                            state="New York", zip="14623", start_date=datetime.date(2017, 1, 23), employee=employee))
+        session.add(Title(is_active=True, name=title_name, start_date=datetime.date(2017, 1, 23), employee=employee))
+        session.add(Department(is_active=True, start_date=datetime.date(2017, 1, 23), name="Human Resources",
+                    employee=employee))
+        session.add(Salary(is_active=True, amount=salary, employee=employee))
+        session.commit()
 
+        employee_count += 1
+
+def generateRandomProperties(size):
+    properties = set()
+    while properties.len < size:
+        properties.add(''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for i in range(8)))
+    return properties
 
 def serialize(model):
     """Transforms a model into a dictionary which can be dumped to JSON."""
