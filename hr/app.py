@@ -1,13 +1,20 @@
 """Run of the HR application """
 import connexion
 from flask import send_file
+
+import logging
+
 # from flask_cors import CORS
+
+logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(message)s')
+logger = logging.getLogger(__name__)
 
 # Create connexion app and add the HR API
 app = connexion.App(
     __name__,
     specification_dir='./specs/'
 )
+logger.info("Adding API")
 app.add_api(
     'swagger.yaml',
     arguments={'title': 'HR API'}
@@ -44,6 +51,7 @@ def delete():
     return send_file('html/deleteemployee.html')
 
 if __name__ == '__main__':
+    logger.warning('App starting up.')
     app.run(
         port=8080,
         debug=True

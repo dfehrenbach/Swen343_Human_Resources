@@ -2,11 +2,19 @@ from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date, Fo
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, class_mapper
 import os
+import logging
+
+logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(message)s')
+logger = logging.getLogger(__name__)
+
+logger.info("Creating database.")
 
 file_name = "hr.sqlite3"
 engine = create_engine('sqlite:///' + file_name, echo=True)
 engine.connect()
 Base = declarative_base()
+
+logger.info("Database Created.")
 
 
 class Employee(Base):
@@ -127,7 +135,7 @@ def create_session():
     return sessionmaker(bind=engine)()
 
 
-def main():
+def defaultInfo():
     Base.metadata.create_all(engine)
 
     import datetime
@@ -190,10 +198,16 @@ def serialize(model):
     # then we return their values in a dict
     return dict((c, getattr(model, c)) for c in columns)
 
+logger.warning("Added default objects to database.")
+print("Added all objects to database.")
 
 if __name__ == "__main__":
     file_name = "hr.sqlite3"
+    # Designed for testing. Allowing the tests to start with a clean database.
     if os.path.exists(file_name):
         os.remove(file_name)
 
-    main()
+    # Populate database with default info.
+    defaultInfo()
+
+defaultInfo()
