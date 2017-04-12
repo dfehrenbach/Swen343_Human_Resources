@@ -7,12 +7,30 @@
 </head>
 <body>
 <div ng-app="MyApp" ng-controller="MyCtrl">
-    <h1>GET</h1>
-    <p>Get All Employees:
-        <button ng-click="getAllEmployees()">Go</button>
-    </p>
+    <h1>Krutz Corp. HR</h1>
 
-    <pre>{{allEmployees}}</pre>
+
+
+        <form>
+        <p><input ng-model="getEmployeeId" type="number" required placeholder="Employee ID"/>
+            <button ng-click="getEmployee(getEmployeeId)">Search</button>
+        </p>
+    </form>
+    <p>{{loading}}</p>
+
+    <table>
+        <tr ng-repeat="e in allEmployees track by $index">
+            <td colspan="3">
+                {{e.name}}
+            </td>
+            <td>
+                <a href="edit/{{e.employee_id}}">Edit</a>
+            </td>
+            <td>
+                <button ng-click="deleteEmployee(e.employee_id)">Delete</button>
+            </td>
+        </tr>
+    </table>
     <br/>
 
     <form>
@@ -27,30 +45,53 @@
 <script>
     angular.module('MyApp', [])
         .controller('MyCtrl', ['$scope', '$http', function ($scope, $http) {
-            $scope.allEmployees = " ";
-
+            $scope.allEmployees = [];
+            $scope.cacheEmployees = [];
             $scope.singleEmployee = " ";
+            $scope.loading = "Loading Employees...";
 
 
-
-            $scope.getAllEmployees = function () {
 
                 $http.get("employee")
                     .then(function (response) {
-                        $scope.allEmployees = JSON.stringify( response.data,null,3);
+                        $scope.loading = "";
+                        $scope.allEmployees = response.data["employee_array"];
+//                        $scope.allEmployees = JSON.stringify( response.data,null,3);
                     });
-            }
 
             $scope.getEmployee = function (eId) {
                 if (eId) {
                     $http.get("employee?employee_id=" + eId)
                         .then(function (response) {
-                            $scope.singleEmployee = JSON.stringify(response.data,null,3);
+                            $scope.cacheEmployees= $scope.allEmployees;
+                            $scope.allEmployees = response.data["employee_array"];
                         }, function (response) {
                             alert(response.data.detail)
                         });
+                } else {
+                                   $scope.allEmployees = $scope.cacheEmployees;
                 }
 
+            }
+            $scope.deleteEmployee = function (eId) {
+                if (confirm('Are you sure you want to delete employee #'+eId)) {
+                    $http.delete("employee?employee_id=" + eId).then(function (response) {
+                            var i = 0;
+                            for (i; i<$scope.allEmployees.length;i++) {
+                                if ($scope.allEmployees[i].employee_id == eId) {
+                                    break;
+                                }
+                            }
+                            $scope.allEmployees.splice(i,1);
+                            i = 0;
+                            for (i; i<$scope.cacheEmployees.length;i++) {
+                                if ($scope.cacheEmployees[i].employee_id == eId) {
+                                    break;
+                                }
+                            }
+                            $scope.cacheEmployees.splice(i,1);
+                        });
+                }
             }
 
 
