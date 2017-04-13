@@ -41,8 +41,8 @@ def view():
 @app.route('/add')
 def add():
     return send_file('html/addemployee.html')
-@app.route('/edit')
-def edit():
+@app.route('/edit/<int:eId>')
+def edit(eId=-1):
     return send_file('html/editemployee.html')
 @app.route('/delete')
 def delete():

@@ -12,14 +12,15 @@
 
 
         <form>
-        <p><input ng-model="getEmployeeId" type="number" required placeholder="Employee ID"/>
-            <button ng-click="getEmployee(getEmployeeId)">Search</button>
-        </p>
+        <p><input ng-model="getEmployeeId" ng-change="getEmployee(getEmployeeId)" type="number" required placeholder="Employee ID"/></p>
     </form>
     <p>{{loading}}</p>
 
     <table>
-        <tr ng-repeat="e in allEmployees track by $index">
+        <tr ng-repeat="e in viewEmployees track by $index">
+            <td>
+                {{e.employee_id}}
+            </td>
             <td colspan="3">
                 {{e.name}}
             </td>
@@ -31,22 +32,14 @@
             </td>
         </tr>
     </table>
-    <br/>
-
-    <form>
-        <p>Get Employee with ID <input ng-model="getEmployeeId" type="number" required/>
-            <button ng-click="getEmployee(getEmployeeId)">Go</button>
-        </p>
-    </form>
-    <pre>{{singleEmployee}}</pre>
     <br/><br/>
 </div>
 </body>
 <script>
     angular.module('MyApp', [])
         .controller('MyCtrl', ['$scope', '$http', function ($scope, $http) {
+            $scope.viewEmployees = [];
             $scope.allEmployees = [];
-            $scope.cacheEmployees = [];
             $scope.singleEmployee = " ";
             $scope.loading = "Loading Employees...";
 
@@ -56,6 +49,7 @@
                     .then(function (response) {
                         $scope.loading = "";
                         $scope.allEmployees = response.data["employee_array"];
+                        $scope.viewEmployees = $scope.allEmployees;
 //                        $scope.allEmployees = JSON.stringify( response.data,null,3);
                     });
 
@@ -63,13 +57,12 @@
                 if (eId) {
                     $http.get("employee?employee_id=" + eId)
                         .then(function (response) {
-                            $scope.cacheEmployees= $scope.allEmployees;
-                            $scope.allEmployees = response.data["employee_array"];
+                            $scope.viewEmployees = response.data["employee_array"];
                         }, function (response) {
-                            alert(response.data.detail)
+                             $scope.viewEmployees = [];
                         });
                 } else {
-                                   $scope.allEmployees = $scope.cacheEmployees;
+                                   $scope.viewEmployees = $scope.allEmployees;
                 }
 
             }
@@ -83,13 +76,8 @@
                                 }
                             }
                             $scope.allEmployees.splice(i,1);
-                            i = 0;
-                            for (i; i<$scope.cacheEmployees.length;i++) {
-                                if ($scope.cacheEmployees[i].employee_id == eId) {
-                                    break;
-                                }
-                            }
-                            $scope.cacheEmployees.splice(i,1);
+                            $scope.viewEmployees = $scope.allEmployees;
+                            $scope.getEmployeeId = "";
                         });
                 }
             }

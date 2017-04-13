@@ -40,10 +40,46 @@
 </body>
 <script>
     angular.module('EditApp', [])
-        .controller('EditCtrl', ['$scope', '$http', '$filter', function ($scope, $http, $filter) {
+        .controller('EditCtrl', ['$scope', '$http', '$filter', '$location', function ($scope, $http, $filter, $location) {
             $scope.patchedEmployee = " ";
+var eId = window.location.pathname.split("/").slice(-1)[0];
+                if (eId) {
+                    $http.get("/employee?employee_id=" + eId)
+                        .then(function (response) {
+                            var data = response.data.employee_array[0];
 
-
+                            $scope.patchFName = data["name"];
+                        });
+//                    data["lname"] = $scope.patchLName;
+                }
+//                if ($scope.patchDOB) {
+//                    data["birth_date"] = $filter('date')($scope.patchDOB, "yyyy-MM-dd");
+//                }
+//                if ($scope.patchAddress) {
+//                    data["address"] = $scope.patchAddress + ", " + $scope.patchCity + ", " + $scope.patchState + " " + $scope.patchZip;
+//                }
+//                if ($scope.patchDepartment) {
+//                    data["department"] = $scope.patchDepartment;
+//                }
+//                if ($scope.patchRole) {
+//                    data["role"] = $scope.patchRole;
+//                }
+//                if ($scope.patchDepartmentStartDate) {
+//                    data["department_start_date"] = $filter('date')($scope.patchDepartmentStartDate, "yyyy-MM-dd");
+//                }
+//                if ($scope.patchRoleStartDate) {
+//                    data["role_start_date"] = $filter('date')($scope.patchRoleStartDate, "yyyy-MM-dd");
+//                }
+//
+//                if ($scope.patchStartDate) {
+//                    data["start_date"] = $filter('date')($scope.patchStartDate, "yyyy-MM-dd");
+//                }
+//                        }, function (response) {
+//                             $scope.viewEmployees = [];
+//                        });
+//                } else {
+//                                   $scope.viewEmployees = $scope.allEmployees;
+//                }
             $scope.patchEmployee = function () {
                 var data = {"employee_id": +$scope.patchEmployeeId};
                 if ($scope.patchFName) {
