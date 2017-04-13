@@ -7,9 +7,11 @@
 </head>
 <body>
 <div ng-app="MyApp" ng-controller="MyCtrl">
-    <h1>POST</h1>
+    <div>
+        <a href="/">HR Home</a>
+    </div>
+    <h1>Add New Employee</h1>
     <form name="postForm">
-        <p>Active: <input ng-model="postIsActive" type="checkbox"></p>
         <p>First Name: <input ng-model="postFName" type="text" required></p>
         <p>Last Name: <input ng-model="postLName" type="text" required></p>
         <p>DOB: <input ng-model="postDOB" type="date" required></p>
@@ -48,7 +50,7 @@
                         url: 'employee',
                         method: "POST",
                         data: {
-                            "is_active": $scope.postIsActive,
+                            "is_active": true,
                             "fname": $scope.postFName,
                             "lname": $scope.postLName,
                             "birth_date": $filter('date')($scope.postDOB, "yyyy-MM-dd"),
@@ -59,7 +61,17 @@
                         }
                     })
                         .then(function (response) {
-                            $scope.postedEmployee = JSON.stringify(response.data,null,3);
+                            alert("Employee "+$scope.postFName+" "+$scope.postLName+" added.");
+                            $scope.postFName = "";
+                            $scope.postLName = "";
+                            $scope.postDOB = null;
+                            $scope.postAddress = "";
+                            $scope.postCity = "";
+                            $scope.postState = "";
+                            $scope.postZip = null;
+                            $scope.postDepartment = "";
+                            $scope.postRole = "";
+                            $scope.postStartDate = null;
                         });
                 }
             }

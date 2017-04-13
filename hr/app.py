@@ -44,9 +44,6 @@ def add():
 @app.route('/edit/<int:eId>')
 def edit(eId=-1):
     return send_file('html/editemployee.html')
-@app.route('/delete')
-def delete():
-    return send_file('html/deleteemployee.html')
 
 if __name__ == '__main__':
     logger.warning('App starting up.')

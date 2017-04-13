@@ -9,12 +9,15 @@
 <div ng-app="MyApp" ng-controller="MyCtrl">
     <h1>Krutz Corp. HR</h1>
 
-
-
+<button onclick="window.location.href='/add';">Add New Employee</button>
+    <br>
         <form>
-        <p><input ng-model="getEmployeeId" ng-change="getEmployee(getEmployeeId)" type="number" required placeholder="Employee ID"/></p>
+        <p>Search: <input ng-model="getEmployeeId" ng-change="getEmployee(getEmployeeId)" type="number" required placeholder="Employee ID"/></p>
+
     </form>
-    <p>{{loading}}</p>
+
+
+    <h4>{{loading}}</h4>
 
     <table>
         <tr ng-repeat="e in viewEmployees track by $index">
@@ -25,7 +28,7 @@
                 {{e.name}}
             </td>
             <td>
-                <a href="edit/{{e.employee_id}}">Edit</a>
+                <button ng-click="goToEditPage(e.employee_id)">Edit</button>
             </td>
             <td>
                 <button ng-click="deleteEmployee(e.employee_id)">Delete</button>
@@ -41,13 +44,14 @@
             $scope.viewEmployees = [];
             $scope.allEmployees = [];
             $scope.singleEmployee = " ";
-            $scope.loading = "Loading Employees...";
+            $scope.loading = "Loading Employees";
 
-
+            var intervalId = setInterval(function(){$scope.loading+=".";$scope.$apply();},500);
 
                 $http.get("employee")
                     .then(function (response) {
                         $scope.loading = "";
+                        clearInterval(intervalId);
                         $scope.allEmployees = response.data["employee_array"];
                         $scope.viewEmployees = $scope.allEmployees;
 //                        $scope.allEmployees = JSON.stringify( response.data,null,3);
@@ -80,6 +84,9 @@
                             $scope.getEmployeeId = "";
                         });
                 }
+            }
+            $scope.goToEditPage = function (eId) {
+                window.location.href = "/edit/"+eId;
             }
 
 
