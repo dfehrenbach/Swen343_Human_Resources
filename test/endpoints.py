@@ -14,8 +14,7 @@ class EndPointTests(unittest.TestCase):
     def setUpClass(cls):
         defaultInfo()
 
-    # @patch("controllers.employee.get")
-    def test_getEmployee(self): #, get_employee):
+    def test_getEmployee(self):
         mock_employee = {
             'employee_array':
                 {
@@ -32,7 +31,6 @@ class EndPointTests(unittest.TestCase):
                 }
         }
         retrieved_employee = employee.get(1)
-        print("RETRIEVED EMPLOYEE", retrieved_employee)
         self.assertEqual(retrieved_employee['employee_array']['name'],mock_employee['employee_array']['name'])
 
     def test_getEmployees(self):
@@ -53,7 +51,6 @@ class EndPointTests(unittest.TestCase):
                 }
             ]
         }
-        print("RETRIEVED EMPLOYEE 1", retrieved_employee)
         self.assertEqual(retrieved_employee['employee_array'][0]['name'],mock_employee['employee_array'][0]['name'])
         retrieved_employees = employees.get([1,2])
         mock_employees = {'employee_array':
@@ -86,8 +83,6 @@ class EndPointTests(unittest.TestCase):
         }
         self.assertEqual(retrieved_employees['employee_array'][0]['name'],mock_employees['employee_array'][0]['name'])
         self.assertEqual(retrieved_employees['employee_array'][1]['name'], mock_employees['employee_array'][1]['name'])
-
-        print("RETRIEVED EMPLOYEE 2", retrieved_employees)
 
         #TODO get teardown to remove testDB.
         @classmethod
