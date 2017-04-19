@@ -66,6 +66,8 @@ class EndPointTests(unittest.TestCase):
                          msg="Employee's address (" + retrieved_employee['employee_array']['address']
                              + ") does not match the mock employee's address ("
                              + mock_employee['employee_array']['address'] + ").")
+        error_case = employee.get(-1)
+        self.assertEqual(error_case,({'error_message': 'Error while retrieving employee -1'}, 500))
 
     def test_getEmployees(self):
         retrieved_employee = employees.get([1])
@@ -242,6 +244,8 @@ class EndPointTests(unittest.TestCase):
                          msg="Employee's address (" + retrieved_employees['employee_array'][1]['address']
                              + ") does not match the mock employee's address ("
                              + mock_employees['employee_array'][1]['address'] + ").")
+        error_case = employees.get([-1])
+        self.assertEqual(error_case,({'error message': 'An employee with the id of -1 does not exist'}, 500))
 
     def test_postEmployee(self):
         employee_to_post = {
