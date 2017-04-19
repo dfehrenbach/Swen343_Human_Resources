@@ -30,7 +30,42 @@ class EndPointTests(unittest.TestCase):
                 }
         }
         retrieved_employee = employee.get(1)
-        self.assertEqual(retrieved_employee['employee_array']['name'],mock_employee['employee_array']['name'])
+        self.assertEqual(retrieved_employee['employee_array']['name'],mock_employee['employee_array']['name'],
+                         msg="Employee's name (" + retrieved_employee['employee_array']['name']
+                             + ") does not match the mock employee's name ("
+                             + mock_employee['employee_array']['name'] + ").")
+        self.assertEqual(retrieved_employee['employee_array']['team_start_date'], mock_employee['employee_array']['team_start_date'],
+                         msg="Employee's team start date (" + retrieved_employee['employee_array']['name']
+                             + ") does not match the mock employee's team start date ("
+                             + mock_employee['employee_array']['name'] + ").")
+        self.assertEqual(retrieved_employee['employee_array']['is_active'], mock_employee['employee_array']['is_active'],
+                         msg="Employee's active status (" + str(retrieved_employee['employee_array']['is_active'])
+                             + ") does not match the mock employee's active status ("
+                             + str(mock_employee['employee_array']['is_active']) + ").")
+        self.assertEqual(retrieved_employee['employee_array']['start_date'], mock_employee['employee_array']['start_date'],
+                         msg="Employee's start date (" + str(retrieved_employee['employee_array']['start_date'])
+                             + ") does not match the mock employee's start date ("
+                             + str(mock_employee['employee_array']['start_date']) + ").")
+        self.assertEqual(retrieved_employee['employee_array']['role'], mock_employee['employee_array']['role'],
+                         msg="Employee's role (" + retrieved_employee['employee_array']['role']
+                             + ") does not match the mock employee's role ("
+                             + mock_employee['employee_array']['role'] + ").")
+        self.assertEqual(retrieved_employee['employee_array']['department'],mock_employee['employee_array']['department'],
+                         msg="Employee's department (" + retrieved_employee['employee_array']['department']
+                             + ") does not match the mock employee's department ("
+                             + mock_employee['employee_array']['department'] + ").")
+        self.assertEqual(retrieved_employee['employee_array']['employee_id'],mock_employee['employee_array']['employee_id'],
+                         msg="Employee's ID number (" + str(retrieved_employee['employee_array']['employee_id'])
+                             + ") does not match the mock employee's ID number ("
+                             + str(mock_employee['employee_array']['employee_id']) + ").")
+        self.assertEqual(retrieved_employee['employee_array']['birth_date'],mock_employee['employee_array']['birth_date'],
+                         msg="Employee's birth date (" + str(retrieved_employee['employee_array']['birth_date'])
+                             + ") does not match the mock employee's birth date ("
+                             + str(mock_employee['employee_array']['birth_date']) + ").")
+        self.assertEqual(retrieved_employee['employee_array']['address'],mock_employee['employee_array']['address'],
+                         msg="Employee's address (" + retrieved_employee['employee_array']['address']
+                             + ") does not match the mock employee's address ("
+                             + mock_employee['employee_array']['address'] + ").")
 
     def test_getEmployees(self):
         retrieved_employee = employees.get([1])
@@ -51,6 +86,44 @@ class EndPointTests(unittest.TestCase):
             ]
         }
         self.assertEqual(retrieved_employee['employee_array'][0]['name'],mock_employee['employee_array'][0]['name'])
+        self.assertEqual(retrieved_employee['employee_array'][0]['name'], mock_employee['employee_array'][0]['name'],
+                         msg="Employee's name (" + retrieved_employee['employee_array'][0]['name']
+                             + ") does not match the mock employee's name ("
+                             + mock_employee['employee_array'][0]['name'] + ").")
+        self.assertEqual(retrieved_employee['employee_array'][0]['team_start_date'],
+                         mock_employee['employee_array'][0]['team_start_date'],
+                         msg="Employee's team start date (" + retrieved_employee['employee_array'][0]['name']
+                             + ") does not match the mock employee's team start date ("
+                             + mock_employee['employee_array'][0]['name'] + ").")
+        self.assertEqual(retrieved_employee['employee_array'][0]['is_active'],mock_employee['employee_array'][0]['is_active'],
+                         msg="Employee's active status (" + str(retrieved_employee['employee_array'][0]['is_active'])
+                             + ") does not match the mock employee's active status ("
+                             + str(mock_employee['employee_array'][0]['is_active']) + ").")
+        self.assertEqual(retrieved_employee['employee_array'][0]['start_date'],mock_employee['employee_array'][0]['start_date'],
+                         msg="Employee's start date (" + str(retrieved_employee['employee_array'][0]['start_date'])
+                             + ") does not match the mock employee's start date ("
+                             + str(mock_employee['employee_array'][0]['start_date']) + ").")
+        self.assertEqual(retrieved_employee['employee_array'][0]['role'], mock_employee['employee_array'][0]['role'],
+                         msg="Employee's role (" + retrieved_employee['employee_array'][0]['role']
+                             + ") does not match the mock employee's role ("
+                             + mock_employee['employee_array'][0]['role'] + ").")
+        self.assertEqual(retrieved_employee['employee_array'][0]['department'],mock_employee['employee_array'][0]['department'],
+                         msg="Employee's department (" + retrieved_employee['employee_array'][0]['department']
+                             + ") does not match the mock employee's department ("
+                             + mock_employee['employee_array'][0]['department'] + ").")
+        self.assertEqual(retrieved_employee['employee_array'][0]['employee_id'],mock_employee['employee_array'][0]['employee_id'],
+                         msg="Employee's ID number (" + str(retrieved_employee['employee_array'][0]['employee_id'])
+                             + ") does not match the mock employee's ID number ("
+                             + str(mock_employee['employee_array'][0]['employee_id']) + ").")
+        self.assertEqual(retrieved_employee['employee_array'][0]['birth_date'],mock_employee['employee_array'][0]['birth_date'],
+                         msg="Employee's birth date (" + str(retrieved_employee['employee_array'][0]['birth_date'])
+                             + ") does not match the mock employee's birth date ("
+                             + str(mock_employee['employee_array'][0]['birth_date']) + ").")
+        self.assertEqual(retrieved_employee['employee_array'][0]['address'], mock_employee['employee_array'][0]['address'],
+                         msg="Employee's address (" + retrieved_employee['employee_array'][0]['address']
+                             + ") does not match the mock employee's address ("
+                             + mock_employee['employee_array'][0]['address'] + ").")
+
         retrieved_employees = employees.get([1,2])
         mock_employees = {'employee_array':
             [
@@ -80,8 +153,95 @@ class EndPointTests(unittest.TestCase):
                 }
             ]
         }
-        self.assertEqual(retrieved_employees['employee_array'][0]['name'],mock_employees['employee_array'][0]['name'])
+        self.assertEqual(retrieved_employees['employee_array'][0]['name'], mock_employees['employee_array'][0]['name'])
+        self.assertEqual(retrieved_employees['employee_array'][0]['name'], mock_employees['employee_array'][0]['name'],
+                         msg="Employee's name (" + retrieved_employees['employee_array'][0]['name']
+                             + ") does not match the mock employee's name ("
+                             + mock_employees['employee_array'][0]['name'] + ").")
+        self.assertEqual(retrieved_employees['employee_array'][0]['team_start_date'],
+                         mock_employees['employee_array'][0]['team_start_date'],
+                         msg="Employee's team start date (" + retrieved_employees['employee_array'][0]['name']
+                             + ") does not match the mock employee's team start date ("
+                             + mock_employees['employee_array'][0]['name'] + ").")
+        self.assertEqual(retrieved_employees['employee_array'][0]['is_active'],
+                         mock_employees['employee_array'][0]['is_active'],
+                         msg="Employee's active status (" + str(retrieved_employees['employee_array'][0]['is_active'])
+                             + ") does not match the mock employee's active status ("
+                             + str(mock_employees['employee_array'][0]['is_active']) + ").")
+        self.assertEqual(retrieved_employees['employee_array'][0]['start_date'],
+                         mock_employees['employee_array'][0]['start_date'],
+                         msg="Employee's start date (" + str(retrieved_employees['employee_array'][0]['start_date'])
+                             + ") does not match the mock employee's start date ("
+                             + str(mock_employees['employee_array'][0]['start_date']) + ").")
+        self.assertEqual(retrieved_employees['employee_array'][0]['role'], mock_employees['employee_array'][0]['role'],
+                         msg="Employee's role (" + retrieved_employees['employee_array'][0]['role']
+                             + ") does not match the mock employee's role ("
+                             + mock_employees['employee_array'][0]['role'] + ").")
+        self.assertEqual(retrieved_employees['employee_array'][0]['department'],
+                         mock_employees['employee_array'][0]['department'],
+                         msg="Employee's department (" + retrieved_employees['employee_array'][0]['department']
+                             + ") does not match the mock employee's department ("
+                             + mock_employees['employee_array'][0]['department'] + ").")
+        self.assertEqual(retrieved_employees['employee_array'][0]['employee_id'],
+                         mock_employees['employee_array'][0]['employee_id'],
+                         msg="Employee's ID number (" + str(retrieved_employees['employee_array'][0]['employee_id'])
+                             + ") does not match the mock employee's ID number ("
+                             + str(mock_employees['employee_array'][0]['employee_id']) + ").")
+        self.assertEqual(retrieved_employees['employee_array'][0]['birth_date'],
+                         mock_employees['employee_array'][0]['birth_date'],
+                         msg="Employee's birth date (" + str(retrieved_employees['employee_array'][0]['birth_date'])
+                             + ") does not match the mock employee's birth date ("
+                             + str(mock_employees['employee_array'][0]['birth_date']) + ").")
+        self.assertEqual(retrieved_employees['employee_array'][0]['address'],
+                         mock_employees['employee_array'][0]['address'],
+                         msg="Employee's address (" + retrieved_employees['employee_array'][0]['address']
+                             + ") does not match the mock employee's address ("
+                             + mock_employees['employee_array'][0]['address'] + ").")
+
         self.assertEqual(retrieved_employees['employee_array'][1]['name'], mock_employees['employee_array'][1]['name'])
+        self.assertEqual(retrieved_employees['employee_array'][1]['name'], mock_employees['employee_array'][1]['name'],
+                         msg="Employee's name (" + retrieved_employees['employee_array'][1]['name']
+                             + ") does not match the mock employee's name ("
+                             + mock_employees['employee_array'][1]['name'] + ").")
+        self.assertEqual(retrieved_employees['employee_array'][1]['team_start_date'],
+                         mock_employees['employee_array'][1]['team_start_date'],
+                         msg="Employee's team start date (" + retrieved_employees['employee_array'][1]['name']
+                             + ") does not match the mock employee's team start date ("
+                             + mock_employees['employee_array'][1]['name'] + ").")
+        self.assertEqual(retrieved_employees['employee_array'][1]['is_active'],
+                         mock_employees['employee_array'][1]['is_active'],
+                         msg="Employee's active status (" + str(retrieved_employees['employee_array'][1]['is_active'])
+                             + ") does not match the mock employee's active status ("
+                             + str(mock_employees['employee_array'][1]['is_active']) + ").")
+        self.assertEqual(retrieved_employees['employee_array'][1]['start_date'],
+                         mock_employees['employee_array'][1]['start_date'],
+                         msg="Employee's start date (" + str(retrieved_employees['employee_array'][1]['start_date'])
+                             + ") does not match the mock employee's start date ("
+                             + str(mock_employees['employee_array'][1]['start_date']) + ").")
+        self.assertEqual(retrieved_employees['employee_array'][1]['role'], mock_employees['employee_array'][1]['role'],
+                         msg="Employee's role (" + retrieved_employees['employee_array'][1]['role']
+                             + ") does not match the mock employee's role ("
+                             + mock_employees['employee_array'][1]['role'] + ").")
+        self.assertEqual(retrieved_employees['employee_array'][1]['department'],
+                         mock_employees['employee_array'][1]['department'],
+                         msg="Employee's department (" + retrieved_employees['employee_array'][1]['department']
+                             + ") does not match the mock employee's department ("
+                             + mock_employees['employee_array'][1]['department'] + ").")
+        self.assertEqual(retrieved_employees['employee_array'][1]['employee_id'],
+                         mock_employees['employee_array'][1]['employee_id'],
+                         msg="Employee's ID number (" + str(retrieved_employees['employee_array'][1]['employee_id'])
+                             + ") does not match the mock employee's ID number ("
+                             + str(mock_employees['employee_array'][1]['employee_id']) + ").")
+        self.assertEqual(retrieved_employees['employee_array'][1]['birth_date'],
+                         mock_employees['employee_array'][1]['birth_date'],
+                         msg="Employee's birth date (" + str(retrieved_employees['employee_array'][1]['birth_date'])
+                             + ") does not match the mock employee's birth date ("
+                             + str(mock_employees['employee_array'][1]['birth_date']) + ").")
+        self.assertEqual(retrieved_employees['employee_array'][1]['address'],
+                         mock_employees['employee_array'][1]['address'],
+                         msg="Employee's address (" + retrieved_employees['employee_array'][1]['address']
+                             + ") does not match the mock employee's address ("
+                             + mock_employees['employee_array'][1]['address'] + ").")
 
     def test_postEmployee(self):
         employee_to_post = {
@@ -114,7 +274,51 @@ class EndPointTests(unittest.TestCase):
 
         employees.post(employee_to_post)
         all_employees = employees.get()
-        self.assertTrue(all_employees['employee_array'][-1], employee_to_post['fname'] + " " + employee_to_post['lname'])
+        # '-1' Gets the last employee, which is most recently added.
+        new_employee = all_employees['employee_array'][-1]
+        self.assertEqual(new_employee['name'], employee_to_post['fname'] + " " + employee_to_post['lname'],
+                         msg="Employee's name (" + new_employee['name']
+                             + ") does not match the mock employee's name ("
+                             + employee_to_post['fname'] + " " + employee_to_post['lname'] + ").")
+        self.assertEqual(new_employee['team_start_date'].strftime("%Y-%m-%d"),
+                         employee_to_post['start_date'],
+                         msg="Employee's team start date (" + new_employee['team_start_date'].strftime("%Y-%m-%d")
+                             + ") does not match the mock employee's team start date ("
+                             + str(employee_to_post['start_date']) + ").")
+        self.assertEqual(new_employee['is_active'],
+                         employee_to_post['is_active'],
+                         msg="Employee's active status (" + str(new_employee['is_active'])
+                             + ") does not match the mock employee's active status ("
+                             + str(employee_to_post['is_active']) + ").")
+        self.assertEqual(new_employee['start_date'].strftime("%Y-%m-%d"),
+                         employee_to_post['start_date'],
+                         msg="Employee's start date (" + new_employee['start_date'].strftime("%Y-%m-%d")
+                             + ") does not match the mock employee's start date ("
+                             + str(employee_to_post['start_date']) + ").")
+        self.assertEqual(new_employee['role'], employee_to_post['role'],
+                         msg="Employee's role (" + new_employee['role']
+                             + ") does not match the mock employee's role ("
+                             + employee_to_post['role'] + ").")
+        self.assertEqual(new_employee['department'],
+                         employee_to_post['department'],
+                         msg="Employee's department (" + new_employee['department']
+                             + ") does not match the mock employee's department ("
+                             + employee_to_post['department'] + ").")
+        self.assertEqual(new_employee['birth_date'].strftime("%Y-%m-%d"),
+                         employee_to_post['birth_date'],
+                         msg="Employee's birth date (" + new_employee['birth_date'].strftime("%Y-%m-%d")
+                             + ") does not match the mock employee's birth date ("
+                             + str(employee_to_post['birth_date']) + ").")
+
+        # TODO Address formatting.
+        '''
+        An Extra spaces seem to be added into addresses when they're retrieved from the DB.
+        example: "1 test dr,  rochester,  ny 14623" as opposed to "1 test dr, rochester, ny 14623"
+        '''
+        # self.assertEqual(new_employee['address'], employee_to_post['address'],
+        #                  msg="Employee's address (" + new_employee['address']
+        #                      + ") does not match the mock employee's address ("
+        #                      + employee_to_post['address'] + ").")
 
     def test_patchEmployee(self):
         patch = {
@@ -159,8 +363,56 @@ class EndPointTests(unittest.TestCase):
         employee_to_test = employee.get(num_employees)['employee_array']
         print("Tests: ",employee_to_test)
         self.assertEqual(employee_to_test['name'],patch['fname'] + " " + patch['lname'])
-        # self.assertEqual(employee_to_test['address'], patch['address']) TODO This fails. Inputs are the same, but extra spaces are added to the address from the database.
-        # self.assertEqual(employee_to_test['salary'],str(0)) TODO Also, fails. Expected to zero, but might account for 0 == no change?
+
+        self.assertEqual(employee_to_test['name'], patch['fname'] + " " + patch['lname'],
+                         msg="Employee's name (" + employee_to_test['name']
+                             + ") does not match the mock employee's name ("
+                             + patch['fname'] + " " + patch['lname'] + ").")
+        self.assertEqual(employee_to_test['team_start_date'].strftime("%Y-%m-%d"),
+                         patch['start_date'],
+                         msg="Employee's team start date (" + employee_to_test['team_start_date'].strftime("%Y-%m-%d")
+                             + ") does not match the mock employee's team start date ("
+                             + str(patch['start_date']) + ").")
+        self.assertEqual(employee_to_test['is_active'],
+                         patch['is_active'],
+                         msg="Employee's active status (" + str(employee_to_test['is_active'])
+                             + ") does not match the mock employee's active status ("
+                             + str(patch['is_active']) + ").")
+        self.assertEqual(employee_to_test['start_date'].strftime("%Y-%m-%d"),
+                         patch['start_date'],
+                         msg="Employee's start date (" + employee_to_test['start_date'].strftime("%Y-%m-%d")
+                             + ") does not match the mock employee's start date ("
+                             + str(patch['start_date']) + ").")
+
+        # TODO Role Doesn't patch
+        # self.assertEqual(employee_to_test['role'], patch['role'],
+        #                  msg="Employee's role (" + employee_to_test['role']
+        #                      + ") does not match the mock employee's role ("
+        #                      + patch['role'] + ").")
+        self.assertEqual(employee_to_test['department'],
+                         patch['department'],
+                         msg="Employee's department (" + employee_to_test['department']
+                             + ") does not match the mock employee's department ("
+                             + patch['department'] + ").")
+        self.assertEqual(employee_to_test['birth_date'].strftime("%Y-%m-%d"),
+                         patch['birth_date'],
+                         msg="Employee's birth date (" + employee_to_test['birth_date'].strftime("%Y-%m-%d")
+                             + ") does not match the mock employee's birth date ("
+                             + str(patch['birth_date']) + ").")
+        '''
+        An Extra spaces seem to be added into addresses when they're retrieved from the DB.
+        example: "1 test dr,  rochester,  ny 14623" as opposed to "1 test dr, rochester, ny 14623"
+        '''
+        # self.assertEqual(new_employee['address'], patch['address'],
+        #                  msg="Employee's address (" + new_employee['address']
+        #                      + ") does not match the mock employee's address ("
+        #                      + patch['address'] + ").")
+
+        # TODO This fails. Inputs are the same, but extra spaces are added to the address from the database.
+        # self.assertEqual(employee_to_test['address'], patch['address'])
+
+        # TODO Also, fails. Expected to zero, but might account for 0 == no change?
+        # self.assertEqual(employee_to_test['salary'],str(0))
 
     def test_deleteEmployee(self):
         employee_to_post = {
