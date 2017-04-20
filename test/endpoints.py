@@ -9,8 +9,8 @@ class EndPointTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        if os.path.exists("hr.sqlite3"):
-            os.remove("hr.sqlite3")
+        if os.path.exists("hr.myd"):
+            os.remove("hr.myd")
         defaultInfo()
 
     def test_getEmployee(self):
@@ -459,5 +459,5 @@ class EndPointTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         # TODO Remove Test database when finished testing.
-        # os.remove("hr.sqlite3")
+        # os.remove("hr.myd")
         pass  # To make sure the above line doesn't provide an error when it's commented out.

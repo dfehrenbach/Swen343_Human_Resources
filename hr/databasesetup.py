@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 
 logger.info("Creating database.")
 
-file_name = "hr.sqlite3"
-engine = create_engine('sqlite:///' + file_name, echo=True)
+file_name = "hr.myd"
+engine = create_engine('mysql+mysqldb://' + file_name, echo=True)
 engine.connect()
 Base = declarative_base()
 
@@ -204,7 +204,7 @@ logger.warning("Added default objects to database.")
 print("Added all objects to database.")
 
 if __name__ == "__main__":
-    file_name = "hr.sqlite3"
+    file_name = "hr.myd"
     # Populate database if it is empty
     if os.stat(file_name).st_size == 0:
         defaultInfo()
