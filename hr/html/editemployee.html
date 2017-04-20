@@ -1,24 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js">
+</script>
 <head>
     <meta charset="UTF-8">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <title>Edit Employee</title>
 </head>
 <body>
-<div ng-app="EditApp" ng-controller="EditCtrl">
-    <h1>PATCH</h1>
-    <form name="patchForm">
-        <p>ID:<input ng-model="patchEmployeeId" type="number" required/></p>
-        <p>Active: <input ng-model="patchIsActive" type="checkbox"></p>
-        <p>First Name: <input ng-model="patchFName" type="text"></p>
-        <p>Last Name: <input ng-model="patchLName" type="text"></p>
-        <p>DOB: <input ng-model="patchDOB" type="date"></p>
-        <p>Address: <input ng-model="patchAddress" type="text" required></p>
-        <p>City: <input ng-model="patchCity" type="text" required><p>State: <input ng-model="patchState" type="text" required>Zip: <input ng-model="patchZip" type="number" required></p>
-        <p>Address Start Date: <input ng-model="patchAddressStartDate" type="date"></p>
-        <p>Department:
-            <select ng-model="patchDepartment">
+<script src="/static/js/bootstrap.min.js">
+</script>
+<div class="container" ng-app="EditApp" ng-controller="EditCtrl">
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Krutz Corp. HR</a>
+            </div>
+        </div>
+    </nav>
+    <h1 class="page-header">Employee {{eId}}</h1>
+
+    <form class="form-group" name="patchForm">
+        <div class="checkbox">
+            <label>
+                <input id="IsActive" ng-model="patchIsActive" type="checkbox">Active</label>
+        </div>
+        <div class="form-group">
+            <label for="FName">First Name</label>
+            <input class="form-control" id="FName" ng-model="patchFName" type="text">
+        </div>
+        <div class="form-group">
+            <label for="LName">Last Name</label>
+            <input class="form-control" id="LName" ng-model="patchLName" type="text">
+        </div>
+        <div class="form-group">
+            <label for="DOB">DOB</label>
+            <input class="form-control" id="DOB" ng-model="patchDOB" type="date">
+        </div>
+        <div class="form-group">
+            <label for="Address">Address</label>
+            <input class="form-control" id="Address" ng-model="patchAddress" type="text" required>
+        </div>
+        <div class="form-group">
+            <label for="City">City</label>
+            <input class="form-control" id="City" ng-model="patchCity" type="text" required>
+        </div>
+        <div class="form-group">
+            <label for="State">State</label>
+            <input class="form-control" id="State" ng-model="patchState" type="text" required>
+        </div>
+        <div class="form-group">
+            <label for="Zip">Zip</label>
+            <input class="form-control" id="Zip" ng-model="patchZip" type="number" required>
+        </div>
+        <div class="form-group">
+            <label for="AddressStartDate">Address Start Date</label>
+            <input class="form-control" id="AddressStartDate" ng-model="patchAddressStartDate" type="date">
+        </div>
+        <div class="form-group">
+            <label for="Department">Department</label>
+            <select class="form-control" id="Department" ng-model="patchDepartment">
                 <option value="HR">HR
                 <option value="Accounting">Accounting
                 <option value="Customer Service">Customer Service
@@ -26,26 +68,85 @@
                 <option value="Sales">Sales
                 <option value="Manufacturing">Manufacturing
             </select>
-        </p>
-        <p>Department Start Date: <input ng-model="patchDepartmentStartDate" type="date"></p>
-        <p>Role: <input ng-model="patchRole" type="text"></p>
-        <p>Role Start Date: <input ng-model="patchRoleStartDate" type="date"></p>
-        <p>Company Start Date: <input ng-model="patchStartDate" type="date"></p>
-        <button ng-click="patchEmployee()">Update Employee</button>
+        </div>
+        <div class="form-group">
+            <label for="DepartmentStartDate">Department Start Date</label>
+            <input class="form-control" id="DepartmentStartDate" ng-model="patchDepartmentStartDate" type="date">
+        </div>
+        <div class="form-group">
+            <label for="Role">Role</label>
+            <input class="form-control" id="Role" ng-model="patchRole" type="text">
+        </div>
+        <div class="form-group">
+            <label for="RoleStartDate">Role Start Date</label>
+            <input class="form-control" id="RoleStartDate" ng-model="patchRoleStartDate" type="date">
+        </div>
+        <div class="form-group">
+            <label for="StartDate">Company Start Date</label>
+            <input class="form-control" id="StartDate" ng-model="patchStartDate" type="date">
+        </div>
+
+        <button class="btn btn-default" ng-click="patchEmployee()">Update Employee</button>
+        <br>
+        <button class="btn btn-danger" ng-click="deleteEmployee()">Delete Employee</button>
     </form>
 
-    <pre>{{patchedEmployee}}</pre>
-    <br><br>
 </div>
 </body>
 <script>
     angular.module('EditApp', [])
-        .controller('EditCtrl', ['$scope', '$http', '$filter', function ($scope, $http, $filter) {
+        .controller('EditCtrl', ['$scope', '$http', '$filter', '$location', function ($scope, $http, $filter, $location) {
             $scope.patchedEmployee = " ";
+            $scope.eId = window.location.pathname.split("/").slice(-1)[0];
+            if ($scope.eId) {
+                $http.get("/employee?employee_id=" + $scope.eId)
+                    .then(function (response) {
+                        var data = response.data.employee_array[0];
+                        $scope.patchIsActive = data["is_active"];
+                        var name = data["name"];
+                        if (name) {
+                            name = name.split(' ');
+                        }
+                        $scope.patchFName = name[0];
+                        if (name[1]) {
+                            $scope.patchLName = name[1];
+                        }
+                        if (data["birth_date"]) {
+                            $scope.patchDOB = new Date(data["birth_date"]);
+                        }
+                        if (data["address"]) {
+                            var address = data["address"].split(",");
+                            $scope.patchAddress = address[0].replace(/^\s+|\s+$/g, '');
+                            $scope.patchCity = address[1].replace(/^\s+|\s+$/g, '');
+                            var stateZip = address[2].split(" ");
+                            $scope.patchState = stateZip.slice(0, -1).join(" ").replace(/^\s+|\s+$/g, '');
+                            $scope.patchZip = +stateZip[stateZip.length - 1];
+                            //                    data["address"] = $scope.patchAddress + ", " + $scope.patchCity + ", " + $scope.patchState + " " + $scope.patchZip;
+                        }
+                        if (data["department_start_date"]) {
+                            $scope.patchDepartmentStartDate = new Date(data["department_start_date"]);
+                        }
+                        if (data["role_start_date"]) {
+                            $scope.patchRoleStartDate = new Date(data["role_start_date"]);
+                        }
+                        if (data["start_date"]) {
+                            $scope.patchStartDate = new Date(data["start_date"]);
+                        }
+                        if (data["department"]) {
+                            $scope.patchDepartment = data["department"];
+                        }
+                        if (data["role"]) {
+                            $scope.patchRole = data["role"];
+                        }
+                    }, function (response) {
+                        window.location.href = '/'
+                    });
 
+            }
 
             $scope.patchEmployee = function () {
-                var data = {"employee_id": +$scope.patchEmployeeId};
+                var data = {"employee_id": +$scope.eId};
+                data["is_active"] = $scope.patchIsActive;
                 if ($scope.patchFName) {
                     data["fname"] = $scope.patchFName;
                 }
@@ -75,15 +176,22 @@
                     data["start_date"] = $filter('date')($scope.patchStartDate, "yyyy-MM-dd");
                 }
                 $http({
-                    url: 'employee',
+                    url: '/employee',
                     method: "PATCH",
                     data: data
                 })
                     .then(function (response) {
-                        $scope.patchedEmployee =JSON.stringify(response.data,null,3);
+                        alert("Employee " + $scope.eId + " updated.");
                     });
+            }
+            $scope.deleteEmployee = function () {
+                if (confirm('Are you sure you want to delete employee #' + $scope.eId)) {
+                    $http.delete("/employee?employee_id=" + $scope.eId).then(function (response) {
+                        window.location.href = "/";
+                    });
+                }
             }
 
         }]);
-    </script>
+</script>
 </html>
