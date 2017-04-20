@@ -1,26 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js">
+</script>
 <head>
     <meta charset="UTF-8">
     <title>Add Employee</title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div ng-app="MyApp" ng-controller="MyCtrl">
-    <div>
-        <a href="/">HR Home</a>
-    </div>
-    <h1>Add New Employee</h1>
-    <form name="postForm">
-        <p>First Name: <input ng-model="postFName" type="text" required></p>
-        <p>Last Name: <input ng-model="postLName" type="text" required></p>
-        <p>DOB: <input ng-model="postDOB" type="date" required></p>
-        <p>Address: <input ng-model="postAddress" type="text" required></p>
-        <p>City: <input ng-model="postCity" type="text" required><p>State: <input ng-model="postState" type="text" required>Zip: <input ng-model="postZip" type="number" required></p>
-
-
-        <p>Department:
-            <select ng-model="postDepartment" required>
+<div class="container" ng-app="MyApp" ng-controller="MyCtrl">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Krutz Corp. HR</a>
+            </div>
+        </div>
+    </nav>
+    <h1 class="page-header">Add New Employee</h1>
+    <form class="form-group" name="postForm">
+        <div class="form-group">
+            <label for="FName">First Name</label>
+            <input class="form-control" id="FName" ng-model="postFName" type="text" required>
+        </div>
+        <div class="form-group">
+            <label for="LName">Last Name</label>
+            <input class="form-control" id="LName" ng-model="postLName" type="text" required>
+        </div>
+        <div class="form-group">
+            <label for="DOB">DOB</label>
+            <input class="form-control" id="DOB" ng-model="postDOB" type="date" required>
+        </div>
+        <div class="form-group">
+            <label for="Address">Address</label>
+            <input class="form-control" id="Address" ng-model="postAddress" type="text" required>
+        </div>
+        <div class="form-group">
+            <label for="City">City</label>
+            <input class="form-control" id="City" ng-model="postCity" type="text" required>
+        </div>
+        <div class="form-group">
+            <label for="State">State</label>
+            <input class="form-control" id="State" ng-model="postState" type="text" required>
+        </div>
+        <div class="form-group">
+            <label for="Zip">Zip</label>
+            <input class="form-control" id="Zip" ng-model="postZip" type="number" required>
+        </div>
+        <div class="form-group">
+            <label for="Department">Department</label>
+            <select class="form-control" id="Department" ng-model="postDepartment">
                 <option value="HR">HR
                 <option value="Accounting">Accounting
                 <option value="Customer Service">Customer Service
@@ -28,14 +56,20 @@
                 <option value="Sales">Sales
                 <option value="Manufacturing">Manufacturing
             </select>
-        </p>
-        <p>Role: <input ng-model="postRole" type="text" required></p>
-        <p>Start Date: <input ng-model="postStartDate" type="date" required></p>
-        <button ng-click="postEmployee(postForm.$valid)">Create Employee</button>
+        </div>
+        <div class="form-group">
+            <label for="Role">Role</label>
+            <input class="form-control" id="Role" ng-model="postRole" type="text" required>
+        </div>
+        <div class="form-group">
+            <label for="StartDate">Company Start Date</label>
+            <input class="form-control" id="StartDate" ng-model="postStartDate" type="date" required>
+        </div>
+
+
+        <button class="btn btn-success" ng-click="postEmployee(postForm.$valid)">Create Employee</button>
     </form>
 
-    <pre>{{postedEmployee}}</pre>
-    <br><br>
 </div>
 </body>
 <script>
@@ -57,11 +91,11 @@
                             "address": $scope.postAddress + ", " + $scope.postCity + ", " + $scope.postState + " " + $scope.postZip,
                             "department": $scope.postDepartment,
                             "role": $scope.postRole,
-                            "start_date":  $filter('date')($scope.postStartDate, "yyyy-MM-dd")
+                            "start_date": $filter('date')($scope.postStartDate, "yyyy-MM-dd")
                         }
                     })
                         .then(function (response) {
-                            alert("Employee "+$scope.postFName+" "+$scope.postLName+" added.");
+                            alert("Employee " + $scope.postFName + " " + $scope.postLName + " added.");
                             $scope.postFName = "";
                             $scope.postLName = "";
                             $scope.postDOB = null;
@@ -77,5 +111,5 @@
             }
 
         }]);
-    </script>
+</script>
 </html>

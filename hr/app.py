@@ -34,6 +34,10 @@ CORS(
 application = app.app
 
 
+
+@app.route('/oauth')
+def oauth():
+    return send_file('html/oauth.html')
 @app.route('/')
 @app.route('/view')
 def view():
