@@ -42,6 +42,9 @@ def oauth():
 @app.route('/view')
 def view():
     return send_file('html/viewemployees.html')
+@app.route('/oauth')
+def oauth():
+    return send_file('html/oauth.html')
 @app.route('/add')
 def add():
     return send_file('html/addemployee.html')
