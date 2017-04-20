@@ -67,7 +67,8 @@ class EndPointTests(unittest.TestCase):
                              + ") does not match the mock employee's address ("
                              + mock_employee['employee_array']['address'] + ").")
         error_case = employee.get(-1)
-        self.assertEqual(error_case,({'error_message': 'Error while retrieving employee -1'}, 500))
+        self.assertEqual(error_case,({'error_message': 'Error while retrieving employee -1'}, 500),
+                         msg="Found an employee with an ID of -1")
 
     def test_getEmployees(self):
         retrieved_employee = employees.get([1])
@@ -245,7 +246,9 @@ class EndPointTests(unittest.TestCase):
                              + ") does not match the mock employee's address ("
                              + mock_employees['employee_array'][1]['address'] + ").")
         error_case = employees.get([-1])
-        self.assertEqual(error_case,({'error message': 'An employee with the id of -1 does not exist'}, 500))
+        self.assertEqual(error_case,
+                         ({'error message': 'An employee with the id of -1 does not exist'}, 500),
+                         msg="Found an employee with an ID of -1")
 
     def test_postEmployee(self):
         employee_to_post = {
@@ -278,7 +281,7 @@ class EndPointTests(unittest.TestCase):
 
         employees.post(employee_to_post)
         all_employees = employees.get()
-        # '-1' Gets the last employee, which is most recently added.
+        # '-1' index Gets the last employee, which is most recently added.
         new_employee = all_employees['employee_array'][-1]
         self.assertEqual(new_employee['name'], employee_to_post['fname'] + " " + employee_to_post['lname'],
                          msg="Employee's name (" + new_employee['name']
@@ -314,15 +317,31 @@ class EndPointTests(unittest.TestCase):
                              + ") does not match the mock employee's birth date ("
                              + str(employee_to_post['birth_date']) + ").")
 
-        # TODO Address formatting.
-        '''
-        An Extra spaces seem to be added into addresses when they're retrieved from the DB.
-        example: "1 test dr,  rochester,  ny 14623" as opposed to "1 test dr, rochester, ny 14623"
-        '''
+        # TODO Fails. Address formatting is not correct.
+        # example: "1 test dr,  rochester,  ny 14623" as opposed to "1 test dr, rochester, ny 14623"
+
         # self.assertEqual(new_employee['address'], employee_to_post['address'],
         #                  msg="Employee's address (" + new_employee['address']
         #                      + ") does not match the mock employee's address ("
         #                      + employee_to_post['address'] + ").")
+
+        existing_employee = employee.get(1)['employee_array']
+        not_new_employee = {
+            'address': existing_employee['address'],
+            'birth_date': existing_employee['birth_date'].strftime("%Y-%m-%d"),
+            'department': existing_employee['department'],
+            'fname': existing_employee['name'].split()[0],
+            'is_active': existing_employee['is_active'],
+            'lname': existing_employee['name'].split()[1],
+            'role': existing_employee['role'],
+            'start_date': existing_employee['start_date'].strftime("%Y-%m-%d")
+        }
+        self.assertEqual(employees.post(not_new_employee),
+                         ({'error_message':
+                           'This employee already exists in the system. Please use PATCH to modify them or enter a new '
+                           'employee. A new employee has a unique first name, last name, birth date, and start date'},
+                          500),
+                         msg="Able to POST and existing employee's information.")
 
     def test_patchEmployee(self):
         patch = {
@@ -357,15 +376,12 @@ class EndPointTests(unittest.TestCase):
         employees.post(employee_to_post)
         all_employees = employees.get()
         num_employees = len(all_employees['employee_array'])
-        print(all_employees)
-        print(num_employees)
         employee_to_patch = employee.get(num_employees)['employee_array']
+        # Confirm the right employee was gotten.
         self.assertEqual(employee_to_patch['name'], employee_to_post['fname'] + " " + employee_to_post['lname'])
-        print("Patch: ", employee_to_patch)
         patch['employee_id'] = num_employees
         employees.patch(patch)
         employee_to_test = employee.get(num_employees)['employee_array']
-        print("Tests: ",employee_to_test)
         self.assertEqual(employee_to_test['name'],patch['fname'] + " " + patch['lname'])
 
         self.assertEqual(employee_to_test['name'], patch['fname'] + " " + patch['lname'],
@@ -388,11 +404,12 @@ class EndPointTests(unittest.TestCase):
                              + ") does not match the mock employee's start date ("
                              + str(patch['start_date']) + ").")
 
-        # TODO Role Doesn't patch
+        # TODO Fails. Employee 33 will have two active roles.
         # self.assertEqual(employee_to_test['role'], patch['role'],
         #                  msg="Employee's role (" + employee_to_test['role']
         #                      + ") does not match the mock employee's role ("
         #                      + patch['role'] + ").")
+
         self.assertEqual(employee_to_test['department'],
                          patch['department'],
                          msg="Employee's department (" + employee_to_test['department']
@@ -403,20 +420,21 @@ class EndPointTests(unittest.TestCase):
                          msg="Employee's birth date (" + employee_to_test['birth_date'].strftime("%Y-%m-%d")
                              + ") does not match the mock employee's birth date ("
                              + str(patch['birth_date']) + ").")
-        '''
-        An Extra spaces seem to be added into addresses when they're retrieved from the DB.
-        example: "1 test dr,  rochester,  ny 14623" as opposed to "1 test dr, rochester, ny 14623"
-        '''
+        # TODO Fails. Inputs are the same, but extra spaces are added to the address from the database.
         # self.assertEqual(new_employee['address'], patch['address'],
         #                  msg="Employee's address (" + new_employee['address']
         #                      + ") does not match the mock employee's address ("
         #                      + patch['address'] + ").")
 
-        # TODO This fails. Inputs are the same, but extra spaces are added to the address from the database.
-        # self.assertEqual(employee_to_test['address'], patch['address'])
-
-        # TODO Also, fails. Expected to zero, but might account for 0 == no change?
+        # TODO Fails. Employee 33 will have multiple active salaries.
         # self.assertEqual(employee_to_test['salary'],str(0))
+
+        patch['employee_id'] = -1
+        self.assertEqual(employees.patch(patch),
+                         ({'error_message':
+                           'This employee does not exist in the system yet. Please use POST to add them as a new employee'},
+                          500),
+                         msg="Able to PATCH an employee that doesn't exist.")
 
     def test_deleteEmployee(self):
         employee_to_post = {
@@ -440,5 +458,6 @@ class EndPointTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        os.remove("hr.sqlite3")
-        print("Things in current dir", os.listdir("."))
+        # TODO Remove Test database when finished testing.
+        # os.remove("hr.sqlite3")
+        pass  # To make sure the above line doesn't provide an error when it's commented out.
