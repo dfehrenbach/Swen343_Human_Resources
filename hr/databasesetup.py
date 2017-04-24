@@ -159,7 +159,7 @@ def defaultInfo():
              ("Johnathan", "Sellers", "Manufacturing", "Developer"), ("Nicholas", "Swanson", "Sales", "Developer"),
              ("William", "Tarr", "Accounting", "Developer"), ("Jeremy", "Vargas", "HR", "Developer"),
              ("Bryon", "Wilkins", "Customer Support", "Developer"), ("Eric", "Yoon", "Customer Support", "Developer"),
-             ("Daniel", "Krutz", "Board", "Board"), ("Silva", "Natti", "Board", "Board")]
+             ("Daniel", "Krutz", "Board", "Board"), ("Silva", "Matti", "Board", "Board")]
 
     usernames = generateRandomProperties(len(names))
     passwords = generateRandomProperties(len(names))
