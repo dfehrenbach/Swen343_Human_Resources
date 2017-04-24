@@ -85,6 +85,10 @@
             <label for="StartDate">Company Start Date</label>
             <input class="form-control" id="StartDate" ng-model="patchStartDate" type="date">
         </div>
+        <div class="form-group">
+            <label for="Salary">Salary</label>
+            <input class="form-control" id="Salary" ng-model="patchSalary" type="number">
+        </div>
 
         <button class="btn btn-default" ng-click="patchEmployee()">Update Employee</button>
         <br>
@@ -138,6 +142,10 @@
                         if (data["role"]) {
                             $scope.patchRole = data["role"];
                         }
+                        if (data["salary"]) {
+                            $scope.patchSalary = +data["salary"];
+                        }
+
                     }, function (response) {
                         window.location.href = '/'
                     });
@@ -174,6 +182,9 @@
 
                 if ($scope.patchStartDate) {
                     data["start_date"] = $filter('date')($scope.patchStartDate, "yyyy-MM-dd");
+                }
+                if ($scope.patchSalary) {
+                    data["salary"] = +$scope.patchSalary;
                 }
                 $http({
                     url: '/employee',

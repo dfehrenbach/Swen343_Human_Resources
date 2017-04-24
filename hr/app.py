@@ -52,6 +52,6 @@ def edit(eId=-1):
 if __name__ == '__main__':
     logger.warning('App starting up.')
     app.run(
-        port=8080,
+        port=80,
         debug=True
     )
