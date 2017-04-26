@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 logger.info("Creating database.")
 
 password_file = open("pass.txt", 'r')
-password = password_file.read()
+password = password_file.read().strip()
 password_file.close()
 
 file_name = "hr.myd"
