@@ -208,7 +208,6 @@ logger.warning("Added default objects to database.")
 print("Added all objects to database.")
 
 if __name__ == "__main__":
-    file_name = "hr.myd"
-    # Populate database if it is empty
-    if os.stat(file_name).st_size == 0:
+    # Populate database if it is empty.  Set this to true to repopulate
+    if True:
         defaultInfo()
