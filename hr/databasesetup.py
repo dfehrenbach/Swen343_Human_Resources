@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 logger.info("Creating database.")
 
-password_file = open("../pass.txt", 'r')
+password_file = open("pass.txt", 'r')
 password = password_file.read()
 password_file.close()
 
