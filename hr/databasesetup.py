@@ -11,8 +11,12 @@ logger = logging.getLogger(__name__)
 
 logger.info("Creating database.")
 
+password_file = open("~/pass.txt", 'r')
+password = password_file.read()
+password_file.close()
+
 file_name = "hr.myd"
-engine = create_engine('mysql+mysqldb://' + file_name, echo=True)
+engine = create_engine('mysql+mysqldb://root:' + password + '@localhost/343DB', echo=True)
 engine.connect()
 Base = declarative_base()
 
