@@ -17,3 +17,6 @@ def get(department="",token=""):
     :param token:
     :return: an object with employee_id
     """
+    if token and department:
+        return {"employee_id":0}
+    return {'error_message': 'User is not authenticated'}, 400
