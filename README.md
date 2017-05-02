@@ -12,6 +12,9 @@ To initialize the project create a file `setup.sh` and run it using `bash setup.
 apt-get update
 apt-get -y upgrade
 apt-get -y install git
+apt-get -y install mysql-server
+apt-get install libmysqlclient-dev
+
 
 mkdir working_dir
 cd working_dir

@@ -11,8 +11,12 @@ logger = logging.getLogger(__name__)
 
 logger.info("Creating database.")
 
-file_name = "hr.sqlite3"
-engine = create_engine('sqlite:///' + file_name, echo=True)
+password_file = open("pass.txt", 'r')
+password = password_file.read().strip()
+password_file.close()
+
+file_name = "hr.myd"
+engine = create_engine('mysql+mysqldb://root:' + password + '@localhost/343DB', echo=True)
 engine.connect()
 Base = declarative_base()
 
@@ -159,7 +163,7 @@ def defaultInfo():
              ("Johnathan", "Sellers", "Manufacturing", "Developer"), ("Nicholas", "Swanson", "Sales", "Developer"),
              ("William", "Tarr", "Accounting", "Developer"), ("Jeremy", "Vargas", "HR", "Developer"),
              ("Bryon", "Wilkins", "Customer Support", "Developer"), ("Eric", "Yoon", "Customer Support", "Developer"),
-             ("Daniel", "Krutz", "Board", "Board"), ("Silva", "Natti", "Board", "Board")]
+             ("Daniel", "Krutz", "Board", "Board"), ("Silva", "Matti", "Board", "Board")]
 
     usernames = generateRandomProperties(len(names))
     passwords = generateRandomProperties(len(names))
@@ -204,7 +208,6 @@ logger.warning("Added default objects to database.")
 print("Added all objects to database.")
 
 if __name__ == "__main__":
-    file_name = "hr.sqlite3"
-    # Populate database if it is empty
-    if os.stat(file_name).st_size == 0:
+    # Populate database if it is empty.  Set this to true to repopulate
+    if False:
         defaultInfo()

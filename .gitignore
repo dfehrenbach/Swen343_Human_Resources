@@ -59,4 +59,4 @@ target/
 
 \.idea/
 
-/hr/hr.sqlite3
+/hr/hr.myd

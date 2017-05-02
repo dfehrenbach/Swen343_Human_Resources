@@ -137,6 +137,35 @@ paths:
           schema:
             $ref: "#/definitions/Error"
 
+  /confirm_login/{department}/{token}:
+    get:
+      operationId: controllers.authentication.get
+      description:
+        Confirm token is authorized
+      parameters:
+        - name: token
+          in: path
+          type: string
+          required: true
+          description: The token to be authenticated
+        - name: department
+          in: path
+          type: string
+          required: true
+          description: The department to be authenticated
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              employee_id:
+                type: integer
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: "#/definitions/Error"
+
 ################################################################################
 #                                                                              #
 #                                 Definitions                                  #
