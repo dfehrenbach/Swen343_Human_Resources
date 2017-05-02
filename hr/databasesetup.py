@@ -31,6 +31,8 @@ class Employee(Base):
     first_name = Column(String(25))
     birth_date = Column(Date)
     start_date = Column(Date)
+    orders = Column(Integer)
+    phones = Column(Integer)
 
     # This allows for reference to this employee's details without extra searching
     user = relationship("User", uselist=False, back_populates="employee", cascade="all, delete-orphan")

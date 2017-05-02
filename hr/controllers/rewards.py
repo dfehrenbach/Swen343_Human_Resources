@@ -21,6 +21,7 @@ logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(me
 logger = logging.getLogger(__name__)
 
 def get():
-
+    return ""
 
 def post():
+    return ""

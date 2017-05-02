@@ -137,6 +137,47 @@ paths:
           schema:
             $ref: "#/definitions/Error"
 
+  /rewards:
+    get:
+      operationId: controllers.rewards.get
+      description: A set of employees that are valid for rewards and their relevant information
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              employee_array:
+                type: array
+                items:
+                  $ref: "#/definitions/Employee_Reward"
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: "#/definitions/Error"
+    post:
+      operationId: controllers.rewards.post
+      description:
+        Adds reward information for an employee
+      parameters:
+        - name: employee
+          in: body
+          schema:
+            $ref: "#/definitions/Reward"
+          required: true
+          description:
+            This is the entry of reward relevant information for a particular employee
+      responses:
+        204:
+          description: Rewards input!
+        400:
+          description: Reward could not be input.
+        default:
+          description: Unexpected Error
+          schema:
+            $ref: "#/definitions/Error"
+
+
   /confirm_login/{department}/{token}:
     get:
       operationId: controllers.authentication.get
@@ -287,6 +328,39 @@ definitions:
         type: string
 
 #                                                                              #
+#                                 Employee_Reward                              #
+#                                                                              #
+  Employee_Reward:
+    type: object
+    properties:
+      employee_id:
+        type: integer
+      name:
+        type: string
+      phones:
+        type: integer
+      orders:
+        type: integer
+
+#                                                                              #
+#                                 Reward                                       #
+#                                                                              #
+  Reward:
+    type: object
+    properties:
+      employeeId:
+        type: integer
+      replace:
+        type: boolean
+      orderId:
+        type: integer
+      salaryIds:
+        type: array
+        items:
+          type: integer
+
+
+#                                                                              #
 #                                 Error                                        #
 #                                                                              #
   Error:
@@ -314,4 +388,3 @@ parameters:
       type: integer
     required: false
     description: id of a particular employee or set of employees
-
