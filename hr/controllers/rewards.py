@@ -52,5 +52,15 @@ def get():
         return EmployeeResponse(employee_collection).to_dict()
 
 
-def post():
+def post(payload):
+    """
+    :param payload:
+    :return:
+
+    1. check employee exists and grab it
+    2. add information to that employee
+    3. for each id in the array check for status from manufacturing
+    4. if low/medium increment
+    5. increment by 1.
+    """
     return ""
