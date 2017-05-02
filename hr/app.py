@@ -50,7 +50,7 @@ def edit():
 @app.route('/delete')
 def delete():
     return send_file('html/deleteemployee.html')
-@app.route('/rewards')
+@app.route('/viewrewards')
 def rewards():
     return send_file('html/rewards.html')
 

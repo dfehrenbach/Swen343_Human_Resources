@@ -171,3 +171,69 @@ FROM employee
 2017-05-02 12:04:58,174 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test collated returns' AS CHAR CHARACTER SET utf8) COLLATE utf8_bin AS anon_1
 2017-05-02 12:04:58,174 :: sqlalchemy.engine.base.Engine :: ()
 2017-05-02 12:04:58,187 :: __main__ :: Added default objects to database.
+2017-05-02 12:05:07,483 :: sqlalchemy.engine.base.Engine :: SHOW VARIABLES LIKE 'sql_mode'
+2017-05-02 12:05:07,483 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:05:07,486 :: sqlalchemy.engine.base.Engine :: SELECT DATABASE()
+2017-05-02 12:05:07,486 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:05:07,486 :: sqlalchemy.engine.base.Engine :: show collation where `Charset` = 'utf8' and `Collation` = 'utf8_bin'
+2017-05-02 12:05:07,486 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:05:07,487 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test plain returns' AS CHAR(60)) AS anon_1
+2017-05-02 12:05:07,489 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:05:07,489 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test unicode returns' AS CHAR(60)) AS anon_1
+2017-05-02 12:05:07,489 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:05:07,490 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test collated returns' AS CHAR CHARACTER SET utf8) COLLATE utf8_bin AS anon_1
+2017-05-02 12:05:07,490 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:05:07,502 :: databasesetup :: Added default objects to database.
+2017-05-02 12:05:07,509 :: __main__ :: App starting up.
+2017-05-02 12:05:08,216 :: sqlalchemy.engine.base.Engine :: SHOW VARIABLES LIKE 'sql_mode'
+2017-05-02 12:05:08,216 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:05:08,219 :: sqlalchemy.engine.base.Engine :: SELECT DATABASE()
+2017-05-02 12:05:08,219 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:05:08,220 :: sqlalchemy.engine.base.Engine :: show collation where `Charset` = 'utf8' and `Collation` = 'utf8_bin'
+2017-05-02 12:05:08,220 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:05:08,220 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test plain returns' AS CHAR(60)) AS anon_1
+2017-05-02 12:05:08,220 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:05:08,221 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test unicode returns' AS CHAR(60)) AS anon_1
+2017-05-02 12:05:08,221 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:05:08,223 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test collated returns' AS CHAR CHARACTER SET utf8) COLLATE utf8_bin AS anon_1
+2017-05-02 12:05:08,223 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:05:08,236 :: databasesetup :: Added default objects to database.
+2017-05-02 12:05:08,243 :: __main__ :: App starting up.
+2017-05-02 12:05:08,256 :: werkzeug ::  * Debugger is active!
+2017-05-02 12:05:20,885 :: sqlalchemy.engine.base.Engine :: BEGIN (implicit)
+2017-05-02 12:05:20,888 :: sqlalchemy.engine.base.Engine :: SELECT employee.id AS employee_id, employee.is_active AS employee_is_active, employee.last_name AS employee_last_name, employee.first_name AS employee_first_name, employee.birth_date AS employee_birth_date, employee.start_date AS employee_start_date 
+FROM employee 
+ LIMIT %s
+2017-05-02 12:05:20,888 :: sqlalchemy.engine.base.Engine :: (1,)
+2017-05-02 12:05:20,888 :: sqlalchemy.engine.base.Engine :: ROLLBACK
+2017-05-02 12:05:20,888 :: controllers.employees :: Employees.py Get - Error while retrieving all employees
+2017-05-02 12:07:08,930 :: sqlalchemy.engine.base.Engine :: SHOW VARIABLES LIKE 'sql_mode'
+2017-05-02 12:07:08,931 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:07:08,936 :: sqlalchemy.engine.base.Engine :: SELECT DATABASE()
+2017-05-02 12:07:08,936 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:07:08,936 :: sqlalchemy.engine.base.Engine :: show collation where `Charset` = 'utf8' and `Collation` = 'utf8_bin'
+2017-05-02 12:07:08,936 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:07:08,937 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test plain returns' AS CHAR(60)) AS anon_1
+2017-05-02 12:07:08,937 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:07:08,938 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test unicode returns' AS CHAR(60)) AS anon_1
+2017-05-02 12:07:08,938 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:07:08,940 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test collated returns' AS CHAR CHARACTER SET utf8) COLLATE utf8_bin AS anon_1
+2017-05-02 12:07:08,940 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:07:08,959 :: databasesetup :: Added default objects to database.
+2017-05-02 12:07:08,966 :: __main__ :: App starting up.
+2017-05-02 12:07:08,986 :: werkzeug ::  * Debugger is active!
+2017-05-02 12:09:32,072 :: sqlalchemy.engine.base.Engine :: SHOW VARIABLES LIKE 'sql_mode'
+2017-05-02 12:09:32,072 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:09:32,075 :: sqlalchemy.engine.base.Engine :: SELECT DATABASE()
+2017-05-02 12:09:32,075 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:09:32,075 :: sqlalchemy.engine.base.Engine :: show collation where `Charset` = 'utf8' and `Collation` = 'utf8_bin'
+2017-05-02 12:09:32,075 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:09:32,076 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test plain returns' AS CHAR(60)) AS anon_1
+2017-05-02 12:09:32,076 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:09:32,078 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test unicode returns' AS CHAR(60)) AS anon_1
+2017-05-02 12:09:32,078 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:09:32,078 :: sqlalchemy.engine.base.Engine :: SELECT CAST('test collated returns' AS CHAR CHARACTER SET utf8) COLLATE utf8_bin AS anon_1
+2017-05-02 12:09:32,078 :: sqlalchemy.engine.base.Engine :: ()
+2017-05-02 12:09:32,091 :: databasesetup :: Added default objects to database.
+2017-05-02 12:09:32,098 :: __main__ :: App starting up.
+2017-05-02 12:09:32,111 :: werkzeug ::  * Debugger is active!
