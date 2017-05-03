@@ -351,6 +351,11 @@ definitions:
 #                                 Reward                                       #
 #                                                                              #
   Reward:
+    required:
+      - employeeId
+      - replace
+      - orderId
+      - serialIds
     type: object
     properties:
       employeeId:
@@ -359,7 +364,7 @@ definitions:
         type: boolean
       orderId:
         type: integer
-      salaryIds:
+      serialIds:
         type: array
         items:
           type: integer
