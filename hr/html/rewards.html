@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Rewards</title>
+</head>
+<body>
+<div ng-app="MyApp" ng-controller="MyCtrl">
+<table>
+    <thead>
+        <th>
+            Name
+        </th>
+    <th>
+        Orders
+    </th>
+    <th>
+        Phones
+    </th>
+    </thead>
+    <tbody>
+     <tr ng-repeat="e in viewEmployees track by $index">
+            <td>
+                {{e.name}}
+            </td>
+            <td>
+                {{e.orders}}
+            </td>
+            <td>
+                {{e.phones}}
+            </td>
+     </tr>
+    </tbody>
+</table>
+</div>
+</body>
+<script>
+    angular.module('MyApp', [])
+        .controller('MyCtrl', ['$scope', '$http', function ($scope, $http) {
+
+
+            $scope.viewEmployees = [];
+
+
+
+                $http.get("employee")
+                    .then(function (response) {
+                        $scope.viewEmployees = response.data["employee_array"];
+                    });
+
+
+
+
+        }]);
+    </script>
+</html>

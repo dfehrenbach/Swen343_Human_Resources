@@ -50,6 +50,9 @@ def edit():
 @app.route('/delete')
 def delete():
     return send_file('html/deleteemployee.html')
+@app.route('/viewrewards')
+def rewards():
+    return send_file('html/rewards.html')
 
 if __name__ == '__main__':
     logger.warning('App starting up.')
