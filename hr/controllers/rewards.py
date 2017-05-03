@@ -9,6 +9,7 @@ from sqlalchemy import exists, and_
 from databasesetup import create_session, Employee
 from models.employee_reward_api_model import EmployeeRewardApiModel
 from models.employee_response import EmployeeResponse
+import requests
 import logging
 
 logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(message)s')
@@ -63,6 +64,35 @@ def post(payload):
     4. if low/medium increment
     5. increment by 1.
     """
-    
+    session = create_session()
 
-    return ""
+    try:
+        # Check if Employee exists
+        if not session.query(exists().where(Employee.id == payload['employeeId'])).scalar():
+            error_message = 'This employee does not exist in the system yet. ' \
+                            'Please use employees POST to add them as a new employee'
+            logger.warning("rewards.py POST - "
+                           "The employee does not exist in the system")
+            return {'error_message': error_message}, 500
+
+        employee_object = session.query(Employee).get(payload['employeeId'])
+
+        if payload['replace']:
+            return {'message': 'No rewards were counted for the employee {0}'.format(payload['employeeId'])}
+        else:
+            for serial_id in payload['serialIds']:
+                phone_payload = requests.get("http://vm343b.se.rit.edu:5000/inventory/phones/{0}".format(str(serial_id)))
+                phone = phone_payload.json()
+
+                if phone['fields']['modelId'] == 2 or phone['fields']['modelId'] == 3:
+                    employee_object.phones += 1
+            employee_object.orders += 1
+    except:
+        session.rollback()
+        error_message = 'Error while modifying employee base'
+        logger.warning("rewards.py employees POST - "
+                       "Error while modifying the employee:")
+        return {'error_message': error_message}, 500
+
+    return {'message': "Employee {0}'s count for phones has incremented now is {1} and now has {2} "
+                       "eligible orders".format(payload['employeeId'], employee_object.phones, employee_object.orders)}
