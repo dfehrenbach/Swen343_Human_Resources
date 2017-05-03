@@ -55,6 +55,7 @@ def get(employee_id=None, static_flag=False):
                                             employee_id=employee_object.id,
                                             name=employee_object.first_name + ' ' + employee_object.last_name,
                                             birth_date=employee_object.birth_date,
+                                            email=employee_object.email,
                                             address=children['address'].to_str(),
                                             department=children['department'].to_str(),
                                             role=children['title'].to_str(),
@@ -84,6 +85,7 @@ def get(employee_id=None, static_flag=False):
                                             employee_id=employee_object.id,
                                             name=employee_object.first_name + ' ' + employee_object.last_name,
                                             birth_date=employee_object.birth_date,
+                                            email=employee_object.email,
                                             address=children['address'].to_str(),
                                             department=children['department'].to_str(),
                                             role=children['title'].to_str(),
@@ -123,6 +125,7 @@ def post(employee):
         if session.query(exists().where(and_(
                 Employee.first_name == employee['fname'],
                 Employee.last_name == employee['lname'],
+                Employee.email == employee['email'],
                 Employee.birth_date == datetime.strptime(employee['birth_date'], '%Y-%m-%d').date(),
                 Employee.start_date == datetime.strptime(employee['start_date'], '%Y-%m-%d').date()))).scalar():
             session.rollback()
@@ -140,7 +143,8 @@ def post(employee):
         birthday = datetime.strptime(employee['birth_date'], '%Y-%m-%d').date()  # e.g. 1993-12-17
         start_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
         new_employee = Employee(is_active=employee['is_active'], first_name=employee['fname'],
-                                last_name=employee['lname'], birth_date=birthday, start_date=start_date)
+                                last_name=employee['lname'], birth_date=birthday, email=employee['email'],
+                                phones=0, orders=0, start_date=start_date)
         session.add(new_employee)
     except SQLAlchemyError:
         session.rollback()
@@ -262,18 +266,20 @@ def patch(employee):
 
 
         old_employee = 'Employee ID: %s, Name: %s, Birth Date: %s, Start Date: %s,' \
-                       ' Active Status: %s' \
+                       ' Email: %s, Active Status: %s' \
                        % (employee_object.id,
                           employee_object.first_name + ' ' + employee_object.last_name,
                           employee_object.birth_date,
                           employee_object.start_date,
+                          employee_object.email,
                           employee_object.is_active)
         new_employee = 'Employee ID: %s, Name: %s, Birth Date: %s, Start Date: %s,' \
-                       ' Active Status: %s' \
+                       ' Email: %s, Active Status: %s' \
                        % (employee['employee_id'],
                           employee['fname'] + ' ' + employee['lname'],
                           datetime.strptime(employee['birth_date'], '%Y-%m-%d').date(),
                           datetime.strptime(employee['start_date'], '%Y-%m-%d').date(),
+                          employee['email'],
                           employee['is_active'])
         # MODIFY EMPLOYEE
         if 'is_active' in employee:
@@ -282,6 +288,8 @@ def patch(employee):
             employee_object.first_name = employee['fname']
         if 'lname' in employee:
             employee_object.last_name = employee['lname']
+        if 'email' in employee:
+            employee_object.last_name = employee['email']
         if 'birth_date' in employee:
             employee_object.birth_date = datetime.strptime(employee['birth_date'], '%Y-%m-%d').date()
         if 'start_date' in employee:

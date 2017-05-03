@@ -29,6 +29,7 @@ class Employee(Base):
     is_active = Column(Boolean)
     last_name = Column(String(25))
     first_name = Column(String(25))
+    email = Collumn(String(50))
     birth_date = Column(Date)
     start_date = Column(Date)
     orders = Column(Integer)
@@ -43,7 +44,7 @@ class Employee(Base):
 
     def __repr__(self):
         return "<Employee(id='%s', last='%s', first='%s', DOB='%s', company_start_date='%s', isActive='%s')>" % (
-            self.id, self.last_name, self.first_name, self.birth_date, self.start_date, self.is_active)
+            self.id, self.last_name, self.first_name, self.email, self.birth_date, self.start_date, self.is_active)
 
 
 class Salary(Base):
