@@ -36,6 +36,7 @@ def get(employee_id):
                                 employee_id=employee_object.id,
                                 name=employee_object.first_name + ' ' + employee_object.last_name,
                                 birth_date=employee_object.birth_date,
+                                email=employee_object.email,
                                 address=children['address'].to_str(),
                                 department=children['department'].to_str(),
                                 role=children['title'].to_str(),
@@ -45,9 +46,10 @@ def get(employee_id):
 
     session.close()
     logger.warning("Employee.py Get - Retrieved Employee ID %s"
-                   " (Name: %s, Birth date: %s, Department: %s, Role: %s)" %
-                   (str(employee_id)
-                    ,employee_object.first_name + ' ' + employee_object.last_name,
+                   " (Name: %s, Email: %s, Birth date: %s, Department: %s, Role: %s)" %
+                   (str(employee_id),
+                    employee_object.first_name + ' ' + employee_object.last_name,
+                    employee_object.email,
                     employee_object.birth_date,
                     children['department'].to_str(),
                     children['title'].to_str()))

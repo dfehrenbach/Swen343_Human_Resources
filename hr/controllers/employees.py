@@ -93,9 +93,10 @@ def get(employee_id=None, static_flag=False):
                                             start_date=employee_object.start_date,
                                             salary=children['salary'].to_str())
                 employee_collection.append(employee)
-                info += "Employee ID: %s, Name: %s, Birth date: %s, Department: %s, Role: %s " % \
+                info += "Employee ID: %s, Name: %s, Email: %s, Birth date: %s, Department: %s, Role: %s " % \
                         (employee_object.id,
                          employee_object.first_name + ' ' + employee_object.last_name,
+                         employee_object.email,
                          employee_object.birth_date,
                          children['department'].to_str(),
                          children['title'].to_str())
