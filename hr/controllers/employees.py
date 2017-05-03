@@ -239,7 +239,7 @@ def post(employee):
     session.commit()
     session.close()
 
-    return {'Magic': 'Yes, actually magic #POST', 'employee': employee}, 200
+    return {'employee': employee}, 200
 
 
 def patch(employee):
@@ -461,8 +461,7 @@ def patch(employee):
 
     logger.warning('Successfully modified an employee. Old information: '
                    + old_employee + " New information: " + new_employee)
-    return {'Magic': 'Magic, for patching things? Bipity Bop! You are now a frog!'
-                     '(Not really, but the following employee has been changed!)', 'new_employee': employee}, 200
+    return {'new_employee': employee}, 200
 
 
 def delete(employee_id):
@@ -495,4 +494,4 @@ def delete(employee_id):
                       employee_object['name'],
                       datetime.strptime(str(employee_object['birth_date']), '%Y-%m-%d').date(),
                       employee_object['department']))
-    return {'Magic': 'Magically making things vanish since 2017', 'deleted_employee': employee}, 200
+    return {'deleted_employee': employee}, 200
