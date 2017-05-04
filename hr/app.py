@@ -34,22 +34,23 @@ CORS(
 application = app.app
 
 
+
+@app.route('/oauth')
+def oauth():
+    return send_file('html/oauth.html')
 @app.route('/')
 @app.route('/view')
 def view():
     return send_file('html/viewemployees.html')
-@app.route('/oauth')
-def oauth():
-    return send_file('html/oauth.html')
 @app.route('/add')
 def add():
     return send_file('html/addemployee.html')
-@app.route('/edit')
-def edit():
+@app.route('/edit/<int:eId>')
+def edit(eId=-1):
     return send_file('html/editemployee.html')
-@app.route('/delete')
-def delete():
-    return send_file('html/deleteemployee.html')
+@app.route('/viewrewards')
+def rewards():
+    return send_file('html/rewards.html')
 
 if __name__ == '__main__':
     logger.warning('App starting up.')
