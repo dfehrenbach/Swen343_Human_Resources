@@ -175,6 +175,24 @@ def defaultInfo():
 
     for name in names:
         email = "{0}.{1}@krutz.site".format(name[0], name[1])
+        if name[1] == "Friedman":
+            email = "srf1115@g.rit.edu"
+        if name[1] == "Hulbert":
+            email = "pxh8242@g.rit.edu"
+        if name[1] == "Mailloux":
+            email = "cdm3806@g.rit.edu"
+        if name[1] == "Campione":
+            email = "jxc4577@g.rit.edu"
+        if name[1] == "Herde":
+            email = "gh1823@g.rit.edu"
+        if name[1] == "King":
+            email = "lxk3301@g.rit.edu"
+        if name[1] == "Sellers":
+            email = "jrs9025@g.rit.edu"
+        if name[1] == "Krutz":
+            email = "dxkvse@g.rit.edu"
+        if name[1] == "Matti":
+            email = "sxm4161@g.rit.edu"
         employee = Employee(is_active=True, first_name=name[0], last_name=name[1], email=email, phones=0, orders=0,
                             birth_date=datetime.date(1992, 2, 12), start_date=datetime.date(2017, 1, 23))
 
@@ -214,5 +232,5 @@ print("Added all objects to database.")
 
 if __name__ == "__main__":
     # Populate database if it is empty.  Set this to true to repopulate
-    if False:
+    if True:
         defaultInfo()

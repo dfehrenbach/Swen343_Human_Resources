@@ -290,7 +290,7 @@ def patch(employee):
         if 'lname' in employee:
             employee_object.last_name = employee['lname']
         if 'email' in employee:
-            employee_object.last_name = employee['email']
+            employee_object.email = employee['email']
         if 'birth_date' in employee:
             employee_object.birth_date = datetime.strptime(employee['birth_date'], '%Y-%m-%d').date()
         if 'start_date' in employee:
