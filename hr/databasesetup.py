@@ -29,7 +29,7 @@ class Employee(Base):
     is_active = Column(Boolean)
     last_name = Column(String(25))
     first_name = Column(String(25))
-    email = Collumn(String(50))
+    email = Column(String(50))
     birth_date = Column(Date)
     start_date = Column(Date)
     orders = Column(Integer)
