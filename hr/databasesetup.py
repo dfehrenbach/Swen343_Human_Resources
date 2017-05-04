@@ -153,19 +153,19 @@ def defaultInfo():
     session = create_session()
 
     names = [("Joseph", "Campione", "Sales", "Developer"), ("Matthew", "Chickering", "Manufacturing", "Developer"),
-             ("Thomas", "DiMauro", "Inventory", "Developer"), ("Daniel", "Fehrenbach", "HR", "Developer"),
-             ("Daniel", "Fisher", "Customer Support", "Developer"), ("Samuel", "Friedman", "HR", "Developer"),
+             ("Thomas", "DiMauro", "Inventory", "Developer"), ("Daniel", "Fehrenbach", "Human Resources", "Developer"),
+             ("Daniel", "Fisher", "Customer Support", "Developer"), ("Samuel", "Friedman", "Human Resources", "Developer"),
              ("Joseph", "Gambino", "Manufacturing", "Developer"), ("Alexander", "Garrity", "Accounting", "Developer"),
              ("Quentin", "Goyert", "Manufacturing", "Developer"), ("Luke", "Harrold", "Inventory", "Developer"),
-             ("George", "Herde", "Accounting", "Developer"), ("Paul", "Hulbert", "HR", "Developer"),
+             ("George", "Herde", "Accounting", "Developer"), ("Paul", "Hulbert", "Human Resources", "Developer"),
              ("Joseph", "Jankowiak", "Sales", "Developer"), ("Laura", "King", "Inventory", "Developer"),
              ("Melissa", "Laskowski", "Customer Support", "Developer"), ("Cailin", "Li", "Sales", "Developer"),
              ("Rafael", "Lopez", "Manufacturing", "Developer"), ("Junwen", "Mai", "Inventory", "Developer"),
              ("Corban", "Mailloux", "Customer Support", "Developer"), ("Shannon", "McIntosh", "Accounting", "Developer"),
              ("Joshua", "Miller", "Accounting", "Developer"), ("Samuel", "Mosher", "Inventory", "Developer"),
-             ("Justin", "Nietzel", "Sales", "Developer"), ("Nathan", "Oesterle", "HR", "Developer"),
+             ("Justin", "Nietzel", "Sales", "Developer"), ("Nathan", "Oesterle", "Human Resources", "Developer"),
              ("Johnathan", "Sellers", "Manufacturing", "Developer"), ("Nicholas", "Swanson", "Sales", "Developer"),
-             ("William", "Tarr", "Accounting", "Developer"), ("Jeremy", "Vargas", "HR", "Developer"),
+             ("William", "Tarr", "Accounting", "Developer"), ("Jeremy", "Vargas", "Human Resources", "Developer"),
              ("Bryon", "Wilkins", "Customer Support", "Developer"), ("Eric", "Yoon", "Customer Support", "Developer"),
              ("Daniel", "Krutz", "Board", "Board"), ("Silva", "Matti", "Board", "Board")]
 
