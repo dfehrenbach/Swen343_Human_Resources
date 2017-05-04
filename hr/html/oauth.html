@@ -80,6 +80,7 @@
                                 });
                                 if (!found) {
                                     alert("No employee with this email found. Please try again.");
+                                    auth2.signOut();
                                     location.reload();
                                 }
                             });
@@ -142,7 +143,7 @@
         function redirectToDepartment(depName) {
             var url = ""
             switch (depName) {
-                case "HR":
+                case "Human Resources":
                 case "Board":
                     url = "vm343a.se.rit.edu";
                     break;
