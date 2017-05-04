@@ -214,5 +214,5 @@ print("Added all objects to database.")
 
 if __name__ == "__main__":
     # Populate database if it is empty.  Set this to true to repopulate
-    if False:
+    if True:
         defaultInfo()
