@@ -100,7 +100,7 @@
             }
             var token = getParameterByName('token');
             if (token) {
-                $http.get("confirm_login/HR/"+token).then(function(response){
+                $http.get("confirm_login/HumanResources/"+token).then(function(response){
                     if (response.data["employee_id"] >= 0) {
                         alert("Welcome employee "+response.data["employee_id"]);
                     } else {
