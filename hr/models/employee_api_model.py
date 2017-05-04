@@ -20,7 +20,7 @@ class EmployeeApiModel(object):
     Do not edit the class manually.
     """
 
-    def __init__(self, is_active=None, employee_id=None, name=None, birth_date=None, address=None,
+    def __init__(self, is_active=None, employee_id=None, name=None, birth_date=None, address=None, email=None,
                  department=None, role=None, team_start_date=None, start_date=None, salary=None):
         """
         EmployeeApiModel - a model defined in Swagger
@@ -36,6 +36,7 @@ class EmployeeApiModel(object):
             'name': 'str',
             'birth_date': 'str',
             'address': 'str',
+            'email': 'str',
             'department': 'str',
             'role': 'str',
             'team_start_date': 'str',
@@ -49,6 +50,7 @@ class EmployeeApiModel(object):
             'name': 'name',
             'birth_date': 'birth_date',
             'address': 'address',
+            'email': 'email',
             'department': 'department',
             'role': 'role',
             'team_start_date': 'team_start_date',
@@ -61,6 +63,7 @@ class EmployeeApiModel(object):
         self._name = name
         self._birth_date = birth_date
         self._address = address
+        self._email = email
         self._department = department
         self._role = role
         self._team_start_date = team_start_date
@@ -171,6 +174,27 @@ class EmployeeApiModel(object):
         """
 
         self._address = address
+
+    @property
+    def email(self):
+        """
+        Gets the email of this EmployeeApiModel.
+
+        :return: The email of this EmployeeApiModel.
+        :rtype: str
+        """
+        return self._email
+
+    @email.setter
+    def email(self, email):
+        """
+        Sets the email of this EmployeeApiModel.
+
+        :param email: The email of this EmployeeApiModel.
+        :type: str
+        """
+
+        self._email = email
 
     @property
     def department(self):
