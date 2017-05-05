@@ -9,8 +9,9 @@ from models.employee_response import EmployeeResponse
 from helpers.db_object_helper import get_all_children_objects
 import logging
 
-logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(message)s')
+logging.basicConfig(filename='./log.txt', format='%(asctime)s :: %(name)s :: %(message)s')
 logger = logging.getLogger(__name__)
+
 
 def get(employee_id):
     """ This is the GET function that will return one or more employee objects within the system.

@@ -2,17 +2,15 @@
 
 The following functions are called from here: GET, POST.
 """
-import json
-import os
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import exists, and_
+from sqlalchemy import exists
 from databasesetup import create_session, Employee
 from models.employee_reward_api_model import EmployeeRewardApiModel
 from models.employee_response import EmployeeResponse
 import requests
 import logging
 
-logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(message)s')
+logging.basicConfig(filename='./log.txt', format='%(asctime)s :: %(name)s :: %(message)s')
 logger = logging.getLogger(__name__)
 
 

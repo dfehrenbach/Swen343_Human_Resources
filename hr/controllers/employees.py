@@ -17,8 +17,9 @@ from models.employee_api_model import EmployeeApiModel
 from models.employee_response import EmployeeResponse
 import logging
 
-logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(message)s')
+logging.basicConfig(filename='./log.txt', format='%(asctime)s :: %(name)s :: %(message)s')
 logger = logging.getLogger(__name__)
+
 
 def get(employee_id=None, static_flag=False):
     """ This is the GET function that will return one or more employee objects within the system.
@@ -168,7 +169,7 @@ def post(employee):
     except SQLAlchemyError:
         session.rollback()
         error_message = 'Error while importing employee address'
-        logger.warning("Employees.py Post - " + error_message+
+        logger.warning("Employees.py Post - " + error_message +
                        ". Unable to add the address for the following employee: "
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
                        (employee['fname'] + ' ' + employee['lname'],
@@ -184,7 +185,7 @@ def post(employee):
     except SQLAlchemyError:
         session.rollback()
         error_message = 'Error while importing employee department'
-        logger.warning("Employees.py Post - " + error_message+
+        logger.warning("Employees.py Post - " + error_message +
                        ". Unable to add the department and role for the following employee: "
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
                        (employee['fname'] + ' ' + employee['lname'],
@@ -200,7 +201,7 @@ def post(employee):
     except SQLAlchemyError:
         session.rollback()
         error_message = 'Error while importing employee title'
-        logger.warning("Employees.py Post - " + error_message+
+        logger.warning("Employees.py Post - " + error_message +
                        ". Unable to add the position title for the following employee: "
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
                        (employee['fname'] + ' ' + employee['lname'],
