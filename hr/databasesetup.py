@@ -36,11 +36,11 @@ class Employee(Base):
     phones = Column(Integer)
 
     # This allows for reference to this employee's details without extra searching
-    user = relationship("User", uselist=False, back_populates="employee", cascade="all, delete-orphan")
-    addresses = relationship("Address", back_populates="employee", cascade="all, delete-orphan")
-    titles = relationship("Title", back_populates="employee", cascade="all, delete-orphan")
-    departments = relationship("Department", back_populates="employee", cascade="all, delete-orphan")
-    salary = relationship("Salary", back_populates="employee", cascade="all, delete-orphan")
+    user = relationship("User", uselist=False, back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
+    addresses = relationship("Address", back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
+    titles = relationship("Title", back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
+    departments = relationship("Department", back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
+    salary = relationship("Salary", back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
 
     def __repr__(self):
         return "<Employee(id='{0}', last='{1}', first='{2}', email='{3}', DOB='{4}', " \
@@ -56,7 +56,7 @@ class Salary(Base):
     amount = Column(Integer)  # Will be an Integer of Cents. So for a salary of $100, the amount will be 10000
 
     # This allows for reference to this employee's details without extra searching
-    employee_id = Column(Integer, ForeignKey(Employee.id))
+    employee_id = Column(Integer, ForeignKey(Employee.id, ondelete='CASCADE'))
     employee = relationship("Employee", back_populates="salary")
 
     def __repr__(self):
@@ -73,7 +73,7 @@ class User(Base):
     password = Column(String(25))
 
     # Allows for reference to the employee object without search
-    employee_id = Column(Integer, ForeignKey(Employee.id))
+    employee_id = Column(Integer, ForeignKey(Employee.id, ondelete='CASCADE'))
     employee = relationship("Employee", back_populates="user")
 
     def __repr__(self):
@@ -92,7 +92,7 @@ class Address(Base):
     start_date = Column(Date)
 
     # Allows for reference to the employee object without search
-    employee_id = Column(Integer, ForeignKey(Employee.id))
+    employee_id = Column(Integer, ForeignKey(Employee.id, ondelete='CASCADE'))
     employee = relationship("Employee", back_populates="addresses")
 
     def __repr__(self):
@@ -112,7 +112,7 @@ class Title(Base):
     start_date = Column(Date)
 
     # Allows for reference to the employee object without search
-    employee_id = Column(Integer, ForeignKey(Employee.id))
+    employee_id = Column(Integer, ForeignKey(Employee.id, ondelete='CASCADE'))
     employee = relationship("Employee", back_populates="titles")
 
     def __repr__(self):
@@ -131,7 +131,7 @@ class Department(Base):
     name = Column(String(25))
 
     # Allows for reference to the employee object without search
-    employee_id = Column(Integer, ForeignKey(Employee.id))
+    employee_id = Column(Integer, ForeignKey(Employee.id, ondelete='CASCADE'))
     employee = relationship("Employee", back_populates="departments")
 
     def __repr__(self):
