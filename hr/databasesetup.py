@@ -1,12 +1,10 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, class_mapper
-import os
 import logging
 import random
-import string
 
-logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(message)s')
+logging.basicConfig(filename='./log.txt', format='%(asctime)s :: %(name)s :: %(message)s')
 logger = logging.getLogger(__name__)
 
 logger.info("Creating database.")
@@ -62,7 +60,7 @@ class Salary(Base):
         return "<Salary(id='%s', is_active='%s', amount='%s')>" % (self.id, self.is_active, self.amount)
 
     def to_str(self):
-        return "%s" % self.amount
+        return self.amount
 
 
 class Address(Base):
