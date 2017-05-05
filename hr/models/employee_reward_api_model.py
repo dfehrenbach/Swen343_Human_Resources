@@ -12,6 +12,7 @@
 
 
 from pprint import pformat
+from six import iteritems
 
 
 class EmployeeRewardApiModel(object):
@@ -173,7 +174,7 @@ class EmployeeRewardApiModel(object):
         """
         Returns true if both objects are equal
         """
-        if not isinstance(other, EmployeeReward):
+        if not isinstance(other, EmployeeRewardApiModel):
             return False
 
         return self.__dict__ == other.__dict__
