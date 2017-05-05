@@ -53,9 +53,9 @@ def get():
         return EmployeeResponse(employee_collection).to_dict()
 
 
-def post(payload):
+def post(employee):
     """
-    :param payload:
+    :param employee:
     :return:
 
     1. check employee exists and grab it
@@ -68,31 +68,41 @@ def post(payload):
 
     try:
         # Check if Employee exists
-        if not session.query(exists().where(Employee.id == payload['employeeId'])).scalar():
+        if not session.query(exists().where(Employee.id == employee['employeeId'])).scalar():
             error_message = 'This employee does not exist in the system yet. ' \
                             'Please use employees POST to add them as a new employee'
             logger.warning("rewards.py POST - "
                            "The employee does not exist in the system")
             return {'error_message': error_message}, 500
 
-        employee_object = session.query(Employee).get(payload['employeeId'])
-
-        if payload['replace']:
-            return {'message': 'No rewards were counted for the employee {0}'.format(payload['employeeId'])}
+        employee_object = session.query(Employee).get(employee['employeeId'])
+        if employee['replace']:
+            return {'message': 'No rewards were counted for the employee {0}'.format(employee['employeeId'])}
         else:
-            for serial_id in payload['serialIds']:
-                phone_payload = requests.get("http://vm343b.se.rit.edu:5000/inventory/phones/{0}".format(str(serial_id)))
-                phone = phone_payload.json()
+            for serial_id in employee['serialIds']:
+                try:
+                    phone_payload = requests.get("http://vm343b.se.rit.edu:5000/inventory/phones/{0}".format(str(serial_id)))
+                    phone = phone_payload.json()
+                except:
+                    session.rollback()
+                    error_message = 'Error while information from inventory with phone_serial_id: {0}'.format(str(serial_id))
+                    logger.warning(error_message)
+                    return {'error_message': error_message}, 400
 
-                if phone['fields']['modelId'] == 2 or phone['fields']['modelId'] == 3:
-                    employee_object.phones += 1
+                if phone[0]['fields']['modelId'] == 2 or phone[0]['fields']['modelId'] == 3:
+                    employee_object.phones += + 1
             employee_object.orders += 1
+
     except:
         session.rollback()
-        error_message = 'Error while modifying employee base'
+        error_message = 'Error while modifying employee base in rewards.py'
         logger.warning("rewards.py employees POST - "
                        "Error while modifying the employee:")
         return {'error_message': error_message}, 500
 
-    return {'message': "Employee {0}'s count for phones has incremented now is {1} and now has {2} "
-                       "eligible orders".format(payload['employeeId'], employee_object.phones, employee_object.orders)}
+    return_message = "Employee {0}'s count for phones has incremented now is {1} and now has {2} " \
+                     "eligible orders".format(employee['employeeId'], employee_object.phones, employee_object.orders)
+
+    session.commit()
+    session.close()
+    return {'message': return_message}
