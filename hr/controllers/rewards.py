@@ -25,7 +25,7 @@ def get():
         if not session.query(Employee).first():
             session.rollback()
             logger.warning("Get Employees - No employees exist in the system")
-            return {'error message': 'No employees exist in the system'}, 500
+            return {'error message': 'No employees exist in the system'}, 400
 
         all_employee_objects = session.query(Employee).all()
 
@@ -41,16 +41,16 @@ def get():
         session.rollback()
         error_message = 'Error while retrieving all employee rewards'
         logger.warning("Employees.py Get - " + error_message)
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # CLOSE
     session.close()
     logger.warning(info)
     if not employee_collection:
         logger.warning("Get Employees - No employees that can receive rewards are in the system")
-        return {'error message': 'No employees that can receive rewards are in the system'}, 500
+        return {'error message': 'No employees that can receive rewards are in the system'}, 400
     else:
-        return EmployeeResponse(employee_collection).to_dict()
+        return EmployeeResponse(employee_collection).to_dict(), 200
 
 
 def post(employee):
@@ -73,7 +73,7 @@ def post(employee):
                             'Please use employees POST to add them as a new employee'
             logger.warning("rewards.py POST - "
                            "The employee does not exist in the system")
-            return {'error_message': error_message}, 500
+            return {'error_message': error_message}, 400
 
         employee_object = session.query(Employee).get(employee['employeeId'])
         if employee['replace']:
@@ -98,11 +98,11 @@ def post(employee):
         error_message = 'Error while modifying employee base in rewards.py'
         logger.warning("rewards.py employees POST - "
                        "Error while modifying the employee:")
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     return_message = "Employee {0}'s count for phones has incremented now is {1} and now has {2} " \
                      "eligible orders".format(employee['employeeId'], employee_object.phones, employee_object.orders)
 
     session.commit()
     session.close()
-    return {'message': return_message}
+    return {'message': return_message}, 200
