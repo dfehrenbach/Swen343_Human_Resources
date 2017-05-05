@@ -9,8 +9,9 @@ from models.employee_response import EmployeeResponse
 from helpers.db_object_helper import get_all_children_objects
 import logging
 
-logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(message)s')
+logging.basicConfig(filename='./log.txt', format='%(asctime)s :: %(name)s :: %(message)s')
 logger = logging.getLogger(__name__)
+
 
 def get(employee_id):
     """ This is the GET function that will return one or more employee objects within the system.
@@ -25,13 +26,13 @@ def get(employee_id):
         session.rollback()
         logger.error("Employee.py Get - Failed to retrieve employee number %s. "
                      "Invalid statement." % str(employee_id))
-        return {'error_message': 'Error while retrieving employee %s' % employee_id}, 500
+        return {'error_message': 'Error while retrieving employee %s' % employee_id}, 400
 
     try:
         children = get_all_children_objects(employee_object)
     except AttributeError:
         logger.error("Employee.py Get - failed to retrieve employee number %s. Employee does not exist." % str(employee_id))
-        return {'error_message': 'Error while retrieving employee %s' % employee_id}, 500
+        return {'error_message': 'Error while retrieving employee %s' % employee_id}, 400
     employee = EmployeeApiModel(is_active=employee_object.is_active,
                                 employee_id=employee_object.id,
                                 name=employee_object.first_name + ' ' + employee_object.last_name,

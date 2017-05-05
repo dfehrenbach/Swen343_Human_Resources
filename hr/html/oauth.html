@@ -2,24 +2,25 @@
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" ></script>
         <meta name="google-signin-client_id" content="950133531849-rguhcc8831heptekr54dmvam1a735lor.apps.googleusercontent.com"></meta>
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
 
-    <div id="gConnect">
-        <h3>Oh no, you're not logged in!</h3>
+    <div id="gConnect" class="container">
+        <h3 class="header">Krutz Corp. Login</h3>
         <div id="signin-button"></div>
     </div>
 
-    <div id="authOps" style="display:none">
-        <h3>Sign-in success</h3>
-
-        <button id="signOut" onclick="auth2.signOut()">Sign Out</button>
+    <div id="authOps" style="display:none" class="container">
+        <h3 id="welcomeHeader" class="header"></h3>
+        <div id="dept"></div>
         <div id="profile">
         </div>
     </div>
 
     <script type="application/javascript">
         var auth2 = {};
+        var token = "";
         var helper = (function() {
             return {
                 /**
@@ -35,7 +36,8 @@
 
                         var id_token = authResult.currentUser.get().getAuthResponse().id_token;
                         console.log("id_token: " + id_token);
-                        $('#authOps').show();
+                        token = access_token;
+
                         $('#gConnect').hide();
                         helper.profile(access_token);
                     }
@@ -60,23 +62,28 @@
                     }).then(function(res) {
                         var profile = res.result;
                         $('#profile').empty();
-                        $('#profile').append(
-                                $('<button onclick="getUserInfoFromToken(\''+access_token+'\')">GetToken</button>'));
-                        $('#profile').append(
-                                $('<p><img src=\"' + profile.image.url + '\"></p>'));
-                        $('#profile').append(
-                                $('<p><em>Name: </em>' + profile.displayName + '<br /><em>Tagline: </em>' +
-                                        profile.tagline + '</p>'));
                         if (profile.emails) {
-                            $('#profile').append('Emails: ');
-                            for (var i=0; i < profile.emails.length; i++){
-                                $('#profile').append(profile.emails[i].value).append(' ');
-                            }
-                            $('#profile').append('<br/>');
-                        }
-                        if (profile.cover && profile.coverPhoto) {
-                            $('#profile').append(
-                                    $('<p><img src=\"' + profile.cover.coverPhoto.url + '\"></p>'));
+                            var email = profile.emails[0];
+                            $.getJSON("/employee",function(data){
+                                var found = false;
+                                $.each(data["employee_array"],function(id,employee){
+                                    if (employee["email"] == email["value"]) {
+                                        found = true;
+                                        $('#authOps').show();
+                                        $('#welcomeHeader').text("Welcome, "+employee["name"]);
+                                        $('#dept').text("Redirecting to "+employee["department"]+" page in 3 seconds");
+                                        setTimeout(function(){redirectToDepartment(employee["department"])},3000)
+
+
+                                    }
+
+                                });
+                                if (!found) {
+                                    alert("No employee with this email found. Please try again.");
+                                    auth2.signOut();
+                                    location.reload();
+                                }
+                            });
                         }
                     }, function(err) {
                         var error = err.result;
@@ -133,7 +140,37 @@
                 }
             })
         }
+        function redirectToDepartment(depName) {
+            var url = ""
+            switch (depName) {
+                case "Human Resources":
+                case "Board":
+                    url = "vm343a.se.rit.edu";
+                    break;
+                case "Inventory":
+                    url = "vm343b.se.rit.edu:5000";
+                    break;
+                case "Sales":
+                    url = "vm343c.se.rit.edu";
+                    break;
+                case "Customer Support":
+                    url = "support.krutz.site"
+                    break;
+                case "Manufacturing":
+                    url = "vm343d.se.rit.edu/api";
+                    break;
+                case "Accounting":
+                    url = "vm343e.se.rit.edu";
+                    break;
+                default:
+                    alert("Google account not associated with employee")
+                    return;
 
+            }
+            if (url)
+                window.location.href = "http://"+url+"?token="+token;
+
+        }
         /**
          * This method sets up the sign-in listener after the client library loads.
          */

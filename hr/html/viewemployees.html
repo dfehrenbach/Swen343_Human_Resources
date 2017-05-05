@@ -82,12 +82,36 @@
 </body>
 <script>
     angular.module('MyApp', [])
-        .controller('MyCtrl', ['$scope', '$http', function ($scope, $http) {
+        .controller('MyCtrl', ['$scope', '$http', '$location', function ($scope, $http, $location) {
+
             $scope.viewEmployees = [];
             $scope.allEmployees = [];
             $scope.singleEmployee = " ";
             $scope.loading = "Loading Employees";
 
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+            var token = getParameterByName('token');
+            if (token) {
+                $http.get("confirm_login/HumanResources/"+token).then(function(response){
+                    if (response.data["employee_id"] >= 0) {
+                        alert("Welcome employee "+response.data["employee_id"]);
+                    } else {
+                        alert(response)
+//                        window.location.href = "oauth";
+                    }
+                },function(response) {
+                    alert(response.data["error_message"]);
+                    window.location.href = "oauth";
+                });
+            }
             var intervalId = setInterval(function () {
                 $scope.loading += ".";
                 $scope.$apply();

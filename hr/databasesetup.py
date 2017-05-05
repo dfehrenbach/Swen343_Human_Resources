@@ -1,12 +1,10 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, class_mapper
-import os
 import logging
 import random
-import string
 
-logging.basicConfig(filename='./log.txt',format='%(asctime)s :: %(name)s :: %(message)s')
+logging.basicConfig(filename='./log.txt', format='%(asctime)s :: %(name)s :: %(message)s')
 logger = logging.getLogger(__name__)
 
 logger.info("Creating database.")
@@ -36,16 +34,16 @@ class Employee(Base):
     phones = Column(Integer)
 
     # This allows for reference to this employee's details without extra searching
-    user = relationship("User", uselist=False, back_populates="employee", cascade="all, delete-orphan")
-    addresses = relationship("Address", back_populates="employee", cascade="all, delete-orphan")
-    titles = relationship("Title", back_populates="employee", cascade="all, delete-orphan")
-    departments = relationship("Department", back_populates="employee", cascade="all, delete-orphan")
-    salary = relationship("Salary", back_populates="employee", cascade="all, delete-orphan")
+    addresses = relationship("Address", back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
+    titles = relationship("Title", back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
+    departments = relationship("Department", back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
+    salary = relationship("Salary", back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
 
     def __repr__(self):
-        return "<Employee(id='{0}', last='{1}', first='{2}', email='{5}', DOB='{4}', " \
-               "company_start_date='{5}', isActive='{6}')>".format(self.id, self.last_name, self.first_name, self.email,
-                                                                   self.birth_date, self.start_date, self.is_active)
+        return "<Employee(id='{0}', last='{1}', first='{2}', email='{3}', DOB='{4}', " \
+               "company_start_date='{5}', isActive='{6}', " \
+               "orders='{7}', phones='{8})>".format(self.id, self.last_name, self.first_name, self.email, self.birth_date,
+                                                    self.start_date, self.is_active, self.orders, self.phones)
 
 
 class Salary(Base):
@@ -55,29 +53,14 @@ class Salary(Base):
     amount = Column(Integer)  # Will be an Integer of Cents. So for a salary of $100, the amount will be 10000
 
     # This allows for reference to this employee's details without extra searching
-    employee_id = Column(Integer, ForeignKey(Employee.id))
+    employee_id = Column(Integer, ForeignKey(Employee.id, ondelete='CASCADE'))
     employee = relationship("Employee", back_populates="salary")
 
     def __repr__(self):
         return "<Salary(id='%s', is_active='%s', amount='%s')>" % (self.id, self.is_active, self.amount)
 
     def to_str(self):
-        return "%s" % self.amount
-
-
-class User(Base):
-    __tablename__ = 'user'
-    id = Column(Integer, primary_key=True)
-    username = Column(String(25))
-    password = Column(String(25))
-
-    # Allows for reference to the employee object without search
-    employee_id = Column(Integer, ForeignKey(Employee.id))
-    employee = relationship("Employee", back_populates="user")
-
-    def __repr__(self):
-        return "<User(username='%s', password='%s', id='%s')>" % (
-            self.username, self.password, self.id)
+        return self.amount
 
 
 class Address(Base):
@@ -91,7 +74,7 @@ class Address(Base):
     start_date = Column(Date)
 
     # Allows for reference to the employee object without search
-    employee_id = Column(Integer, ForeignKey(Employee.id))
+    employee_id = Column(Integer, ForeignKey(Employee.id, ondelete='CASCADE'))
     employee = relationship("Employee", back_populates="addresses")
 
     def __repr__(self):
@@ -111,7 +94,7 @@ class Title(Base):
     start_date = Column(Date)
 
     # Allows for reference to the employee object without search
-    employee_id = Column(Integer, ForeignKey(Employee.id))
+    employee_id = Column(Integer, ForeignKey(Employee.id, ondelete='CASCADE'))
     employee = relationship("Employee", back_populates="titles")
 
     def __repr__(self):
@@ -130,7 +113,7 @@ class Department(Base):
     name = Column(String(25))
 
     # Allows for reference to the employee object without search
-    employee_id = Column(Integer, ForeignKey(Employee.id))
+    employee_id = Column(Integer, ForeignKey(Employee.id, ondelete='CASCADE'))
     employee = relationship("Employee", back_populates="departments")
 
     def __repr__(self):
@@ -145,7 +128,7 @@ def create_session():
     return sessionmaker(bind=engine)()
 
 
-def defaultInfo():
+def default_info():
     Base.metadata.create_all(engine)
 
     import datetime
@@ -153,28 +136,44 @@ def defaultInfo():
     session = create_session()
 
     names = [("Joseph", "Campione", "Sales", "Developer"), ("Matthew", "Chickering", "Manufacturing", "Developer"),
-             ("Thomas", "DiMauro", "Inventory", "Developer"), ("Daniel", "Fehrenbach", "HR", "Developer"),
-             ("Daniel", "Fisher", "Customer Support", "Developer"), ("Samuel", "Friedman", "HR", "Developer"),
+             ("Thomas", "DiMauro", "Inventory", "Developer"), ("Daniel", "Fehrenbach", "Human Resources", "Developer"),
+             ("Daniel", "Fisher", "Customer Support", "Developer"), ("Samuel", "Friedman", "Human Resources", "Developer"),
              ("Joseph", "Gambino", "Manufacturing", "Developer"), ("Alexander", "Garrity", "Accounting", "Developer"),
              ("Quentin", "Goyert", "Manufacturing", "Developer"), ("Luke", "Harrold", "Inventory", "Developer"),
-             ("George", "Herde", "Accounting", "Developer"), ("Paul", "Hulbert", "HR", "Developer"),
+             ("George", "Herde", "Accounting", "Developer"), ("Paul", "Hulbert", "Human Resources", "Developer"),
              ("Joseph", "Jankowiak", "Sales", "Developer"), ("Laura", "King", "Inventory", "Developer"),
              ("Melissa", "Laskowski", "Customer Support", "Developer"), ("Cailin", "Li", "Sales", "Developer"),
              ("Rafael", "Lopez", "Manufacturing", "Developer"), ("Junwen", "Mai", "Inventory", "Developer"),
              ("Corban", "Mailloux", "Customer Support", "Developer"), ("Shannon", "McIntosh", "Accounting", "Developer"),
              ("Joshua", "Miller", "Accounting", "Developer"), ("Samuel", "Mosher", "Inventory", "Developer"),
-             ("Justin", "Nietzel", "Sales", "Developer"), ("Nathan", "Oesterle", "HR", "Developer"),
+             ("Justin", "Nietzel", "Sales", "Developer"), ("Nathan", "Oesterle", "Human Resources", "Developer"),
              ("Johnathan", "Sellers", "Manufacturing", "Developer"), ("Nicholas", "Swanson", "Sales", "Developer"),
-             ("William", "Tarr", "Accounting", "Developer"), ("Jeremy", "Vargas", "HR", "Developer"),
+             ("William", "Tarr", "Accounting", "Developer"), ("Jeremy", "Vargas", "Human Resources", "Developer"),
              ("Bryon", "Wilkins", "Customer Support", "Developer"), ("Eric", "Yoon", "Customer Support", "Developer"),
              ("Daniel", "Krutz", "Board", "Board"), ("Silva", "Matti", "Board", "Board")]
 
-    usernames = generateRandomProperties(len(names))
-    passwords = generateRandomProperties(len(names))
     employee_count = 0
 
     for name in names:
         email = "{0}.{1}@krutz.site".format(name[0], name[1])
+        if name[1] == "Friedman":
+            email = "srf1115@g.rit.edu"
+        if name[1] == "Hulbert":
+            email = "pxh8242@g.rit.edu"
+        if name[1] == "Mailloux":
+            email = "cdm3806@g.rit.edu"
+        if name[1] == "Campione":
+            email = "jxc4577@g.rit.edu"
+        if name[1] == "Herde":
+            email = "gh1823@g.rit.edu"
+        if name[1] == "King":
+            email = "lxk3301@g.rit.edu"
+        if name[1] == "Sellers":
+            email = "jrs9025@g.rit.edu"
+        if name[1] == "Krutz":
+            email = "dxkvse@g.rit.edu"
+        if name[1] == "Matti":
+            email = "sxm4161@g.rit.edu"
         employee = Employee(is_active=True, first_name=name[0], last_name=name[1], email=email, phones=0, orders=0,
                             birth_date=datetime.date(1992, 2, 12), start_date=datetime.date(2017, 1, 23))
 
@@ -183,7 +182,6 @@ def defaultInfo():
             salary = random.SystemRandom().randint(50000, 100000)
 
         session.add(employee)
-        session.add(User(username=usernames[employee_count], password=passwords[employee_count], employee=employee))
         session.add(Address(is_active=True, street_address=str(employee_count) + " Lomb Memorial Drive", city="Rochester",
                             state="New York", zip="14623", start_date=datetime.date(2017, 1, 23), employee=employee))
         session.add(Title(is_active=True, name=name[3], start_date=datetime.date(2017, 1, 23), employee=employee))
@@ -194,13 +192,6 @@ def defaultInfo():
 
         employee_count += 1
 
-def generateRandomProperties(size):
-    properties = []
-    while len(properties) < size:
-        rand_prop = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for i in range(8))
-        if properties.count(rand_prop) < 1:
-            properties.append(rand_prop)
-    return properties
 
 def serialize(model):
     """Transforms a model into a dictionary which can be dumped to JSON."""
@@ -214,5 +205,5 @@ print("Added all objects to database.")
 
 if __name__ == "__main__":
     # Populate database if it is empty.  Set this to true to repopulate
-    if False:
-        defaultInfo()
+    if True:
+        default_info()

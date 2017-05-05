@@ -49,9 +49,9 @@
         <div class="form-group">
             <label for="Department">Department</label>
             <select class="form-control" id="Department" ng-model="postDepartment">
-                <option value="HR">HR
+                <option value="Human Resources">Human Resources
                 <option value="Accounting">Accounting
-                <option value="Customer Service">Customer Service
+                <option value="Customer Support">Customer Support
                 <option value="Inventory">Inventory
                 <option value="Sales">Sales
                 <option value="Manufacturing">Manufacturing
@@ -64,6 +64,10 @@
         <div class="form-group">
             <label for="StartDate">Company Start Date</label>
             <input class="form-control" id="StartDate" ng-model="postStartDate" type="date" required>
+        </div>
+        <div class="form-group">
+            <label for="Email">Email</label>
+            <input class="form-control" id="Email" ng-model="postEmail" type="text" required>
         </div>
 
 
@@ -91,7 +95,8 @@
                             "address": $scope.postAddress + ", " + $scope.postCity + ", " + $scope.postState + " " + $scope.postZip,
                             "department": $scope.postDepartment,
                             "role": $scope.postRole,
-                            "start_date": $filter('date')($scope.postStartDate, "yyyy-MM-dd")
+                            "start_date": $filter('date')($scope.postStartDate, "yyyy-MM-dd"),
+                            "email": $scope.postEmail
                         }
                     })
                         .then(function (response) {
@@ -106,6 +111,7 @@
                             $scope.postDepartment = "";
                             $scope.postRole = "";
                             $scope.postStartDate = null;
+                            $scope.postEmail = "";
                         });
                 }
             }
