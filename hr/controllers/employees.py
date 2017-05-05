@@ -276,7 +276,7 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee base'
         logger.warning("Employees.py Patch - "
-                       "Error while modifying the employee {0}:".format(employee['employee_id']))
+                       "Error while modifying the employee %s", employee['employee_id'])
         return {'error_message': error_message}, 400
 
     # MODIFY ADDRESS
@@ -309,7 +309,7 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee address'
         logger.warning("Employees.py Patch - " 
-                       "Error while modifying the address for the employee {0}:".format(employee['employee_id']))
+                       "Error while modifying the address for the employee %s", employee['employee_id'])
         return {'error_message': error_message}, 400
 
     # MODIFY SALARY
@@ -323,7 +323,7 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee salary'
         logger.warning("Employees.py Patch - "
-                       "Error while modifying the salary for the employee {0}:".format(employee['employee_id']))
+                       "Error while modifying the salary for the employee %s", employee['employee_id'])
         return {'error_message': error_message}, 400
 
     # MODIFY TITLE
@@ -352,7 +352,7 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee role & title'
         logger.warning("Emplyees.py Patch - "
-                       "Error while modifying the role/title for the employee {0}:".format(employee['employee_id']))
+                       "Error while modifying the role/title for the employee %s", employee['employee_id'])
         return {'error_message': error_message}, 400
 
     # MODIFY DEPARTMENT
@@ -381,7 +381,7 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee department & team'
         logger.warning("Employees.py Patch - " 
-                       "Error while modifying the department for the employee {0}:".format(employee['employee_id']))
+                       "Error while modifying the department for the employee %s", employee['employee_id'])
         return {'error_message': error_message}, 400
 
     new_employee = 'Employee ID: %s, Name: %s, Birth Date: %s, Start Date: %s,' \
