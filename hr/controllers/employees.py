@@ -280,7 +280,6 @@ def patch(employee):
         return {'error_message': error_message}, 400
 
     # MODIFY ADDRESS
-    address = ''
     try:
         if 'address' or 'address_start_date' in employee:
             address_object = get_active_address(employee_object)
@@ -314,9 +313,8 @@ def patch(employee):
         return {'error_message': error_message}, 400
 
     # MODIFY SALARY
-    salary_object = None
     try:
-        salary_object = None
+
         if 'salary' in employee:
             salary_object = get_active_salary(employee_object)
             salary_object.is_active = False
@@ -329,7 +327,6 @@ def patch(employee):
         return {'error_message': error_message}, 400
 
     # MODIFY TITLE
-    title_object = None
     try:
         if 'role' or 'role_start_date' in employee:
             title_object = get_active_title(employee_object)
@@ -359,7 +356,6 @@ def patch(employee):
         return {'error_message': error_message}, 400
 
     # MODIFY DEPARTMENT
-    department_object = None
     try:
         if 'department' or 'department_start_date' in employee:
             department_object = get_active_department(employee_object)
