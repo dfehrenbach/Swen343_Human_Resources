@@ -36,7 +36,6 @@ class Employee(Base):
     phones = Column(Integer)
 
     # This allows for reference to this employee's details without extra searching
-    user = relationship("User", uselist=False, back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
     addresses = relationship("Address", back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
     titles = relationship("Title", back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
     departments = relationship("Department", back_populates="employee", cascade="all, delete-orphan", passive_deletes=True)
@@ -64,21 +63,6 @@ class Salary(Base):
 
     def to_str(self):
         return "%s" % self.amount
-
-
-class User(Base):
-    __tablename__ = 'user'
-    id = Column(Integer, primary_key=True)
-    username = Column(String(25))
-    password = Column(String(25))
-
-    # Allows for reference to the employee object without search
-    employee_id = Column(Integer, ForeignKey(Employee.id, ondelete='CASCADE'))
-    employee = relationship("Employee", back_populates="user")
-
-    def __repr__(self):
-        return "<User(username='%s', password='%s', id='%s')>" % (
-            self.username, self.password, self.id)
 
 
 class Address(Base):
@@ -146,7 +130,7 @@ def create_session():
     return sessionmaker(bind=engine)()
 
 
-def defaultInfo():
+def default_info():
     Base.metadata.create_all(engine)
 
     import datetime
@@ -170,8 +154,6 @@ def defaultInfo():
              ("Bryon", "Wilkins", "Customer Support", "Developer"), ("Eric", "Yoon", "Customer Support", "Developer"),
              ("Daniel", "Krutz", "Board", "Board"), ("Silva", "Matti", "Board", "Board")]
 
-    usernames = generateRandomProperties(len(names))
-    passwords = generateRandomProperties(len(names))
     employee_count = 0
 
     for name in names:
@@ -202,7 +184,6 @@ def defaultInfo():
             salary = random.SystemRandom().randint(50000, 100000)
 
         session.add(employee)
-        session.add(User(username=usernames[employee_count], password=passwords[employee_count], employee=employee))
         session.add(Address(is_active=True, street_address=str(employee_count) + " Lomb Memorial Drive", city="Rochester",
                             state="New York", zip="14623", start_date=datetime.date(2017, 1, 23), employee=employee))
         session.add(Title(is_active=True, name=name[3], start_date=datetime.date(2017, 1, 23), employee=employee))
@@ -213,13 +194,6 @@ def defaultInfo():
 
         employee_count += 1
 
-def generateRandomProperties(size):
-    properties = []
-    while len(properties) < size:
-        rand_prop = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for i in range(8))
-        if properties.count(rand_prop) < 1:
-            properties.append(rand_prop)
-    return properties
 
 def serialize(model):
     """Transforms a model into a dictionary which can be dumped to JSON."""
@@ -234,4 +208,4 @@ print("Added all objects to database.")
 if __name__ == "__main__":
     # Populate database if it is empty.  Set this to true to repopulate
     if True:
-        defaultInfo()
+        default_info()
