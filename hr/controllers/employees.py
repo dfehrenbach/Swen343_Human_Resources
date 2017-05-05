@@ -144,6 +144,11 @@ def post(employee):
 
         birthday = datetime.strptime(employee['birth_date'], '%Y-%m-%d').date()  # e.g. 1993-12-17
         start_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
+        if employee['is_active']:
+            logger.warning("The start date input (%s) is greater than today's date, but the employee is said to be "
+                           "active. So the start date for the employee is marked as now. To change either of these "
+                           "things, Use PATCH", start_date)
+            start_date = datetime.now()
         new_employee = Employee(is_active=employee['is_active'], first_name=employee['fname'],
                                 last_name=employee['lname'], birth_date=birthday, email=employee['email'],
                                 phones=0, orders=0, start_date=start_date)
