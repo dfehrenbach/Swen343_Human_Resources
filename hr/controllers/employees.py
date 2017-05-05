@@ -476,7 +476,10 @@ def delete(employee_id):
         if not session.query(exists().where(Employee.id == employee_id)).scalar():
             session.rollback()
             return {'error message': 'An employee with the id of %s does not exist' % employee_id}, 500
-        employee = get(employee_id=[employee_id])
+        employee = get(employee_id=[employee_id])['employee_array'][0]
+        print''
+        print(session.query(Employee).filter_by(id=employee_id))
+        print''
         session.query(Employee).filter_by(id=employee_id).delete()
     except SQLAlchemyError:
         session.rollback()
@@ -485,14 +488,13 @@ def delete(employee_id):
         return {'error_message': error_message}, 500
 
     # COMMIT & CLOSE
-    session.commit()
-    session.close()
-    print(employee['employee_array'])
-    employee_object = employee['employee_array'][0]
     logger.warning("Successfully deleted the following employee: "
                    "Employee ID: %s, Name %s, Birth Date %s, Department: %s"
-                   % (employee_object['employee_id'],
-                      employee_object['name'],
-                      datetime.strptime(str(employee_object['birth_date']), '%Y-%m-%d').date(),
-                      employee_object['department']))
+                   % (employee['employee_id'],
+                      employee['name'],
+                      datetime.strptime(str(employee['birth_date']), '%Y-%m-%d').date(),
+                      employee['department']))
+
+    session.commit()
+    session.close()
     return {'deleted_employee': employee}, 200
