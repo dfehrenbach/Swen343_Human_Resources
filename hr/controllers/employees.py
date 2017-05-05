@@ -45,7 +45,7 @@ def get(employee_id=None, static_flag=False):
             if not session.query(Employee).first():
                 session.rollback()
                 logger.warning("Get Employees - No employees exist in the system")
-                return {'error message': 'No employees exist in the system'}, 500
+                return {'error message': 'No employees exist in the system'}, 400
 
             all_employee_objects = session.query(Employee).all()
 
@@ -68,7 +68,7 @@ def get(employee_id=None, static_flag=False):
             session.rollback()
             error_message = 'Error while retrieving all employees'
             logger.warning("Employees.py Get - " + error_message)
-            return {'error_message': error_message}, 500
+            return {'error_message': error_message}, 400
 
     else:
         for e_id in employee_id:
@@ -77,7 +77,7 @@ def get(employee_id=None, static_flag=False):
                     session.rollback()
                     error_message = 'An employee with the id of %s does not exist' % e_id
                     logger.warning("Get Employees - " + error_message)
-                    return {'error message': error_message}, 500
+                    return {'error message': error_message}, 400
 
                 employee_object = session.query(Employee).get(e_id)
                 children = get_all_children_objects(employee_object)
@@ -105,12 +105,12 @@ def get(employee_id=None, static_flag=False):
                 session.rollback()
                 error_message = 'Error while retrieving employee %s' % employee_id
                 logger.warning("Employees.py Get - " + error_message)
-                return {'error_message': error_message}, 500
+                return {'error_message': error_message}, 400
 
     # CLOSE
     session.close()
     logger.warning(info)
-    return EmployeeResponse(employee_collection).to_dict()
+    return EmployeeResponse(employee_collection).to_dict(), 200
 
 
 def post(employee):
@@ -139,7 +139,7 @@ def post(employee):
                             employee['start_date']))
             return {'error_message':
                     'This employee already exists in the system. Please use PATCH to modify them or enter a new '
-                    'employee. A new employee has a unique first name, last name, birth date, and start date'}, 500
+                    'employee. A new employee has a unique first name, last name, birth date, and start date'}, 400
 
         birthday = datetime.strptime(employee['birth_date'], '%Y-%m-%d').date()  # e.g. 1993-12-17
         start_date = datetime.strptime(employee['start_date'], '%Y-%m-%d').date()  # e.g. 2017-03-28
@@ -156,7 +156,7 @@ def post(employee):
                         (employee['fname'] + ' ' + employee['lname'],
                          employee['birth_date'],
                          employee['start_date']))
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # ADD USER
     try:
@@ -170,7 +170,7 @@ def post(employee):
                         (employee['fname'] + ' ' + employee['lname'],
                          employee['birth_date'],
                          employee['start_date']))
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # ADD ADDRESS
     # Use regex to check that the format is "0200 StreetAddress St., City, State 11111"
@@ -188,7 +188,7 @@ def post(employee):
                         (employee['fname'] + ' ' + employee['lname'],
                          employee['birth_date'],
                          employee['start_date']))
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # ADD DEPARTMENT
     try:
@@ -204,7 +204,7 @@ def post(employee):
                         (employee['fname'] + ' ' + employee['lname'],
                          employee['birth_date'],
                          employee['start_date']))
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # ADD TITLE
     # Note: This should be the same as the team_start_date for POST'ing a new employee
@@ -220,7 +220,7 @@ def post(employee):
                         (employee['fname'] + ' ' + employee['lname'],
                          employee['birth_date'],
                          employee['start_date']))
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # ADD SALARY
     try:
@@ -234,7 +234,7 @@ def post(employee):
                         (employee['fname'] + ' ' + employee['lname'],
                          employee['birth_date'],
                          employee['start_date']))
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # COMMIT & CLOSE
     session.commit()
@@ -261,7 +261,7 @@ def patch(employee):
                            (employee['fname'] + ' ' + employee['lname'],
                             employee['birth_date'],
                             employee['start_date']))
-            return {'error_message': error_message}, 500
+            return {'error_message': error_message}, 400
 
         employee_object = session.query(Employee).get(employee['employee_id'])
 
@@ -305,7 +305,7 @@ def patch(employee):
                        (employee['fname'] + ' ' + employee['lname'],
                         employee['birth_date'],
                         employee['start_date']))
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # MODIFY USER
     try:
@@ -324,7 +324,7 @@ def patch(employee):
                        (employee['fname'] + ' ' + employee['lname'],
                         employee['birth_date'],
                         employee['start_date']))
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # MODIFY ADDRESS
     address = ''
@@ -363,7 +363,7 @@ def patch(employee):
                         employee['fname'] + ' ' + employee['lname'],
                         employee['birth_date'],
                         employee['start_date']))
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # MODIFY SALARY
     salary_object = None
@@ -384,7 +384,7 @@ def patch(employee):
                         employee['fname'] + ' ' + employee['lname'],
                         employee['birth_date'],
                         employee['start_date']))
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # MODIFY TITLE
     title_object = None
@@ -419,7 +419,7 @@ def patch(employee):
                         employee['fname'] + ' ' + employee['lname'],
                         employee['birth_date'],
                         employee['start_date']))
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # MODIFY DEPARTMENT
     department_object = None
@@ -454,7 +454,7 @@ def patch(employee):
                         employee['fname'] + ' ' + employee['lname'],
                         employee['birth_date'],
                         employee['start_date']))
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # COMMIT & CLOSE
     session.commit()
@@ -475,14 +475,14 @@ def delete(employee_id):
     try:
         if not session.query(exists().where(Employee.id == employee_id)).scalar():
             session.rollback()
-            return {'error message': 'An employee with the id of %s does not exist' % employee_id}, 500
+            return {'error message': 'An employee with the id of %s does not exist' % employee_id}, 400
         employee = get(employee_id=[employee_id])
         session.query(Employee).filter_by(id=employee_id).delete()
     except SQLAlchemyError:
         session.rollback()
         error_message = "Error while deleting employee %s" % employee_id
         logger.warning("Employees.py - " + error_message)
-        return {'error_message': error_message}, 500
+        return {'error_message': error_message}, 400
 
     # COMMIT & CLOSE
     session.commit()
