@@ -43,9 +43,10 @@ class Employee(Base):
     salary = relationship("Salary", back_populates="employee", cascade="all, delete-orphan")
 
     def __repr__(self):
-        return "<Employee(id='{0}', last='{1}', first='{2}', email='{5}', DOB='{4}', " \
-               "company_start_date='{5}', isActive='{6}')>".format(self.id, self.last_name, self.first_name, self.email,
-                                                                   self.birth_date, self.start_date, self.is_active)
+        return "<Employee(id='{0}', last='{1}', first='{2}', email='{3}', DOB='{4}', " \
+               "company_start_date='{5}', isActive='{6}', " \
+               "orders='{7}', phones='{8})>".format(self.id, self.last_name, self.first_name, self.email, self.birth_date,
+                                                    self.start_date, self.is_active, self.orders, self.phones)
 
 
 class Salary(Base):
