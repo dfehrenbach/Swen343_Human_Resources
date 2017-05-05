@@ -8,7 +8,7 @@ from datetime import datetime
 from random import randrange
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import exists, and_
-from databasesetup import create_session, Employee, User, Salary, Address, Title, Department
+from databasesetup import create_session, Employee, Salary, Address, Title, Department
 from helpers.db_object_helper import \
     get_all_children_objects, get_active_address, \
     get_active_title, get_active_department, get_active_salary
@@ -153,23 +153,9 @@ def post(employee):
         logger.warning("Employees.py Post - " + error_message +
                        ". Unable to add the following employee: "
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                        (employee['fname'] + ' ' + employee['lname'],
-                         employee['birth_date'],
-                         employee['start_date']))
-        return {'error_message': error_message}, 400
-
-    # ADD USER
-    try:
-        session.add(User(username='default', password='default', employee=new_employee))
-    except SQLAlchemyError:
-        session.rollback()
-        error_message = 'Error while importing employee user security information'
-        logger.warning("Employees.py Post - " + error_message+
-                       ". Unable to add security information for the following employee: "
-                       "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                        (employee['fname'] + ' ' + employee['lname'],
-                         employee['birth_date'],
-                         employee['start_date']))
+                       (employee['fname'] + ' ' + employee['lname'],
+                        employee['birth_date'],
+                        employee['start_date']))
         return {'error_message': error_message}, 400
 
     # ADD ADDRESS
@@ -185,9 +171,9 @@ def post(employee):
         logger.warning("Employees.py Post - " + error_message+
                        ". Unable to add the address for the following employee: "
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                        (employee['fname'] + ' ' + employee['lname'],
-                         employee['birth_date'],
-                         employee['start_date']))
+                       (employee['fname'] + ' ' + employee['lname'],
+                        employee['birth_date'],
+                        employee['start_date']))
         return {'error_message': error_message}, 400
 
     # ADD DEPARTMENT
@@ -201,9 +187,9 @@ def post(employee):
         logger.warning("Employees.py Post - " + error_message+
                        ". Unable to add the department and role for the following employee: "
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                        (employee['fname'] + ' ' + employee['lname'],
-                         employee['birth_date'],
-                         employee['start_date']))
+                       (employee['fname'] + ' ' + employee['lname'],
+                        employee['birth_date'],
+                        employee['start_date']))
         return {'error_message': error_message}, 400
 
     # ADD TITLE
@@ -217,9 +203,9 @@ def post(employee):
         logger.warning("Employees.py Post - " + error_message+
                        ". Unable to add the position title for the following employee: "
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                        (employee['fname'] + ' ' + employee['lname'],
-                         employee['birth_date'],
-                         employee['start_date']))
+                       (employee['fname'] + ' ' + employee['lname'],
+                        employee['birth_date'],
+                        employee['start_date']))
         return {'error_message': error_message}, 400
 
     # ADD SALARY
@@ -231,9 +217,9 @@ def post(employee):
         logger.warning("Employees.py Post - " + error_message +
                        ". Unable to add the salary for the following employee: "
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                        (employee['fname'] + ' ' + employee['lname'],
-                         employee['birth_date'],
-                         employee['start_date']))
+                       (employee['fname'] + ' ' + employee['lname'],
+                        employee['birth_date'],
+                        employee['start_date']))
         return {'error_message': error_message}, 400
 
     # COMMIT & CLOSE
@@ -264,7 +250,6 @@ def patch(employee):
             return {'error_message': error_message}, 400
 
         employee_object = session.query(Employee).get(employee['employee_id'])
-
 
         old_employee = 'Employee ID: %s, Name: %s, Birth Date: %s, Start Date: %s,' \
                        ' Email: %s, Active Status: %s' \
@@ -301,25 +286,6 @@ def patch(employee):
         error_message = 'Error while modifying employee base'
         logger.warning("Employees.py Patch - "
                        "Error while modifying the following employee:" +
-                       "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                       (employee['fname'] + ' ' + employee['lname'],
-                        employee['birth_date'],
-                        employee['start_date']))
-        return {'error_message': error_message}, 400
-
-    # MODIFY USER
-    try:
-        if 'username' in employee:
-            employee_object.user.username = employee['username']
-        if 'password' in employee:
-            employee_object.user.password = employee['password']
-
-    except SQLAlchemyError:
-        session.rollback()
-        error_message = 'Error while modifying employee user security information'
-        logger.warning("Employees.py Patch - "
-                       "Error while modifying the username and "
-                       "password for the following employee:" +
                        "Employee Name: %s, Birth Date: %s, Start Date: %s." %
                        (employee['fname'] + ' ' + employee['lname'],
                         employee['birth_date'],
