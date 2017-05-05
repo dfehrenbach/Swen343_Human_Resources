@@ -48,7 +48,7 @@ def get():
         logger.warning("Get Employees - No employees that can receive rewards are in the system")
         return {'error message': 'No employees that can receive rewards are in the system'}, 400
     else:
-        return EmployeeResponse(employee_collection).to_dict(), 200
+        return EmployeeResponse(employee_collection).to_dict()
 
 
 def post(employee):

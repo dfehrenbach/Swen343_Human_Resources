@@ -111,7 +111,7 @@ def get(employee_id=None, static_flag=False):
     # CLOSE
     session.close()
     logger.warning(info)
-    return EmployeeResponse(employee_collection).to_dict(), 200
+    return EmployeeResponse(employee_collection).to_dict()
 
 
 def post(employee):
@@ -244,10 +244,7 @@ def patch(employee):
                            'Please use POST to add them as a new employee'
             logger.warning("Employees.py Patch - "
                            "The following employee does not exist in the system" +
-                           "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                           (employee['fname'] + ' ' + employee['lname'],
-                            employee['birth_date'],
-                            employee['start_date']))
+                           "Employee ID: {0}.".format(employee['employee_id']))
             return {'error_message': error_message}, 400
 
         employee_object = session.query(Employee).get(employee['employee_id'])
@@ -260,14 +257,7 @@ def patch(employee):
                           employee_object.start_date,
                           employee_object.email,
                           employee_object.is_active)
-        new_employee = 'Employee ID: %s, Name: %s, Birth Date: %s, Start Date: %s,' \
-                       ' Email: %s, Active Status: %s' \
-                       % (employee['employee_id'],
-                          employee['fname'] + ' ' + employee['lname'],
-                          datetime.strptime(employee['birth_date'], '%Y-%m-%d').date(),
-                          datetime.strptime(employee['start_date'], '%Y-%m-%d').date(),
-                          employee['email'],
-                          employee['is_active'])
+
         # MODIFY EMPLOYEE
         if 'is_active' in employee:
             employee_object.is_active = employee['is_active']
@@ -286,11 +276,7 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee base'
         logger.warning("Employees.py Patch - "
-                       "Error while modifying the following employee:" +
-                       "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                       (employee['fname'] + ' ' + employee['lname'],
-                        employee['birth_date'],
-                        employee['start_date']))
+                       "Error while modifying the employee {0}:".format(employee['employee_id']))
         return {'error_message': error_message}, 400
 
     # MODIFY ADDRESS
@@ -324,12 +310,7 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee address'
         logger.warning("Employees.py Patch - " 
-                       "Error while modifying the address (%s) for the following employee:"
-                       "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                       (address,
-                        employee['fname'] + ' ' + employee['lname'],
-                        employee['birth_date'],
-                        employee['start_date']))
+                       "Error while modifying the address for the employee {0}:".format(employee['employee_id']))
         return {'error_message': error_message}, 400
 
     # MODIFY SALARY
@@ -344,13 +325,7 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee salary'
         logger.warning("Employees.py Patch - "
-                       "Error while modifying the salary (new salary: %s) "
-                       "for the following employee: "
-                       "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                       (salary_object,
-                        employee['fname'] + ' ' + employee['lname'],
-                        employee['birth_date'],
-                        employee['start_date']))
+                       "Error while modifying the salary for the employee {0}:".format(employee['employee_id']))
         return {'error_message': error_message}, 400
 
     # MODIFY TITLE
@@ -380,12 +355,7 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee role & title'
         logger.warning("Emplyees.py Patch - "
-                       "Error while modifying the title (%s) for the following employee: "
-                       "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                       (title_object,
-                        employee['fname'] + ' ' + employee['lname'],
-                        employee['birth_date'],
-                        employee['start_date']))
+                       "Error while modifying the role/title for the employee {0}:".format(employee['employee_id']))
         return {'error_message': error_message}, 400
 
     # MODIFY DEPARTMENT
@@ -415,13 +385,17 @@ def patch(employee):
         session.rollback()
         error_message = 'Error while modifying employee department & team'
         logger.warning("Employees.py Patch - " 
-                       "Error while modifying the department (%s) for the following employee:"
-                       "Employee Name: %s, Birth Date: %s, Start Date: %s." %
-                       (department_object,
-                        employee['fname'] + ' ' + employee['lname'],
-                        employee['birth_date'],
-                        employee['start_date']))
+                       "Error while modifying the department for the employee {0}:".format(employee['employee_id']))
         return {'error_message': error_message}, 400
+
+    new_employee = 'Employee ID: %s, Name: %s, Birth Date: %s, Start Date: %s,' \
+                   ' Email: %s, Active Status: %s' \
+                   % (employee_object.id,
+                      employee_object.first_name + ' ' + employee_object.last_name,
+                      employee_object.birth_date,
+                      employee_object.start_date,
+                      employee_object.email,
+                      employee_object.is_active)
 
     # COMMIT & CLOSE
     session.commit()
