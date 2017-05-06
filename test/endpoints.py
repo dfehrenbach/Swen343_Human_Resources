@@ -1,6 +1,6 @@
 import unittest
-from controllers import employee, employees
-from hr.databasesetup import defaultInfo
+from hr.controllers import employee, employees
+from hr.databasesetup import default_info
 import datetime
 import os
 
@@ -11,7 +11,7 @@ class EndPointTests(unittest.TestCase):
     def setUpClass(cls):
         if os.path.exists("hr.myd"):
             os.remove("hr.myd")
-        defaultInfo()
+        default_info()
 
     def test_getEmployee(self):
         mock_employee = {
@@ -67,7 +67,8 @@ class EndPointTests(unittest.TestCase):
                              + ") does not match the mock employee's address ("
                              + mock_employee['employee_array']['address'] + ").")
         error_case = employee.get(-1)
-        self.assertEqual(error_case,({'error_message': 'Error while retrieving employee -1'}, 500),
+        print error_case
+        self.assertEqual(error_case,({'error_message': 'Error while retrieving employee -1'}, 400),
                          msg="Found an employee with an ID of -1")
 
     def test_getEmployees(self):
@@ -247,7 +248,7 @@ class EndPointTests(unittest.TestCase):
                              + mock_employees['employee_array'][1]['address'] + ").")
         error_case = employees.get([-1])
         self.assertEqual(error_case,
-                         ({'error message': 'An employee with the id of -1 does not exist'}, 500),
+                         ({'error message': 'An employee with the id of -1 does not exist'}, 400),
                          msg="Found an employee with an ID of -1")
 
     def test_postEmployee(self):
