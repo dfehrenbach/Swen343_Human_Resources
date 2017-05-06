@@ -7,11 +7,11 @@ import os
 
 class EndPointTests(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        if os.path.exists("hr.myd"):
-            os.remove("hr.myd")
-        default_info()
+    # @classmethod
+    # def setUpClass(cls):
+    #     if os.path.exists("hr.myd"):
+    #         os.remove("hr.myd")
+    #     default_info()
 
     def test_getEmployee(self):
         mock_employee = {
@@ -457,8 +457,8 @@ class EndPointTests(unittest.TestCase):
         employees.delete(num_employees)
         self.assertEqual(employee.get(num_employees),({'error_message': 'Error while retrieving employee 33'}, 500))
 
-    @classmethod
-    def tearDownClass(cls):
-        # TODO Remove Test database when finished testing.
-        # os.remove("hr.myd")
-        pass  # To make sure the above line doesn't provide an error when it's commented out.
+    # @classmethod
+    # def tearDownClass(cls):
+    #     # TODO Remove Test database when finished testing.
+    #     # os.remove("hr.myd")
+    #     pass  # To make sure the above line doesn't provide an error when it's commented out.
