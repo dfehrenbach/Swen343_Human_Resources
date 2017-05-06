@@ -15,7 +15,6 @@ apt-get -y install git
 apt-get -y install mysql-server
 apt-get install libmysqlclient-dev
 
-
 mkdir working_dir
 cd working_dir
 wget https://bootstrap.pypa.io/get-pip.py
@@ -32,17 +31,18 @@ export PYTHONPATH="${PYTHONPATH}:/root/working_dir/Swen343_Human_Resources/hr"
 pip install -r requirements.pip
 
 python hr/databasesetup.py
-python hr/app.py
+nohup python hr/app.py &
 ```
 
 To reset the machine to the state before the project was created create a file `teardown.sh` and run it using `bash teardown.sh`.
 
 ```
 #!/bin/sh
+
+pkill -f setup.sh
+pkill -f app.py
  
-cd working_dir/Swen343_Human_Resources
- 
-cd ../..
+cd ~
  
 rm -rf working_dir
 pip uninstall -y virtualenv
