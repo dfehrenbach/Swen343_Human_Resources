@@ -95,7 +95,6 @@ class EndPointTests(unittest.TestCase):
         }
         retrieved_employee = employee.get(id,session=session)
         self.assertNotEqual(retrieved_employee,[],msg="Database is empty. Please run test/databasesetup_test.py")
-        print(retrieved_employee)
         self.assertEqual(retrieved_employee['employee_array']['name'],mock_employee['employee_array']['name'],
                          msg="Employee's name (" + retrieved_employee['employee_array']['name']
                              + ") does not match the mock employee's name ("
@@ -133,7 +132,6 @@ class EndPointTests(unittest.TestCase):
                              + ") does not match the mock employee's address ("
                              + mock_employee['employee_array']['address'] + ").")
         error_case = employee.get(-1,session=session)
-        print error_case
         self.assertEqual(error_case,({'error_message': 'Error while retrieving employee -1'}, 400),
                          msg="Found an employee with an ID of -1")
 
@@ -156,7 +154,6 @@ class EndPointTests(unittest.TestCase):
             ]
         }
         retrieved_employee = employees.get([first_id], session=session)
-        print(retrieved_employee)
         self.assertEqual(retrieved_employee['employee_array'][0]['name'],mock_employee['employee_array'][0]['name'])
         self.assertEqual(retrieved_employee['employee_array'][0]['name'], mock_employee['employee_array'][0]['name'],
                          msg="Employee's name (" + retrieved_employee['employee_array'][0]['name']
@@ -354,10 +351,7 @@ class EndPointTests(unittest.TestCase):
         employees.post(employee_to_post, session=session)
         all_employees = employees.get(session=session)
         # '-1' index Gets the last employee, which is most recently added.
-        new_employee = all_employees['employee_array']
-        print new_employee
-        new_employee = new_employee[-1]
-        # print new_employee
+        new_employee = all_employees['employee_array'][-1]
         self.assertEqual(new_employee['name'], employee_to_post['fname'] + " " + employee_to_post['lname'],
                          msg="Employee's name (" + new_employee['name']
                              + ") does not match the mock employee's name ("
@@ -458,8 +452,6 @@ class EndPointTests(unittest.TestCase):
         num_employees = len(all_employees['employee_array'])
         id = all_employees['employee_array'][-1]['employee_id']
         employee_to_patch = employee.get(id,session=session)
-        print(all_employees['employee_array'][-1]['employee_id'])
-        print(employee_to_patch)
         employee_to_patch = employee_to_patch['employee_array']
         # Confirm the right employee was gotten.
         self.assertEqual(employee_to_patch['name'], employee_to_post['fname'] + " " + employee_to_post['lname'])
@@ -534,11 +526,8 @@ class EndPointTests(unittest.TestCase):
         employees.post(employee_to_post,session=session)
         all_employees = employees.get(session=session)
         id = all_employees['employee_array'][-1]['employee_id']
-        print(id)
         employee_to_delete = employee.get(id,session=session)['employee_array']
         self.assertEqual(employee_to_delete['name'], employee_to_post['fname'] + " " + employee_to_post['lname'])
-        print employees.get(employee_id=[id],session=session)
-        print(employees.delete(id,session=session))
         self.assertEqual(employee.get(id,session=session),({'error_message': 'Error while retrieving employee ' + str(id)}, 400))
 
     def teardown(self):
