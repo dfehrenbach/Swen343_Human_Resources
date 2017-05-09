@@ -3,17 +3,10 @@ from hr.controllers import employee, employees
 import datetime
 
 import random
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship, class_mapper
-import logging
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, Date, ForeignKey
 from hr.databasesetup import Address,Employee,Salary,Title,Department
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.engine import create_engine
-from sqlalchemy.orm.session import Session, sessionmaker
 from sqlalchemy_utils import database_exists, create_database
-import subprocess
-
 
 global transaction, connection, engine, session
 
