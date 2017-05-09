@@ -260,7 +260,8 @@ class EndPointTests(unittest.TestCase):
             "is_active": True,
             "lname": "TEST",
             "role": "TEST",
-            "start_date": "2017-04-19"
+            "start_date": "2017-04-19",
+            "email":"test@test.com"
         }
 
         test = {
@@ -371,7 +372,8 @@ class EndPointTests(unittest.TestCase):
             "is_active": True,
             "lname": "TEST",
             "role": "TEST",
-            "start_date": "2017-04-19"
+            "start_date": "2017-04-19",
+            "email":"test@test.com"
         }
 
         employees.post(employee_to_post)
@@ -446,7 +448,8 @@ class EndPointTests(unittest.TestCase):
             "is_active": True,
             "lname": "TEST",
             "role": "TEST",
-            "start_date": "2017-04-19"
+            "start_date": "2017-04-19",
+            "email":"test@test.com"
         }
 
         employees.post(employee_to_post)
