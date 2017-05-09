@@ -21,7 +21,7 @@ logging.basicConfig(filename='./log.txt', format='%(asctime)s :: %(name)s :: %(m
 logger = logging.getLogger(__name__)
 
 
-def get(employee_id=None, static_flag=False):
+def get(employee_id=None, static_flag=False, session=None):
     """ This is the GET function that will return one or more employee objects within the system.
     :param employee_id:
     :param static_flag:
@@ -37,7 +37,8 @@ def get(employee_id=None, static_flag=False):
             return obj["employee_array"][employee_id[0]-1]
         return obj["employee_array"]
 
-    session = create_session()
+    if session is None:
+        session = create_session()
     employee_collection = []
     info = "Get Employees - Found the following employees - "
 
@@ -114,12 +115,13 @@ def get(employee_id=None, static_flag=False):
     return EmployeeResponse(employee_collection).to_dict()
 
 
-def post(employee):
+def post(employee, session=None):
     """
     :param employee:
     :return:
     """
-    session = create_session()
+    if session is None:
+        session = create_session()
 
     # ADD EMPLOYEE
     try:
@@ -235,12 +237,13 @@ def post(employee):
     return {'employee': employee}, 200
 
 
-def patch(employee):
+def patch(employee, session=None):
     """
     :param employee:
     :return:
     """
-    session = create_session()
+    if session is None:
+        session = create_session()
 
     try:
         # Check if Employee exists
@@ -407,18 +410,19 @@ def patch(employee):
     return {'new_employee': employee}, 200
 
 
-def delete(employee_id):
+def delete(employee_id, session=None):
     """
     :param employee_id:
     :return:
     """
-    session = create_session()
+    if session is None:
+        session = create_session()
 
     try:
         if not session.query(exists().where(Employee.id == employee_id)).scalar():
             session.rollback()
             return {'error message': 'An employee with the id of %s does not exist' % employee_id}, 400
-        employee = get(employee_id=[employee_id])['employee_array'][0]
+        employee = get(employee_id=[employee_id],session=session)['employee_array'][0]
         session.query(Employee).filter_by(id=employee_id).delete()
     except SQLAlchemyError:
         session.rollback()
