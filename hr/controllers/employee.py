@@ -13,12 +13,13 @@ logging.basicConfig(filename='./log.txt', format='%(asctime)s :: %(name)s :: %(m
 logger = logging.getLogger(__name__)
 
 
-def get(employee_id):
+def get(employee_id, session=None):
     """ This is the GET function that will return one or more employee objects within the system.
     :param employee_id:
     :return: a set of Employee Objects
     """
-    session = create_session()
+    if session == None:
+        session = create_session()
 
     try:
         employee_object = session.query(Employee).get(employee_id)
